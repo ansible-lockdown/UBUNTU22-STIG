@@ -1,0 +1,76 @@
+---
+
+- name: LOW | UBTU-22-252010 | PATCH | Ubuntu 22.04 LTS must, for networked systems, compare internal information system clocks at least every 24 hours with a server synchronized to one of the redundant United States Naval Observatory (USNO) time servers, or a time server designated for the appropriate DOD network (NIPRNet/SIPRNet), and/or the Global Positioning System (GPS).
+  when:
+    - ubtu_22_252010
+  tags:
+    - UBTU-22-252010
+    - CAT3
+    - CCI-000366
+    - SRG-OS-000355-GPOS-00143
+    - SV-260519r986273_rule
+    - V-260519
+    - NIST800-53R4_CM-6
+    - service
+    - time
+  block:
+    - name: LOW | UBTU-22-252010 | PATCH | Ubuntu 22.04 LTS must, for networked systems, compare internal information system clocks at least every 24 hours with a server synchronized to one of the redundant United States Naval Observatory (USNO) time servers, or a time server designated for the appropriate DOD network (NIPRNet/SIPRNet), and/or the Global Positioning System (GPS). | sources
+      ansible.builtin.template:
+        src: "{{ item }}.j2"
+        dest: "/{{ item }}"
+        mode: '0644'
+        owner: root
+        group: root
+      loop:
+        - etc/chrony/sources.d/server.sources
+      notify: Restart_chrony
+
+    - name: LOW | UBTU-22-252010 | PATCH | Ubuntu 22.04 LTS must, for networked systems, compare internal information system clocks at least every 24 hours with a server synchronized to one of the redundant United States Naval Observatory (USNO) time servers, or a time server designated for the appropriate DOD network (NIPRNet/SIPRNet), and/or the Global Positioning System (GPS). | load sources
+      ansible.builtin.lineinfile:
+        path: /etc/chrony/chrony.conf
+        regexp: '^sourcedir /etc/chrony/sources.d'
+        line: sourcedir /etc/chrony/sources.d
+      notify: Restart_chrony
+
+- name: LOW | UBTU-22-252015 | PATCH | Ubuntu 22.04 LTS must synchronize internal information system clocks to the authoritative time source when the time difference is greater than one second.
+  when:
+    - ubtu_22_252015
+  tags:
+    - UBTU-22-252015
+    - CAT3
+    - CCI-000000
+    - SRG-OS-000356-GPOS-00144
+    - SV-260520r986274_rule
+    - V-260520
+    - NIST800-53R4_NA
+    - service
+    - time
+  ansible.builtin.lineinfile:
+    path: /etc/chrony/chrony.conf
+    regexp: ^(#|)makestep
+    line: makestep 1 1
+  notify: Restart_chrony
+
+- name: LOW | UBTU-22-252020 | PATCH |Ubuntu 22.04 LTS must record time stamps for audit records that can be mapped to Coordinated Universal Time (UTC).
+  when:
+    - ubtu_22_252020
+  tags:
+    - UBTU-22-252020
+    - CAT3
+    - CCI-001890
+    - SRG-OS-000356-GPOS-00144
+    - SV-260521r958788_rule
+    - V-260521
+    - NIST800-53R4_AU-8
+    - service
+    - time
+  block:
+    - name: LOW | UBTU-22-252020 | AUDIT | Ubuntu 22.04 LTS must record time stamps for audit records that can be mapped to Coordinated Universal Time (UTC). | current settings
+      ansible.builtin.shell: timedatectl status | grep "Time zone"
+      changed_when: false
+      failed_when: discovered_timezone.rc not in [ 0 , 1 ]
+      register: discovered_timezone
+
+    - name: LOW | UBTU-22-252020 | PATCH | Ubuntu 22.04 LTS must record time stamps for audit records that can be mapped to Coordinated Universal Time (UTC). | change if required
+      when: "'Etc/UTC (UTC, +0000)' not in discovered_timezone.stdout"
+      ansible.builtin.shell: timedatectl set-timezone Etc/UTC

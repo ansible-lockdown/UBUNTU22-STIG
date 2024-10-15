@@ -1,0 +1,50 @@
+---
+# vars file for UBUNTU22-STIG
+
+min_ansible_version: 2.12.1
+
+# Set dynamically if discovered to be non UEFI boot
+ubtu22stig_legacy_boot: false
+
+# tweak role to run in a non-privileged container (default value)- dynamically discovered in tasks/main.yml
+system_is_container: false
+
+# Default set for discovery
+ubtu22stig_subscribed: false
+
+# Used to control warning summary
+warn_control_list: ""
+warn_count: 0
+
+# Allow automated discovery of uids
+discover_int_uid: true
+
+# Default for facts
+reboot_required: false
+update_audit_template: false
+
+# DOD encryption
+ubtu22stig_dod_ciphers:
+- aes256-ctr
+- aes256-gcm@openssh.com
+- aes192-ctr
+- aes128-ctr
+- aes128-gcm@openssh.com
+ubtu22stig_dod_macs:
+- hmac-sha2-512
+- hmac-sha2-512-etm@openssh.com
+- hmac-sha2-256
+- hmac-sha2-256-etm@openssh.com
+ubtu22stig_dod_kex:
+- ecdh-sha2-nistp256
+- ecdh-sha2-nistp384
+- ecdh-sha2-nistp521
+- diffie-hellman-group-exchange-sha256
+ubtu22stig_audit_tools:
+- /sbin/auditctl
+- /sbin/aureport
+- /sbin/ausearch
+- /sbin/autrace
+- /sbin/auditd
+- /sbin/audispd-zos-remote
+- /sbin/augenrules

@@ -1,0 +1,7 @@
+## Ansible controlled file
+# Set via Ansible-lockdown sponsored by MindPointGroup
+# Part of DISA {{ benchmark }} - {{ benchmark_version }}
+
+{% for pool in ubtu22stig_time_pool %}
+pool {{ pool.name }} {{ pool.options }}
+{% endfor %}

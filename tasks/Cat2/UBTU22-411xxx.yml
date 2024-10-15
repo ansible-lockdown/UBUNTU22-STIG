@@ -1,0 +1,123 @@
+---
+
+- name: MEDIUM | UBTU-22-411010 | PATCH | Ubuntu 22.04 LTS must prevent direct login into the root account.
+  when:
+    - ubtu_22_411010
+  tags:
+    - UBTU-22-411010
+    - CAT2
+    - CCI-000000
+    - SRG-OS-000109-GPOS-00056
+    - SV-260542r986277_rule
+    - V-260542
+    - NIST800-53R4_NA
+    - account
+  ansible.builtin.user:
+    name: root
+    password_lock: true
+
+- name: MEDIUM | UBTU-22-411015 | PATCH | Ubuntu 22.04 LTS must uniquely identify interactive users.
+  when:
+    - ubtu_22_411015
+  tags:
+    - UBTU-22-411015
+    - CAT2
+    - CCI-000764
+    - CCI-000804
+    - SRG-OS-000104-GPOS-00051
+    - SRG-OS-000121-GPOS-00062
+    - SV-260543r958482_rule
+    - V-260543
+    - NIST800-53R4_IA-2
+    - NIST800-53R4_IA-8
+    - account
+  block:
+    - name: MEDIUM | UBTU-22-411015 | AUDIT | Ubuntu 22.04 LTS must uniquely identify interactive users. | Check for duplicate UIDs
+      ansible.builtin.shell: "pwck -r | awk -F: '{if ($3 in uid) print $1 ; else uid[$3]}' /etc/passwd"
+      changed_when: false
+      failed_when: false
+      register: discovered_duplicate_uid
+
+    - name: MEDIUM | UBTU-22-411015 | WARN | Ubuntu 22.04 LTS must uniquely identify interactive users. | Print warning about users with duplicate UIDs
+      when: discovered_duplicate_uid.stdout | length >= 1
+      ansible.builtin.debug:
+        msg: "WARN!! The following users have UIDs that are duplicates: {{ discovered_duplicate_uid.stdout_lines }}"
+
+    - name: MEDIUM | UBTU-22-411015 | WARN | Ubuntu 22.04 LTS must uniquely identify interactive users. | warning count
+      when: discovered_duplicate_uid.stdout | length >= 1
+      ansible.builtin.import_tasks:
+        file: warning_facts.yml
+      vars:
+        warn_control_id: 'MEDIUM | UBTU-22-411015'
+
+- name: MEDIUM | UBTU-22-411025 | PATCH | Ubuntu 22.04 LTS must enforce 24 hours/one day as the minimum password lifetime. Passwords for new users must have a 24 hours/one day minimum password lifetime restriction.
+  when:
+    - ubtu_22_411025
+  tags:
+    - UBTU-22-411025
+    - CAT2
+    - CCI-000000
+    - SRG-OS-000075-GPOS-00043
+    - SV-260545r986280_rule
+    - V-260545
+    - NIST800-53R4_NA
+    - account
+  ansible.builtin.lineinfile:
+    path: /etc/login.defs
+    regexp: ^(#|)(?i)PASS_MIN_DAYS\s\d*
+    line: "PASS_MIN_DAYS {{ ubtu22stig_pass_min_days }}"
+
+- name: MEDIUM | UBTU-22-411030 | PATCH | Ubuntu 22.04 LTS must enforce a 60-day maximum password lifetime restriction. Passwords for new users must have a 60-day maximum password lifetime restriction.
+  when:
+    - ubtu_22_411030
+  tags:
+    - UBTU-22-411030
+    - CAT2
+    - CCI-000000
+    - SRG-OS-000076-GPOS-00044
+    - SV-260546r986281_rule
+    - V-260546
+    - NIST800-53R4_NA
+    - account
+  ansible.builtin.lineinfile:
+    path: /etc/login.defs
+    regexp: ^(#|)(?i)PASS_MAX_DAYS\s\d*
+    line: "PASS_MAX_DAYS {{ ubtu22stig_pass_max_days }}"
+
+- name: MEDIUM | UBTU-22-411035 | PATCH | Ubuntu 22.04 LTS must disable account identifiers (individuals, groups, roles, and devices) after 35 days of inactivity.
+  when:
+    - ubtu_22_411035
+  tags:
+    - UBTU-22-411035
+    - CAT2
+    - CCI-000000
+    - SRG-OS-000118-GPOS-00060
+    - SV-260547r986282_rule
+    - V-260547
+    - NIST800-53R4_NA
+    - account
+  ansible.builtin.lineinfile:
+    path: /etc/default/useradd
+    regexp: ^(#|)(?i)INACTIVE\s*=\s*\d*
+    line: "INACTIVE {{ ubtu22stig_user_inactive_days}}"
+
+- name: MEDIUM | UBTU-22-411040 | WARN | Ubuntu 22.04 LTS must automatically expire temporary accounts within 72 hours.
+  when:
+    - ubtu_22_411040
+  tags:
+    - UBTU-22-411040
+    - CAT2
+    - CCI-000016
+    - CCI-001682
+    - SRG-OS-000123-GPOS-00064
+    - SRG-OS-000002-GPOS-00002
+    - SV-260548r958364_rule
+    - V-260548
+    - NIST800-53R4_AC-2
+    - account
+  ansible.builtin.debug:
+    msg:
+      - "WARNING!!  Please check temporary accounts for expiration dates to be 72 hours or less."
+      - "To do this please run sudo chage -l account_name for the accounts you need to check"
+      - "The results will display the Account Expires information"
+      - 'To set account expire run sudo chage -E `date -d "+3 days" +%Y-%m-%d` account_name'

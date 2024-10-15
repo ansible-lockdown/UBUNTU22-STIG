@@ -1,0 +1,6 @@
+## Ansible controlled file
+# Set via Ansible-lockdown sponsored by MindPointGroup
+# Part of DISA {{ benchmark }} - {{ benchmark_version }}
+{% for name in ubtu22stig_time_synchronization_servers %}
+server {{ name }} {{ ubtu22stig_chrony_server_options }}
+{% endfor %}

@@ -1,0 +1,106 @@
+---
+
+- name: Systemd_daemon_reload
+  ansible.builtin.systemd:
+    daemon_reload: true
+
+- name: Change_requires_reboot
+  ansible.builtin.set_fact:
+    reboot_required: true
+
+- name: Remount_home
+  ansible.posix.mount:
+    name: /home
+    state: remounted
+
+- name: Remount_tmp
+  ansible.posix.mount:
+    name: /tmp
+    state: remounted
+
+- name: Remount_var
+  ansible.posix.mount:
+    name: /var
+    state: remounted
+
+- name: Remount_var_log
+  ansible.posix.mount:
+    name: /var/log
+    state: remounted
+
+- name: Remount_var_log_audit
+  ansible.posix.mount:
+    name: /var/log/audit
+    state: remounted
+
+- name: Remount_var_tmp
+  ansible.posix.mount:
+    name: /var/tmp
+    state: remounted
+
+- name: Reload_sysctl
+  ansible.builtin.shell: sysctl --system
+
+- name: Update_grub
+  ansible.builtin.shell: update-grub
+
+- name: Firewalld_reload
+  ansible.builtin.shell: firewall-cmd --reload
+
+- name: Restart_NetworkManager
+  ansible.builtin.systemd:
+    name: NetworkManager
+    state: restarted
+
+- name: Restart_ssh
+  ansible.builtin.systemd:
+    name: sshd
+    state: restarted
+
+- name: Restart_chrony
+  ansible.builtin.systemd:
+    name: chrony
+    state: restarted
+
+- name: Restart_sssd
+  ansible.builtin.systemd:
+    name: sssd
+    state: restarted
+  when: "'sssd' in ansible_facts.packages"
+
+- name: Update_aliases
+  ansible.builtin.shell: newaliases
+
+- name: Update_dconf
+  ansible.builtin.shell: dconf update
+
+- name: Restart_gdm3
+  ansible.builtin.systemd_service:
+    name: gdm3
+    state: restarted
+
+- name: Build_aide_db
+  ansible.builtin.shell: /usr/sbin/aide --init && mv /var/lib/aide/aide.db.new.gz /var/lib/aide/aide.db.gz
+
+- name: Restart_rsyslog
+  ansible.builtin.systemd:
+    name: rsyslog.service
+    state: restarted
+
+## Auditd tasks note order for handlers to run
+
+- name: Auditd_immutable_check
+  ansible.builtin.shell: grep -c "^-e 2" /etc/audit/rules.d/audit.rules
+  changed_when: false
+  failed_when: discovered_auditd_immutable_check.rc not in [ 0, 1 ]
+  register: discovered_auditd_immutable_check
+
+- name: Audit_immutable_fact
+  when:
+    - discovered_auditd_immutable_check.stdout == '1'
+  ansible.builtin.debug:
+    msg: "Reboot required for auditd to apply new rules as immutable set"
+  notify: change_requires_reboot
+
+- name: Restart_auditd
+  ansible.builtin.shell: service auditd restart

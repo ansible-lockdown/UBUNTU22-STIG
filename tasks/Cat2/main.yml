@@ -1,0 +1,99 @@
+---
+
+## 2XX – System Configuration
+- name: Cat 2 STIG 212xxx bootloader tasks
+  ansible.builtin.import_tasks:
+    file: UBTU22-212xxx.yml
+
+- name: Cat 2 STIG 213xxx kernel tasks
+  ansible.builtin.import_tasks:
+    file: UBTU22-213xxx.yml
+
+- name: Cat 2 STIG 214xxx apt tasks
+  ansible.builtin.import_tasks:
+    file: UBTU22-214xxx.yml
+
+- name: Cat 2 STIG 215xxx package tasks
+  ansible.builtin.import_tasks:
+    file: UBTU22-215xxx.yml
+
+- name: Cat 2 STIG 231xxx filesystem tasks
+  ansible.builtin.import_tasks:
+    file: UBTU22-231xxx.yml
+
+- name: Cat 2 STIG 232xxx permission tasks
+  ansible.builtin.import_tasks:
+    file: UBTU22-232xxx.yml
+
+- name: Cat 2 STIG 251xxx firewall tasks
+  ansible.builtin.import_tasks:
+    file: UBTU22-251xxx.yml
+
+- name: Cat 2 STIG 253xxx IPv4 tasks
+  ansible.builtin.import_tasks:
+    file: UBTU22-253xxx.yml
+
+- name: Cat 2 STIG 255xxx ssh tasks
+  ansible.builtin.import_tasks:
+    file: UBTU22-255xxx.yml
+
+- name: Cat 2 STIG 271xxx gnome tasks
+  ansible.builtin.import_tasks:
+    file: UBTU22-271xxx.yml
+
+- name: Cat 2 STIG 291xxx hardware tasks
+  ansible.builtin.import_tasks:
+    file: UBTU22-291xxx.yml
+
+## 4XX – User Configuration
+
+- name: Cat 2 STIG 411xxx account tasks
+  ansible.builtin.import_tasks:
+    file: UBTU22-411xxx.yml
+
+- name: Cat 2 STIG 412xxx Session tasks
+  ansible.builtin.import_tasks:
+    file: UBTU22-412xxx.yml
+
+- name: Cat 2 STIG 431xxx AppArmor tasks
+  ansible.builtin.import_tasks:
+    file: UBTU22-431xxx.yml
+
+- name: Cat 2 STIG 432xxx Sudo tasks
+  ansible.builtin.import_tasks:
+    file: UBTU22-432xxx.yml
+
+## 6XX – Authentication, Authorization, and Accounting
+
+- name: Cat 2 STIG 611xxx Password tasks
+  ansible.builtin.import_tasks:
+    file: UBTU22-611xxx.yml
+
+- name: Cat 2 STIG 611xxx Password tasks
+  ansible.builtin.import_tasks:
+    file: UBTU22-611xxx.yml
+
+- name: Cat 2 STIG 612xxx Multifactor tasks
+  when: ubtu22stig_configure_multifactor_auth
+  ansible.builtin.import_tasks:
+    file: UBTU22-612xxx.yml
+
+- name: Cat 2 STIG 631xxx Authorization tasks
+  ansible.builtin.import_tasks:
+    file: UBTU22-631xxx.yml
+
+- name: Cat 2 STIG 651xxx AIDE tasks
+  ansible.builtin.import_tasks:
+    file: UBTU22-651xxx.yml
+
+- name: Cat 2 STIG 652xxx rsyslog tasks
+  ansible.builtin.import_tasks:
+    file: UBTU22-652xxx.yml
+
+- name: Cat 2 STIG 653xxx Auditd tasks
+  ansible.builtin.import_tasks:
+    file: UBTU22-653xxx.yml
+
+- name: Cat 2 STIG 654xxx Auditd rules
+  ansible.builtin.import_tasks:
+    file: UBTU22-654xxx.yml

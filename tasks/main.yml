@@ -1,0 +1,192 @@
+---
+
+- name: Check OS version and family
+  when:
+    - not skip_os_check
+  tags:
+    - always
+  ansible.builtin.assert:
+    that: ansible_facts.distribution == 'Ubuntu' and ansible_facts.distribution_major_version is version_compare('22','==')
+    fail_msg: This role can only be run against Ubuntu 22. {{ ansible_facts.distribution }} {{ ansible_facts.distribution_major_version }} is not supported.
+    success_msg: This role is running against a supported OS {{ ansible_facts.distribution }} {{ ansible_facts.distribution_major_version }}
+
+- name: Check ansible version
+  tags:
+    - always
+  ansible.builtin.assert:
+    that: ansible_version.full is version_compare(min_ansible_version, '>=')
+    fail_msg: You must use Ansible {{ min_ansible_version }} or greater
+    success_msg: This role is running a supported version of ansible {{ ansible_version.full }} >= {{ min_ansible_version }}
+
+- name: Setup rules if container
+  when:
+    - ansible_connection == 'docker' or ansible_virtualization_type in ["docker", "lxc", "openvz", "podman", "container"]
+  tags:
+    - container_discovery
+    - always
+  block:
+    - name: Discover and set container variable if required
+      ansible.builtin.set_fact:
+        system_is_container: true
+
+    - name: Load variable for container
+      ansible.builtin.include_vars:
+        file: "{{ container_vars_file }}"
+
+    - name: Output if discovered is a container
+      when:
+        - system_is_container
+      ansible.builtin.debug:
+        msg: system has been discovered as a container
+
+- name: Check password set for connecting user
+  when:
+    - ansible_env.SUDO_USER is defined
+    - not system_is_ec2
+    - not audit_only
+  block:
+    - name: Capture current password state of connecting user"
+      ansible.builtin.shell: "grep {{ ansible_env.SUDO_USER }} /etc/shadow | awk -F: '{print $2}'"
+      changed_when: false
+      failed_when: false
+      check_mode: false
+      register: prelim_ansible_user_password_set
+
+    - name: Assert that password set for {{ ansible_env.SUDO_USER }} and account not locked
+      tags:
+        - user_passwd
+      ansible.builtin.assert:
+        that: prelim_ansible_user_password_set.stdout | length != 0 and prelim_ansible_user_password_set.stdout != "!!"
+        fail_msg: You have {{ sudo_password_rule }} enabled but the user = {{ ansible_env.SUDO_USER }} has no password set - It can break access
+        success_msg: You have a password set for the user {{ ansible_env.SUDO_USER }}
+      vars:
+        sudo_password_rule: UBTU-22-010380  # pragma: allowlist secret
+
+- name: Check ubtu22stig_bootloader_password_hash variable has been changed
+  tags:
+    - grub
+  when:
+    - not system_is_ec2
+    - not system_is_container
+    - ubtu_22_212010
+    - ubtu22stig_set_bootloader_password
+    - not audit_only
+  ansible.builtin.assert:
+    that: ubtu22stig_bootloader_password_hash != 'grub.pbkdf2.sha512.changethispassword'  # pragma: allowlist secret
+    msg: This role will not be able to run single user password commands as ubtu22stig_bootloader_password_hash variable has not been set  # pragma: allowlist secret
+
+- name: Discover if system is Pro subscription (needed for FIPS)
+  tags:
+    - always
+  block:
+    - name: PRELIM | AUDIT | Discover if system is subscribed for PRO plan (needed for FIPS) | Check binary exists
+      ansible.builtin.stat:
+        path: /usr/bin/ubuntu-advantage
+      register: prelim_ubuntu_advantage_bin
+
+    - name: PRELIM | AUDIT | Discover if system is subscribed for PRO plan (needed for FIPS) | Check status if pkg installed
+      when: prelim_ubuntu_advantage_bin.stat.exists
+      ansible.builtin.shell: pro status | grep -c "not attached"
+      changed_when: false
+      register: prelim_pro_subscription
+
+    - name: PRELIM | AUDIT | Discover if system is subscribed for PRO plan (needed for FIPS) | Set fact for Pro subscription
+      when:
+        - prelim_ubuntu_advantage_bin.stat.exists
+        - prelim_pro_subscription.stdout | int == 0
+      ansible.builtin.set_fact:
+        ubtu22stig_subscribed: true
+
+- name: Gather the package facts
+  tags:
+    - always
+  ansible.builtin.package_facts:
+    manager: auto
+
+- name: Include prelim tasks
+  tags:
+    - prelim_tasks
+    - run_audit
+  ansible.builtin.import_tasks:
+    file: prelim.yml
+
+- name: Include CAT I patches
+  when:
+    - ubtu22stig_cat1
+  tags:
+    - CAT1
+    - high
+  ansible.builtin.import_tasks:
+    file: Cat1/main.yml
+
+- name: Include CAT II patches
+  ansible.builtin.import_tasks:
+    file: Cat2/main.yml
+  when:
+    - ubtu22stig_cat2
+  tags:
+    - CAT2
+    - medium
+
+- name: Include CAT III patches
+  ansible.builtin.import_tasks:
+    file: Cat3/main.yml
+  when:
+    - ubtu22stig_cat3
+  tags:
+    - CAT3
+    - low
+
+- name: Run auditd logic
+  when:
+    - update_audit_template
+  tags:
+    - always
+  ansible.builtin.import_tasks:
+    file: auditd.yml
+
+- name: Flush handlers
+  when: not audit_only
+  ansible.builtin.meta: flush_handlers
+
+- name: Reboot system
+  when:
+    - reboot_required
+    - not skip_reboot
+  tags:
+    - always
+  block:
+    - name: Reboot system if not skipped
+      ansible.builtin.reboot:
+
+    - name: Warning a reboot required but skip option set
+      when:
+        - reboot_required
+        - skip_reboot
+      ansible.builtin.debug:
+        msg: Warning!! changes have been made that require a reboot to be implemented but skip reboot was set - Can affect compliance check results
+      changed_when: true
+
+- name: Run post remediation audit
+  when:
+    - run_audit
+  tags:
+    - run_audit
+  ansible.builtin.import_tasks:
+    file: post_remediation_audit.yml
+
+- name: Show Audit Summary
+  when:
+    - run_audit
+  tags:
+    - run_audit
+  ansible.builtin.debug:
+    msg: "{{ audit_results.split('\n') }}"
+
+- name: If Warnings found Output count and control IDs affected
+  when:
+    - warn_count != 0
+  tags:
+    - always
+  ansible.builtin.debug:
+    msg: You have {{ warn_count }} Warning(s) that require investigating that are related to the following benchmark ID(s) {{ warn_control_list }}

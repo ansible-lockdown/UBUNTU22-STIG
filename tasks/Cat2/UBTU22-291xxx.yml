@@ -1,0 +1,52 @@
+---
+
+- name: MEDIUM | UBTU-22-291010 | PATCH | USB mass storage permits easy introduction of unknown devices, thereby facilitating malicious activity.
+  when:
+    - ubtu_22_291010
+  tags:
+    - UBTU-22-291010
+    - CAT2
+    - CCI-001958
+    - SRG-OS-000378-GPOS-00163
+    - SV-260540r986276_rule
+    - V-260540
+    - NIST800-53R4_IA-3
+    - hardware
+  vars:
+    blacklist: 'usb-storage'
+  ansible.builtin.template:
+    dest: "/etc/modprobe.d/{{ blacklist }}.conf"
+    src: etc/modprobe.d/module.conf.j2
+  notify: Change_requires_reboot
+
+- name: MEDIUM | UBTU-22-291015 | PATCH | Ensure wireless interfaces are disabled
+  when:
+    - ubtu_22_291015
+  tags:
+    - UBTU-22-291015
+    - CAT2
+    - CCI-002418
+    - SRG-OS-000481-GPOS-00481
+    - SV-260541r958358_rule
+    - V-260541
+    - NIST800-53R4_SC-8
+    - hardware
+  vars:
+    warn_control_id: 'MEDIUM | UBTU-22-291015 '
+  block:
+    - name: MEDIUM | UBTU-22-291015 | PATCH | Ensure wireless interfaces are disabled | Create modprobe.d file
+      ansible.builtin.lineinfile:
+        path: /etc/modprobe.d/{{ item }}.conf
+        regexp: '^(#)?install true(\\s|$)'
+        line: install {{ item }} true
+        create: true
+      loop: "{{ prelim_wireless_modules.stdout_lines }}"
+
+    - name: MEDIUM | UBTU-22-291015 | PATCH |  Ensure wireless interfaces are disabled | blacklist
+      ansible.builtin.lineinfile:
+        path: /etc/modprobe.d/blacklist.conf
+        regexp: "^(#)?blacklist {{ item }}(\\s|$)"
+        line: "blacklist {{ item }}"
+        create: true
+        mode: '0600'
+      loop: "{{ prelim_wireless_modules.stdout_lines }}"

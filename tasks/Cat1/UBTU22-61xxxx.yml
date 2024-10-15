@@ -1,0 +1,74 @@
+---
+
+- name: HIGH | UBTU-22-611060 | PATCH | Ubuntu 22.04 LTS must not allow accounts configured with blank or null passwords.
+  when:
+    - ubtu_22_611060
+  tags:
+    - UBTU-22-611060
+    - CAT1
+    - CCI-000366
+    - SRG-OS-000480-GPOS-00227
+    - SV-260570r991589_rule
+    - V-260570
+    - NIST800-53R4_CM-6
+    - password
+  ansible.builtin.replace:
+    path: /etc/pam.d/common-password
+    regexp: (.*) nullok(.*)
+    replace: \1\2
+
+- name: HIGH | UBTU-22-611065 | PATCH | Ubuntu 22.04 LTS must not have accounts configured with blank or null passwords.
+  when:
+    - ubtu_22_611065
+  tags:
+    - UBTU-22-611065
+    - CAT1
+    - CCI-000366
+    - SRG-OS-000480-GPOS-00227
+    - SV-260571r991589_rule
+    - V-260571
+    - NIST800-53R4_CM-6
+    - password
+  vars:
+    warn_control_id: "HIGH | UBTU-22-611065"
+  block:
+    - name: HIGH | UBTU-22-611065 | PATCH | Ubuntu 22.04 LTS must not have accounts configured with blank or null passwords.
+      when:
+        - ubtu22stig_disruption_high
+      ansible.builtin.user:
+        name: "{{ item }}"
+        password_lock: true
+      loop: "{{ prelim_ubtu22stig_empty_password_accounts.stdout_lines }}"
+
+    - name: HIGH | UBTU-22-611065 | WARN | Ubuntu 22.04 LTS must not have accounts configured with blank or null passwords.
+      when:
+        - not ubtu22stig_disruption_high
+        - prelim_ubtu22stig_empty_password_accounts.stdout | length > 0
+      ansible.builtin.debug:
+        msg: "Warning!! The following accounts have blank passwords {{ prelim_ubtu22stig_empty_password_accounts.stdout_lines }} "
+
+    - name: HIGH| UBTU-22-611065 | WARN | Ubuntu 22.04 LTS must not have accounts configured with blank or null passwords.
+      when:
+        - not ubtu22stig_disruption_high
+        - prelim_ubtu22stig_empty_password_accounts.stdout | length > 0
+      ansible.builtin.import_tasks:
+        file: warning_facts.yml
+
+- name: HIGH | UBTU-22-612040 | PATCH | Ubuntu 22.04 LTS must map the authenticated identity to the user or group account for PKI-based authentication.
+  when:
+    - ubtu_22_612040
+    - "'pam-pkcs11' in ansible_facts.packages"
+  tags:
+    - UBTU-22-612040
+    - CAT1
+    - CCI-000187
+    - SRG-OS-000068-GPOS-00036
+    - SV-260579r958452_rule
+    - V-260579
+    - NIST800-53R4_IA-5
+    - multifactor
+  ansible.builtin.lineinfile:
+    path: /etc/pam_pkcs11/pam_pkcs11.conf
+    backrefs: true
+    regexp: ^(|#)use_mappers\s*=(.*(?!pwent))
+    line: use_mappers = \1,pwent

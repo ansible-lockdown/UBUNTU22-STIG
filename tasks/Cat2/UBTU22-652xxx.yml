@@ -1,0 +1,57 @@
+---
+
+- name: MEDIUM | UBTU-22-652010 | PATCH | Ubuntu 22.04 LTS must be configured to preserve log records from failure events.
+  when:
+    - ubtu_22_652010
+  tags:
+    - UBTU-22-652010
+    - CAT2
+    - CCI-001665
+    - SRG-OS-000269-GPOS-00103
+    - SV-260588r991562_rule
+    - V-260588
+    - NIST800-53R4_SC-24
+    - syslog
+  block:
+    - name: MEDIUM | UBTU-22-652010 | PATCH | Ubuntu 22.04 LTS must be configured to preserve log records from failure events.
+      ansible.builtin.package:
+        name: rsyslog
+        state: present
+
+    - name: MEDIUM | UBTU-22-652010 | PATCH | Ubuntu 22.04 LTS must be configured to preserve log records from failure events.
+      ansible.builtin.systemd_service:
+        name: rsyslog
+        enabled: true
+        state: started
+
+- name: MEDIUM | UBTU-22-652015 | PATCH | Ubuntu 22.04 LTS must monitor remote access methods.
+  when:
+    - ubtu_22_652015
+  tags:
+    - UBTU-22-652015
+    - CAT2
+    - CCI-000067
+    - SRG-OS-000032-GPOS-00013
+    - SV-260589r958406_rule
+    - V-260589
+    - NIST800-53R4_AC-17
+    - syslog
+  block:
+    - name: MEDIUM | UBTU-22-652015 | PATCH | Ubuntu 22.04 LTS must monitor remote access methods.
+      ansible.builtin.replace:
+        name: /etc/rsyslog.conf
+        regexp: "{{ item }}"
+        replace: "#{{ item }}"
+      loop:
+        - auth(priv|).*
+        - daemon.*
+      notify: Restart_rsyslog
+
+    - name: MEDIUM | UBTU-22-652015 | PATCH | Ubuntu 22.04 LTS must monitor remote access methods.
+      ansible.builtin.template:
+        src: etc/rsyslog.d/50-default.conf.j2
+        dest: /etc/rsyslog.d/50-default.conf
+        owner: root
+        group: root
+        mode: '0644'
+      notify: Restart_rsyslog

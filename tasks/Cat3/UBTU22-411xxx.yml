@@ -1,0 +1,38 @@
+---
+
+- name: LOW | UBTU-22-411045 | PATCH | Ubuntu 22.04 LTS must automatically lock an account until the locked account is released by an administrator when three unsuccessful logon attempts have been made.
+  when:
+    - ubtu_22_411045
+  tags:
+    - UBTU-22-411045
+    - CAT3
+    - CCI-000044
+    - CCI-002238
+    - SRG-OS-000021-GPOS-00005
+    - SRG-OS-000329-GPOS-00128
+    - SV-260549r958388_rule
+    - V-260549
+    - NIST800-53R4_AC-7
+    - account
+    - pam
+  block:
+    - name: LOW | UBTU-22-411045 | AUDIT | Ubuntu 22.04 LTS must automatically lock an account until the locked account is released by an administrator when three unsuccessful logon attempts have been made.
+      ansible.builtin.blockinfile:
+        path: /etc/pam.d/common-auth
+        marker: "# {mark} Faillock config Ubuntu2204 STIG - Ansible-lockdown sponsered by MindPointGroup"
+        block: |
+          auth    [default=die]                   pam_faillock.so authfail
+          auth    sufficient                      pam_faillock.so authsucc
+        insertafter: auth.*pam_unix.so nullok
+
+    - name: LOW | UBTU-22-411045 | AUDIT | Ubuntu 22.04 LTS must automatically lock an account until the locked account is released by an administrator when three unsuccessful logon attempts have been made.
+      ansible.builtin.lineinfile:
+        path: /etc/security/faillock.conf
+        regexp: "{{ item.regexp }}"
+        line: "{{ item.line }}"
+      loop:
+        - { regexp: '^(#|)\s*audit', line: 'audit' }
+        - { regexp: '^(#|)\s*silent', line: 'silent' }
+        - { regexp: '^(#|)\s*deny', line: 'deny = {{ ubtu22stig_faillock_deny }}' }
+        - { regexp: '^(#|)\s*fail_interval', line: 'fail_interval = {{ ubtu22stig_faillock_fail_interval }}' }
+        - { regexp: '^(#|)\s*unlock_time', line: 'unlock_time = {{ ubtu22stig_faillock_unlock_time }}' }

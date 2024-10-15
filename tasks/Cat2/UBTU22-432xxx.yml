@@ -1,0 +1,31 @@
+---
+
+- name: MEDIUM | UBTU-22-432010 | PATCH | Ubuntu 22.04 LTS must require users to reauthenticate for privilege escalation or when changing roles.
+  when:
+    - ubtu_22_432010
+  tags:
+    - UBTU-22-432010
+    - CAT2
+    - CCI-000000
+    - SRG-OS-000373-GPOS-00156
+    - SRG-OS-000373-GPOS-00157
+    - SV-260558r987879_rule
+    - V-260558
+    - NIST800-53R4_NA
+    - sudo
+  block:
+    - name: MEDIUM | UBTU-22-432010 | AUDIT | Ubuntu 22.04 LTS must require users to reauthenticate for privilege escalation or when changing roles. | capture config
+      ansible.builtin.shell: grep -Ei '(nopasswd|!authenticate)' /etc/sudoers /etc/sudoers.d/* | cut -d':' -f1
+      changed_when: false
+      failed_when: discovered_sudo_nopasswd.rc not in [ 0, 1 ]
+      register: discovered_sudo_nopasswd
+
+    - name: MEDIUM | UBTU-22-432010 | PATCH | Ubuntu 22.04 LTS must require users to reauthenticate for privilege escalation or when changing roles. | Remove NOPASSWD
+      when:
+        - discovered_sudo_nopasswd.stdout_lines is defined
+        - ubtu22stig_disruption_high
+      ansible.builtin.replace:
+        path: "{{ item }}"
+        regexp: ((?i)nopasswd|!authenticate)
+        replace: ''
+      loop: "{{ discovered_sudo_nopasswd.stdout_lines }}"
