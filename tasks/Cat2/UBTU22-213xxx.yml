@@ -23,7 +23,6 @@
         name: kdump
         masked: true
 
-
 - name: MEDIUM | UBTU-22-213020 | PATCH | Ubuntu 22.04 LTS must implement address space layout randomization to protect its memory from unauthorized code execution.
   when:
     - ubtu_22_213020
