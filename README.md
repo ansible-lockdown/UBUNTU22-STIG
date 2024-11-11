@@ -2,7 +2,7 @@
 
 ## Configure a UBUNTU22 based system to be complaint with Disa STIG
 
-This role is based on UBUNTU 22 DISA STIG: [Version 2, Rel 1 released on July 17, 2024](https://dl.dod.cyber.mil/wp-content/uploads/stigs/U_UBUNTU_22_V2R1_STIG.zip).
+This role is based on UBUNTU 22 DISA STIG: [Version 2, Rel 2 released on October 24, 2024](https://dl.dod.cyber.mil/wp-content/uploads/stigs/U_UBUNTU_22_V2R2_STIG.zip).
 
 ## Initial Relase from STIG, still many items that not quite aligned in the documentation
 
