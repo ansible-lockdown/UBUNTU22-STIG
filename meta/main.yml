@@ -13,6 +13,17 @@ galaxy_info:
       versions:
         - jammy
   galaxy_tags:
+    - ubuntu
+    - ubuntu22
+    - ubuntu2204
+    - ubuntuserver
+    - ubuntuserver
+    - ubuntusecurity
+    - ubuntuhardening
+    - ubuntucompliance
+    - securitybaseline
+    - oshardening
+    - serverhardening
     - system
     - security
     - stig
@@ -21,10 +32,8 @@ galaxy_info:
     - compliance
     - complianceascode
     - disa
-    - ubuntu
-    - cis
-    - ubuntu2204
-    - ubuntuserver
+    - ansible
+    - automation
 collections:
   - community.general
   - community.crypto

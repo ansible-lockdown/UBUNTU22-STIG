@@ -1,6 +1,6 @@
 ---
 
-- name: POST | AUDITD | Apply auditd template will only required rules will be added
+- name: "POST | AUDITD | Apply auditd template will only required rules will be added"
   ansible.builtin.template:
     src: etc/audit/rules.d/stig.rules.j2
     dest: /etc/audit/rules.d/stig.rules

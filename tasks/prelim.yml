@@ -2,32 +2,31 @@
 # Preliminary tasks that should always be run
 # List users in order to look files inside each home directory
 
-- name: PRELIM | Discover Interactive UID MIN and MIN from logins.def
-  tags:
-    - always
+- name: "PRELIM | Discover Interactive UID MIN and MIN from logins.def"
+  tags: always
   block:
-    - name: PRELIM | Capture UID_MIN information from logins.def
+    - name: "PRELIM | Capture UID_MIN information from logins.def"
       ansible.builtin.shell: grep -w "^UID_MIN" /etc/login.defs | awk '{print $NF}'
       changed_when: false
       register: uid_min_id
 
-    - name: PRELIM | Capture UID_MAX information from logins.def
+    - name: "PRELIM | Capture UID_MAX information from logins.def"
       ansible.builtin.shell: grep -w "^UID_MAX" /etc/login.defs | awk '{print $NF}'
       changed_when: false
       register: uid_max_id
 
-    - name: PRELIM | Capture GID_MIN information from logins.def
+    - name: "PRELIM | Capture GID_MIN information from logins.def"
       ansible.builtin.shell: grep -w "^GID_MIN" /etc/login.defs | awk '{print $NF}'
       changed_when: false
       register: gid_min_id
 
-    - name: PRELIM | Set_facts for interactive uid/gid
+    - name: "PRELIM | Set_facts for interactive uid/gid"
       ansible.builtin.set_fact:
         min_int_uid: "{{ uid_min_id.stdout }}"
         max_int_uid: "{{ uid_max_id.stdout }}"
         min_int_gid: "{{ gid_min_id.stdout }}"
 
-- name: PRELIM | Include audit specific variables
+- name: "PRELIM | Include audit specific variables"
   when:
     - run_audit or audit_only
     - setup_audit
@@ -37,51 +36,45 @@
   ansible.builtin.include_vars:
     file: audit.yml
 
-- name: PRELIM | Include pre-remediation audit tasks
+- name: "PRELIM | Include pre-remediation audit tasks"
   when:
     - run_audit or audit_only
     - setup_audit
-  tags:
-    - run_audit
+  tags: run_audit
   ansible.builtin.import_tasks:
     file: pre_remediation_audit.yml
 
-- name: PRELIM | PATCH | Run apt update
-  tags:
-    - always
+- name: "PRELIM | PATCH | Run apt update"
+  tags: always
   ansible.builtin.package:
     cache_valid_time: 7200
 
-- name: PRELIM | capture /etc/password variables
-  tags:
-    - always
+- name: "PRELIM | capture /etc/password variables"
+  tags: always
   ansible.builtin.include_tasks:
     file: parse_etc_password.yml
 
-- name: PRELIM | Interactive Users
-  tags:
-    - always
+- name: "PRELIM | Interactive Users"
+  tags: always
   ansible.builtin.shell: "grep -Ev 'nologin|/sbin' /etc/passwd | awk -F: '$3 >= {{ min_int_uid }} {print $1}'"
   changed_when: false
   register: ubtu22stig_interactive_users
 
-- name: PRELIM | Interactive User account home
-  tags:
-    - always
+- name: "PRELIM | Interactive User account home"
+  tags: always
   ansible.builtin.shell: 'cat /etc/passwd | grep -Ev "nologin|/sbin" | cut -d: -f6'
   changed_when: false
   register: ubtu22stig_interactive_users_home
 
-- name: PRELIM | Gather accounts with empty password fields
+- name: "PRELIM | Gather accounts with empty password fields"
   when: ubtu_22_611065
-  tags:
-    - passwords
+  tags: passwords
   ansible.builtin.shell: "cat /etc/shadow | awk -F: '($2 == \"\" ) {j++;print $1; } END {exit j}'"
   changed_when: false
   failed_when: prelim_ubtu22stig_empty_password_accounts.rc not in [ 0, 1 ]
   register: prelim_ubtu22stig_empty_password_accounts
 
-- name: PRELIM | Gather UID 0 accounts other than root
+- name: "PRELIM | Gather UID 0 accounts other than root"
   tags:
     - level1-server
     - level1-workstation
@@ -91,15 +84,13 @@
   check_mode: false
   register: ubtu22stig_uid_zero_accounts_except_root
 
-- name: PRELIM | Create list of mount points
-  tags:
-    - always
+- name: "PRELIM | Create list of mount points"
+  tags: always
   ansible.builtin.set_fact:
     mount_names: "{{ ansible_mounts | map(attribute='mount') | list }}"
 
-- name: PRELIM | Configure System Accounting (auditd)
-  when:
-    - '"auditd" not in ansible_facts.packages'
+- name: "PRELIM | Configure System Accounting (auditd)"
+  when: '"auditd" not in ansible_facts.packages'
   tags:
     - cat2
     - SRG-OS-000062-GPOS-00031
@@ -131,23 +122,21 @@
     name: auditd
     state: present
 
-- name: PRELIM | Configure syslog (rsyslog)
+- name: "PRELIM | Configure syslog (rsyslog)"
   when:
     - '"rsyslog" not in ansible_facts.packages'
     - ubtu_22_652010
-  tags:
-    - always
+  tags: always
   ansible.builtin.package:
     name: rsyslog
     state: present
 
 # Added to ensure ssh drop in file exists if not default /etc/ssh/sshd_config
-- name: PRELIM | Ensure ssh config file sexists
+- name: "PRELIM | Ensure ssh config file exists"
   when:
     - ubtu22stig_sshd_config_file != '/etc/ssh/sshd_config'
     - "'openssh-server' in ansible_facts.packages"
-  tags:
-    - ssh
+  tags: ssh
   ansible.builtin.file:
     path: "{{ ubtu22stig_sshd_config_file }}"
     owner: root
@@ -155,34 +144,31 @@
     mode: '0600'
     state: touch
 
-- name: PRELIM | Interactive User accounts
-  tags:
-    - always
+- name: "PRELIM | Interactive User accounts"
+  tags: always
   ansible.builtin.shell: 'cat /etc/passwd | grep -Ev "nologin|/sbin" | cut -d: -f6'
   changed_when: false
   register: ubtu22stig_interactive_users_home
 
-- name: PRELIM | Discover Gnome Desktop Environment
-  tags:
-    - always
+- name: "PRELIM | Discover Gnome Desktop Environment"
+  tags: always
   ansible.builtin.stat:
     path: /usr/share/gnome/gnome-version.xml
   register: ubtu22stig_gnome_present
 
-- name: PRELIM | AUDIT | Wireless adapter pre-requisites
+- name: "PRELIM | AUDIT | Wireless adapter pre-requisites"
   when:
     - ubtu_22_291010
     - not system_is_container
-  tags:
-    - always
+  tags: always
   block:
-    - name: PRELIM | AUDIT | Discover is wireless adapter on system
+    - name: "PRELIM | AUDIT | Discover is wireless adapter on system"
       ansible.builtin.shell: find /sys/class/net/*/ -type d -name wireless
       register: prelim_wireless_adapters
       changed_when: false
       failed_when: prelim_wireless_adapters.rc not in [ 0, 1 ]
 
-    - name: PRELIM | AUDIT | If wireless adapter present capture module
+    - name: "PRELIM | AUDIT | If wireless adapter present capture module"
       when:
         - prelim_wireless_adapters.rc == 0
       ansible.builtin.shell: |
@@ -193,8 +179,7 @@
       failed_when: prelim_wireless_modules.rc not in [ 0, 1 ]
       register: prelim_wireless_modules
 
-- name: PRELIM | Gather the package facts after prelim
-  tags:
-    - always
+- name: "PRELIM | Gather the package facts after prelim"
+  tags: always
   ansible.builtin.package_facts:
     manager: auto
