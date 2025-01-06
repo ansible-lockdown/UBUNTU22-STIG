@@ -34,13 +34,13 @@ This role is based on UBUNTU 22 DISA STIG: [Version 2, Rel 2 released on October
 
 ---
 
-## Looking for support?
+## Looking for support? 🤝
 
 [Lockdown Enterprise](https://www.lockdownenterprise.com#GH_AL_UB22_stig)
 
 [Ansible support](https://www.mindpointgroup.com/cybersecurity-products/ansible-counselor#GH_AL_UB22_stig)
 
-### Community
+### Community 💬
 
 On our [Discord Server](https://www.lockdownenterprise.com/discord) to ask questions, discuss features, or just chat with other Ansible-Lockdown users
 
@@ -50,14 +50,14 @@ Configure a UBUNTU 22 system to be DISA STIG compliant.
 Non-disruptive CAT I, CAT II, and CAT III findings will be corrected by default.
 Disruptive finding remediation can be enabled by setting `ubuntu22stig_disruption_high` to `true`.
 
-## Updating
+## Updating 🔄
 
 Coming from a previous release.
 
 As with all releases and updates, It is suggested to test and align controls.
 This contains rewrites and ID reference changes as per STIG documentation.
 
-## Auditing
+## Auditing 🔍
 
 This can be turned on or off within the defaults/main.yml file with the variable ubtu22stig_run_audit. The value is false by default, please refer to the wiki for more details. The defaults file also populates the goss checks to check only the controls that have been enabled in the ansible role.
 
@@ -66,7 +66,7 @@ This is a much quicker, very lightweight, checking (where possible) config compl
 A new form of auditing has been developed, by using a small (12MB) go binary called [goss](https://github.com/goss-org/goss) along with the relevant configurations to check. Without the need for infrastructure or other tooling.
 This audit will not only check the config has the correct setting but aims to capture if it is running with that configuration also trying to remove [false positives](https://www.mindpointgroup.com/blog/is-compliance-scanning-still-relevant/) in the process.
 
-## Documentation
+## Documentation 📖
 
 - [Read The Docs](https://ansible-lockdown.readthedocs.io/en/latest/)
 - [Getting Started](https://www.lockdownenterprise.com/docs/getting-started-with-lockdown#GH_AL_UB22_stig)
@@ -74,13 +74,13 @@ This audit will not only check the config has the correct setting but aims to ca
 - [Per-Host Configuration](https://www.lockdownenterprise.com/docs/per-host-lockdown-enterprise-configuration#GH_AL_UB22_stig)
 - [Getting the Most Out of the Role](https://www.lockdownenterprise.com/docs/get-the-most-out-of-lockdown-enterprise#GH_AL_UB22_stig)
 
-## Requirements
+## Requirements ✅
 
 - UBUNTU 22 - Other versions are not supported.
 - Other OSs can be checked by changing the skip_os_check to true for testing purposes.
 - Access to download or add the goss binary and content to the system if using auditing. options are available on how to get the content to the system.
 
-## Dependencies
+## Dependencies ⚙️
 
 The following packages must be installed on the controlling host/host where ansible is executed:
 
@@ -91,11 +91,11 @@ The following packages must be installed on the controlling host/host where ansi
 
 Package 'python-xmltodict' is required if you enable the OpenSCAP tool installation and run a report. Packages python(2)-passlib and python-jmespath are required for tasks with custom filters or modules. These are all required on the controller host that executes Ansible.
 
-## Role Variables
+## Role Variables 📋
 
 This role is designed that the end user should not have to edit the tasks themselves. All customizing should be done via the defaults/main.yml file or with extra vars within the project, job, workflow, etc.
 
-### Tags
+### Tags 🏷️
 
 There are many tags available for added control precision. Each control has it's own set of tags noting the control number as well as what parts of the system that control addresses.
 
@@ -147,7 +147,7 @@ Some controls will skip is this is true as they are not applicable at all. Other
 
 This vars file runs controls are grouped into tags so if the container does later have ssh it could be re-enabled by loading an alternative vars file.
 
-## Community Contribution
+## Community Contribution 🧑‍🤝‍🧑
 
 We encourage you (the community) to contribute to this role. Please read the rules below.
 
@@ -156,7 +156,7 @@ We encourage you (the community) to contribute to this role. Please read the rul
 - Pull Requests into devel will confirm your commits have a GPG signature, Signed-off, and a functional test before being approved
 - Once your changes are merged and a more detailed review is complete, an authorized member will merge your changes into the main branch for a new release.
 
-## Pipeline Testing
+## Pipeline Testing 🔄
 
 uses:
 
@@ -176,7 +176,7 @@ If you would are interested in dedicated support to assist or provide bespoke se
 - [Ansible Counselor](https://www.mindpointgroup.com/products/ansible-counselor-on-demand-ansible-services-and-consulting/)
 - [Try us out](https://engage.mindpointgroup.com/try-ansible-counselor)
 
-## Credits
+## Credits 🙏
 
 The inspriation for this work repo originated from work done by [Sam Doran](https://github.com/samdoran/ansible-role-stig)
 
