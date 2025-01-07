@@ -23,7 +23,7 @@
       when: discovered_dod_certs.matched == 0
       ansible.builtin.debug:
         msg: |
-            "WARN!! Please add the DOD certificate authority files and dpkg-reconfigure ca-certificates "
+            "Warning!! Please add the DOD certificate authority files and dpkg-reconfigure ca-certificates "
 
     - name: MEDIUM | UBTU-22-631010 | AUDIT | Ubuntu 22.04 LTS must use DOD PKI-established certificate authorities for verification of the establishment of protected sessions. | warn_count
       when: discovered_dod_certs.matched == 0

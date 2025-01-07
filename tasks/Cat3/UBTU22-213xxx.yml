@@ -1,8 +1,7 @@
 ---
 
 - name: LOW | UBTU-22-213010 | PATCH | Ubuntu 22.04 LTS must restrict access to the kernel message buffer.
-  when:
-    - ubtu_22_213010
+  when: ubtu_22_213010
   tags:
     - UBTU-22-213010
     - CAT3

@@ -1,8 +1,7 @@
 ---
 
 - name: HIGH | UBTU-22-611060 | PATCH | Ubuntu 22.04 LTS must not allow accounts configured with blank or null passwords.
-  when:
-    - ubtu_22_611060
+  when: ubtu_22_611060
   tags:
     - UBTU-22-611060
     - CAT1
@@ -18,8 +17,7 @@
     replace: \1\2
 
 - name: HIGH | UBTU-22-611065 | PATCH | Ubuntu 22.04 LTS must not have accounts configured with blank or null passwords.
-  when:
-    - ubtu_22_611065
+  when: ubtu_22_611065
   tags:
     - UBTU-22-611065
     - CAT1

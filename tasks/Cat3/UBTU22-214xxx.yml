@@ -1,8 +1,7 @@
 ---
 
 - name: LOW | UBTU-22-214010 | PATCH | Ubuntu 22.04 LTS must be configured so that the Advance Package Tool (APT) prevents the installation of patches, service packs, device drivers, or operating system components without verification they have been digitally signed using a certificate that is recognized and approved by the organization.
-  when:
-    - ubtu_22_214010
+  when: ubtu_22_214010
   tags:
     - UBTU-22-214010
     - CAT3

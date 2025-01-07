@@ -27,7 +27,7 @@
       when: discovered_crypttab_status.stdout | length == 0
       ansible.builtin.debug:
         msg:
-          - "WARN!! There are no encrypted partitions. Please make sure all permanent partitions are encrypted"
+          - "Warning!! There are no encrypted partitions. Please make sure all permanent partitions are encrypted"
 
     - name: MEDIUM | UBTU-22-231010 | AUDIT | Ubuntu 22.04 LTS must implement cryptographic mechanisms to prevent unauthorized disclosure and modification of all information that requires protection at rest. | Set warning count
       when: discovered_crypttab_status.stdout | length == 0
@@ -40,7 +40,7 @@
       when: discovered_crypttab_status.stdout | length > 0
       ansible.builtin.debug:
         msg:
-          - "WARN!! Please review that no permanent partitions are missing. All permanent partitions need to be encrypted"
+          - "Warning!! Please review that no permanent partitions are missing. All permanent partitions need to be encrypted"
           - "{{ discovered_crypttab_status.stdout_lines }}"
 
     - name: MEDIUM | UBTU-22-231010 | AUDIT | Ubuntu 22.04 LTS must implement cryptographic mechanisms to prevent unauthorized disclosure and modification of all information that requires protection at rest. | Set warning count

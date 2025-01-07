@@ -41,7 +41,7 @@
     - name: MEDIUM | UBTU-22-411015 | WARN | Ubuntu 22.04 LTS must uniquely identify interactive users. | Print warning about users with duplicate UIDs
       when: discovered_duplicate_uid.stdout | length >= 1
       ansible.builtin.debug:
-        msg: "WARN!! The following users have UIDs that are duplicates: {{ discovered_duplicate_uid.stdout_lines }}"
+        msg: "Warning!! The following users have UIDs that are duplicates: {{ discovered_duplicate_uid.stdout_lines }}"
 
     - name: MEDIUM | UBTU-22-411015 | WARN | Ubuntu 22.04 LTS must uniquely identify interactive users. | warning count
       when: discovered_duplicate_uid.stdout | length >= 1
@@ -117,7 +117,7 @@
     - account
   ansible.builtin.debug:
     msg:
-      - "WARNING!!  Please check temporary accounts for expiration dates to be 72 hours or less."
+      - "Warning!!  Please check temporary accounts for expiration dates to be 72 hours or less."
       - "To do this please run sudo chage -l account_name for the accounts you need to check"
       - "The results will display the Account Expires information"
       - 'To set account expire run sudo chage -E `date -d "+3 days" +%Y-%m-%d` account_name'

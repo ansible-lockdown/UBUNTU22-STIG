@@ -82,7 +82,7 @@
         - not ubtu22stig_disruption_high
       ansible.builtin.debug:
         msg: |
-            "WARN!! Please investigate ufw rate limit for listening services or interfaces"
+            "Warning!! Please investigate ufw rate limit for listening services or interfaces"
 
     - name: MEDIUM | UBTU-22-251025 | WARN | Ubuntu 22.04 LTS must configure the Uncomplicated Firewall (ufw) to rate-limit impacted network interfaces. | warn_count
       when:
@@ -108,7 +108,7 @@
     - name: MEDIUM | UBTU-22-251030 | WARN | Ubuntu 22.04 LTS must be configured to prohibit or restrict the use of functions, ports, protocols, and/or services, as defined in the PPSM CAL and vulnerability assessments. | warning
       ansible.builtin.debug:
         msg: |
-          "WARN!! Please investigate ufw ruling matches site policy run the command ```sudo ufw show raw```"
+          "Warning!! Please investigate ufw ruling matches site policy run the command ```sudo ufw show raw```"
 
     - name: MEDIUM | UBTU-22-251030 | WARN | Ubuntu 22.04 LTS must be configured to prohibit or restrict the use of functions, ports, protocols, and/or services, as defined in the PPSM CAL and vulnerability assessments.| warn_count
       ansible.builtin.import_tasks:

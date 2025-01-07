@@ -1,8 +1,7 @@
 ---
 
 - name: MEDIUM | UBTU-22-212015 | PATCH | Ubuntu 22.04 LTS must initiate session audits at system startup.
-  when:
-    - ubtu_22_212015
+  when: ubtu_22_212015
   tags:
     - UBTU-22-212015
     - CAT2
