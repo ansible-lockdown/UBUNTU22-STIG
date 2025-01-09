@@ -1,8 +1,7 @@
 ---
 
 - name: MEDIUM | UBTU-22-651010 | PATCH | Ubuntu 22.04 LTS must use a file integrity tool to verify correct operation of all security functions.
-  when:
-    - ubtu_22_651010
+  when: ubtu_22_651010
   tags:
     - UBTU-22-651010
     - CAT2
@@ -44,13 +43,15 @@
 
     - name: MEDIUM | UBTU-22-651015 | PATCH | Ubuntu 22.04 LTS must configure AIDE to perform file integrity checking on the file system. | Run aide check
       when: discovered_aide_db_present.stat.exists
-      ansible.builtin.shell: aide -c /etc/aide/aide.conf --check
+      ansible.builtin.command: aide -c /etc/aide/aide.conf --check
+      changed_when: false
       failed_when: discovered_aide_check.rc not in [ 0, 7 ]
       register: discovered_aide_check
 
     - name: MEDIUM | UBTU-22-651015 | PATCH | Ubuntu 22.04 LTS must configure AIDE to perform file integrity checking on the file system. | Initiate aide DB
       when: not discovered_aide_db_present.stat.exists or discovered_aide_check.rc != 0
-      ansible.builtin.shell: aideinit
+      ansible.builtin.command: aideinit
+      changed_when: true
 
 - name: MEDIUM | UBTU-22-651020 | PATCH | Ubuntu 22.04 LTS must notify designated personnel if baseline configurations are changed in an unauthorized manner. The file integrity tool must notify the system administrator when changes to the baseline configuration or anomalies in the operation of any security functions are discovered.
   when:
@@ -93,14 +94,14 @@
 
     - name: MEDIUM | UBTU-22-651025 | PATCH | Ubuntu 22.04 LTS must be configured so that the script that runs each 30 days or less to check file integrity is the default. | replace if needed
       when: "'b71bb2cafaedf15ec3ac2f566f209d3260a37af0  /etc/cron' not in discovered_cron_script_sha1.stdout"
-      ansible.builtin.shell: |
+      ansible.builtin.command: |
         apt download aide-common; dpkg-deb --fsys-tarfile /tmp/aide-common_*.deb | sudo tar -x ./usr/share/aide/config/cron.daily/aide -C /; cp -f /usr/share/aide/config/cron.daily/aide /etc/cron.daily/aide
+      changed_when: true
       args:
         chdir: /tmp
 
 - name: MEDIUM | UBTU-22-651030 | PATCH | Ubuntu 22.04 LTS must use cryptographic mechanisms to protect the integrity of audit tools.
-  when:
-    - ubtu_22_651030
+  when: ubtu_22_651030
   tags:
     - UBTU-22-651030
     - CAT2

@@ -1,8 +1,7 @@
 ---
 
 - name: MEDIUM | UBTU-22-213015 | PATCH | Ubuntu 22.04 LTS must disable kernel core dumps so that it can fail to a secure state if system initialization fails, shutdown fails or aborts fail.
-  when:
-    - ubtu_22_213015
+  when: ubtu_22_213015
   tags:
     - UBTU-22-213015
     - CAT2
@@ -24,8 +23,7 @@
         masked: true
 
 - name: MEDIUM | UBTU-22-213020 | PATCH | Ubuntu 22.04 LTS must implement address space layout randomization to protect its memory from unauthorized code execution.
-  when:
-    - ubtu_22_213020
+  when: ubtu_22_213020
   tags:
     - UBTU-22-213020
     - CAT2
@@ -62,8 +60,7 @@
         ignoreerrors: true
 
 - name: MEDIUM | UBTU-22-213025 | AUDIT | Ubuntu 22.04 LTS must implement nonexecutable data to protect its memory from unauthorized code execution.
-  when:
-    - ubtu_22_213025
+  when: ubtu_22_213025
   tags:
     - UBTU-22-213025
     - CAT2
@@ -72,6 +69,8 @@
     - SV-260475r958928_rule
     - V-260475
     - NIST800-53R4_SI-16
+  vars:
+    warn_control_id: 'MEDIUM | UBTU-22-213025'
   block:
     - name: MEDIUM | UBTU-22-213025 | AUDIT | Ubuntu 22.04 LTS must implement nonexecutable data to protect its memory from unauthorized code execution.
       ansible.builtin.shell: dmesg | grep -i "execute disable"
@@ -102,5 +101,3 @@
         - "'protection: active' not in discovered_dmesg_nx_value.stdout or 'nx' not in discovered_nx_cpuinfo_settings.stdout"
       ansible.builtin.import_tasks:
         file: warning_facts.yml
-      vars:
-        warn_control_id: 'MEDIUM | UBTU-22-213025'

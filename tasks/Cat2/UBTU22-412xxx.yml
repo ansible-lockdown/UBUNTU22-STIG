@@ -1,8 +1,7 @@
 ---
 
 - name: MEDIUM | UBTU-22-412025 | PATCH | Ubuntu 22.04 LTS must allow users to directly initiate a session lock for all connection types.
-  when:
-    - ubtu_22_412025
+  when: ubtu_22_412025
   tags:
     - UBTU-22-4412025
     - CAT2
@@ -19,8 +18,7 @@
     state: present
 
 - name: MEDIUM | UBTU-22-412030 | PATCH | Ubuntu 22.04 LTS must automatically exit interactive command shell user sessions after 15 minutes of inactivity.
-  when:
-    - ubtu_22_412030
+  when: ubtu_22_412030
   tags:
     - UBTU-22-412030
     - CAT2
@@ -57,8 +55,7 @@
         mode: '0644'
 
 - name: MEDIUM | UBTU-22-412035 | PATCH | Ubuntu 22.04 LTS must automatically exit interactive command shell user sessions after 15 minutes of inactivity.
-  when:
-    - ubtu_22_412035
+  when: ubtu_22_412035
   tags:
     - UBTU-22-412035
     - CAT2

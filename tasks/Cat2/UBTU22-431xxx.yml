@@ -1,8 +1,7 @@
 ---
 
 - name: MEDIUM | UBTU-22-431010 | PATCH | Ubuntu 22.04 LTS must have the "apparmor" package installed.
-  when:
-    - ubtu_22_431010
+  when: ubtu_22_431010
   tags:
     - UBTU-22-431010
     - CAT2
@@ -22,8 +21,7 @@
     state: present
 
 - name: MEDIUM | UBTU-22-431015 | PATCH | Ubuntu 22.04 LTS must be configured to use AppArmor.
-  when:
-    - ubtu_22_431015
+  when: ubtu_22_431015
   tags:
     - UBTU-22-431015
     - CAT2

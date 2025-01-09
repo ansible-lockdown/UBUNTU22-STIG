@@ -141,7 +141,7 @@
     path: "{{ ubtu22stig_sshd_config_file }}"
     owner: root
     group: root
-    mode: '0600'
+    mode: 'go-rwx'
     state: touch
 
 - name: "PRELIM | Interactive User accounts"

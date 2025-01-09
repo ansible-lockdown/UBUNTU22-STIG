@@ -1,8 +1,7 @@
 ---
 
 - name: MEDIUM | UBTU-22-612010 | PATCH | Ubuntu 22.04 LTS must implement multifactor authentication for remote access to privileged accounts in such a way that one of the factors is provided by a device separate from the system gaining access.
-  when:
-    - ubtu_22_612010
+  when: ubtu_22_612010
   tags:
     - UBTU-22-612010
     - CAT2
@@ -22,8 +21,7 @@
     state: present
 
 - name: MEDIUM | UBTU-22-612015 | PATCH | Ubuntu 22.04 LTS must accept personal identity verification (PIV) credentials.
-  when:
-    - ubtu_22_612015
+  when: ubtu_22_612015
   tags:
     - UBTU-22-612015
     - CAT2
@@ -103,7 +101,7 @@
       ansible.builtin.lineinfile:
         path: /etc/pam_pkcs11/pam_pkcs11.conf
         line: "{{ item }},ocsp_on;"
-      loop: "{{ discovered_pkcs_cert_ocsp_policy.stdout_lines}}"
+      loop: "{{ discovered_pkcs_cert_ocsp_policy.stdout_lines }}"
 
 - name: MEDIUM | UBTU-22-612030 | PATCH | Ubuntu 22.04 LTS, for PKI-based authentication, must validate certificates by constructing a certification path (which includes status information) to an accepted trust anchor.
   when:
@@ -132,7 +130,7 @@
       ansible.builtin.lineinfile:
         path: /etc/pam_pkcs11/pam_pkcs11.conf
         line: "{{ item }},ocsp_on;"
-      loop: "{{ discovered_pkcs_cert_ca_policy.stdout_lines}}"
+      loop: "{{ discovered_pkcs_cert_ca_policy.stdout_lines }}"
 
 - name: MEDIUM | UBTU-22-612035 | PATCH | Ubuntu 22.04 LTS for PKI-based authentication, must implement a local cache of revocation data in case of the inability to access revocation information via the network.
   when:
@@ -169,4 +167,4 @@
       ansible.builtin.lineinfile:
         path: /etc/pam_pkcs11/pam_pkcs11.conf
         line: "{{ item }},crl_auto;"
-      loop: "{{ discovered_pkcs_cert_crl_policy.stdout_lines}}"
+      loop: "{{ discovered_pkcs_cert_crl_policy.stdout_lines }}"

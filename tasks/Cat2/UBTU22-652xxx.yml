@@ -1,8 +1,7 @@
 ---
 
 - name: MEDIUM | UBTU-22-652010 | PATCH | Ubuntu 22.04 LTS must be configured to preserve log records from failure events.
-  when:
-    - ubtu_22_652010
+  when: ubtu_22_652010
   tags:
     - UBTU-22-652010
     - CAT2
@@ -25,8 +24,7 @@
         state: started
 
 - name: MEDIUM | UBTU-22-652015 | PATCH | Ubuntu 22.04 LTS must monitor remote access methods.
-  when:
-    - ubtu_22_652015
+  when: ubtu_22_652015
   tags:
     - UBTU-22-652015
     - CAT2

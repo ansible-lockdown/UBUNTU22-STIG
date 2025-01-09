@@ -1,8 +1,7 @@
 ---
 
 - name: MEDIUM | UBTU-22-232010 | PATCH | Ubuntu 22.04 LTS must have directories that contain system commands set to a mode of "755" or less permissive.
-  when:
-    - ubtu_22_232010
+  when: ubtu_22_232010
   tags:
     - UBTU-22-232010
     - CAT2
@@ -12,6 +11,8 @@
     - V-260485
     - NIST800-53R4_AU-9
     - permissions
+  vars:
+    warn_control_id: 'MEDIUM | UBTU-22-232010'
   block:
     - name: MEDIUM | UBTU-22-232010 | AUDIT | Ubuntu 22.04 LTS must have directories that contain system commands set to a mode of "755" or less permissive. | Discover
       ansible.builtin.shell: find /bin /sbin /usr/bin /usr/sbin /usr/local/bin /usr/local/sbin -perm /022 -type d -exec stat -c "%n" '{}' \;
@@ -43,12 +44,9 @@
         - not ubtu22stig_disruption_high
       ansible.builtin.import_tasks:
         file: warning_facts.yml
-      vars:
-        warn_control_id: 'MEDIUM | UBTU-22-232010'
 
 - name: MEDIUM | UBTU-22-232015 | PATCH | Ubuntu 22.04 LTS must have system commands set to a mode of "755" or less permissive.
-  when:
-    - ubtu_22_232015
+  when: ubtu_22_232015
   tags:
     - UBTU-22-232015
     - CAT2
@@ -58,6 +56,8 @@
     - V-260486
     - NIST800-53R4_CM-5
     - permissions
+  vars:
+    warn_control_id: 'MEDIUM | UBTU-22-232015'
   block:
     - name: MEDIUM | UBTU-22-232015 | AUDIT | Ubuntu 22.04 LTS must have system commands set to a mode of "755" or less permissive. | Discover
       ansible.builtin.shell: find /bin /sbin /usr/bin /usr/sbin /usr/local/bin /usr/local/sbin -perm /022 -type f -exec stat -c "%n" '{}' \;
@@ -89,12 +89,9 @@
         - discovered_system_bin_files_perms.stdout_lines is defined
       ansible.builtin.import_tasks:
         file: warning_facts.yml
-      vars:
-        warn_control_id: 'MEDIUM | UBTU-22-232015'
 
 - name: MEDIUM | UBTU-22-232020 | PATCH | Ubuntu 22.04 LTS library files must have mode "755" or less permissive.
-  when:
-    - ubtu_22_232020
+  when: ubtu_22_232020
   tags:
     - UBTU-22-232020
     - CAT2
@@ -104,6 +101,8 @@
     - V-260487
     - NIST800-53R4_CM-5
     - permissions
+  vars:
+    warn_control_id: 'MEDIUM | UBTU-22-232020'
   block:
     - name: MEDIUM | UBTU-22-232020 | AUDIT | Ubuntu 22.04 LTS library files must have mode "755" or less permissive. | Discover
       ansible.builtin.shell: find /lib /lib64 /usr/lib -perm /022 -type f -exec stat -c "%n" '{}' \;
@@ -135,8 +134,6 @@
         - not ubtu22stig_disruption_high
       ansible.builtin.import_tasks:
         file: warning_facts.yml
-      vars:
-        warn_control_id: 'MEDIUM | UBTU-22-232020'
 
 - name: MEDIUM | UBTU-22-232025 | PATCH | Ubuntu 22.04 LTS must configure the "/var/log" directory to have mode "755" or less permissive.
   when:
@@ -157,8 +154,7 @@
     mode: 'go-w'
 
 - name: MEDIUM | UBTU-22-232026 | PATCH | Ubuntu 22.04 LTS must generate error messages that provide information necessary for corrective actions without revealing information that could be exploited by adversaries.
-  when:
-    - ubtu_22_232026
+  when: ubtu_22_232026
   tags:
     - UBTU-22-232026
     - CAT2
@@ -168,6 +164,8 @@
     - V-260489
     - NIST800-53R4_SI-11
     - permissions
+  vars:
+    warn_control_id: 'MEDIUM | UBTU-22-232026'
   block:
     - name: MEDIUM | UBTU-22-232026 | AUDIT | Ubuntu 22.04 LTS must generate error messages that provide information necessary for corrective actions without revealing information that could be exploited by adversaries. | find files
       ansible.builtin.shell: find /var/log -perm /137 ! -name '*[bw]tmp' ! -name '*lastlog' {% if ubtu_22_232026 %}! -name '*syslog' {% endif %}-type f -exec stat -c "%n" {} \;
@@ -198,12 +196,9 @@
         - not ubtu22stig_disruption_high
       ansible.builtin.import_tasks:
         file: warning_facts.yml
-      vars:
-        warn_control_id: 'MEDIUM | UBTU-22-232026'
 
 - name: MEDIUM | UBTU-22-232027 | PATCH | Ubuntu 22.04 LTS must generate system journal entries without revealing information that could be exploited by adversaries.
-  when:
-    - ubtu_22_232027
+  when: ubtu_22_232027
   tags:
     - UBTU-22-232027
     - CAT2
@@ -214,6 +209,8 @@
     - NIST800-53R4_SI-11
     - permissions
     - journald
+  vars:
+    warn_control_id: 'MEDIUM | UBTU-22-232027'
   block:
     - name: MEDIUM | UBTU-22-232027 | AUDIT | Ubuntu 22.04 LTS must generate system journal entries without revealing information that could be exploited by adversaries. | find files
       ansible.builtin.shell: find /run/log/journal /var/log/journal -type d -perm -640 -exec stat -c "%n %a" {} \;
@@ -251,8 +248,6 @@
         - not ubtu22stig_disruption_high
       ansible.builtin.import_tasks:
         file: warning_facts.yml
-      vars:
-        warn_control_id: 'MEDIUM | UBTU-22-232027'
 
 - name: MEDIUM | UBTU-22-232030 | PATCH | Ubuntu 22.04 LTS must configure "/var/log/syslog" file with mode "640" or less permissive.
   when:
@@ -298,8 +293,7 @@
   loop: "{{ ubtu22stig_audit_tools }}"
 
 - name: MEDIUM | UBTU-22-232040 | PATCH | Ubuntu 22.04 LTS must have directories that contain system commands owned by "root".
-  when:
-    - ubtu_22_232040
+  when: ubtu_22_232040
   tags:
     - UBTU-22-232040
     - CAT2
@@ -309,6 +303,8 @@
     - V-260493
     - NIST800-53R4_AU-9
     - permissions
+  vars:
+    warn_control_id: 'MEDIUM | UBTU-22-232040'
   block:
     - name: MEDIUM | UBTU-22-232040 | AUDIT | Ubuntu 22.04 LTS must have directories that contain system commands owned by "root". | Discover
       ansible.builtin.shell: find /bin /sbin /usr/bin /usr/sbin /usr/local/bin /usr/local/sbin ! -user root -type d -exec stat -c "%n" '{}' \;
@@ -324,6 +320,7 @@
         path: "{{ item }}"
         state: directory
         owner: root
+        mode: 'u+rwx,go+rx'
       loop: "{{ discovered_system_bin_dirs_owner.stdout_lines }}"
 
     - name: MEDIUM | UBTU-22-232040 | WARN | Ubuntu 22.04 LTS must have directories that contain system commands owned by "root". | Warning
@@ -340,8 +337,6 @@
         - not ubtu22stig_disruption_high
       ansible.builtin.import_tasks:
         file: warning_facts.yml
-      vars:
-        warn_control_id: 'MEDIUM | UBTU-22-232040'
 
 - name: MEDIUM | UBTU-22-232045 | PATCH | Ubuntu 22.04 LTS must have directories that contain system commands group-owned by "root".
   when:
@@ -355,6 +350,8 @@
     - V-260494
     - NIST800-53R4_AU-9
     - permissions
+  vars:
+    warn_control_id: 'MEDIUM | UBTU-22-232045'
   block:
     - name: MEDIUM | UBTU-22-232045 | AUDIT | Ubuntu 22.04 LTS must have directories that contain system commands group-owned by "root". | Discover
       ansible.builtin.shell: find /bin /sbin /usr/bin /usr/sbin /usr/local/bin /usr/local/sbin ! -group root -type d -exec stat -c "%n" '{}' \;
@@ -370,6 +367,7 @@
         path: "{{ item }}"
         state: directory
         group: root
+        mode: 'u+rwx,go+rx'
       loop: "{{ discovered_system_bin_dirs_group.stdout_lines }}"
 
     - name: MEDIUM | UBTU-22-232045 | WARN | Ubuntu 22.04 LTS must have directories that contain system commands group-owned by "root". | Warning
@@ -386,12 +384,9 @@
         - not ubtu22stig_disruption_high
       ansible.builtin.import_tasks:
         file: warning_facts.yml
-      vars:
-        warn_control_id: 'MEDIUM | UBTU-22-232045'
 
 - name: MEDIUM | UBTU-22-232050 | PATCH | Ubuntu 22.04 LTS must have system commands owned by "root" or a system account.
-  when:
-    - ubtu_22_232050
+  when: ubtu_22_232050
   tags:
     - UBTU-22-232050
     - CAT2
@@ -401,6 +396,8 @@
     - V-260495
     - NIST800-53R4_CM-5
     - permissions
+  vars:
+    warn_control_id: 'MEDIUM | UBTU-22-232050'
   block:
     - name: MEDIUM | UBTU-22-232050 | AUDIT | Ubuntu 22.04 LTS must have system commands owned by "root" or a system account. | Discover
       ansible.builtin.shell: find /bin /sbin /usr/bin /usr/sbin /usr/local/bin /usr/local/sbin ! -user root -type f -exec stat -c "%n" '{}' \;
@@ -432,12 +429,9 @@
         - discovered_system_bin_files_owner.stdout_lines is defined
       ansible.builtin.import_tasks:
         file: warning_facts.yml
-      vars:
-        warn_control_id: 'MEDIUM | UBTU-22-232050'
 
 - name: MEDIUM | UBTU-22-232055 | PATCH | Ubuntu 22.04 LTS must have system commands group-owned by "root" or a system account.
-  when:
-    - ubtu_22_232055
+  when: ubtu_22_232055
   tags:
     - UBTU-22-232055
     - CAT2
@@ -447,6 +441,8 @@
     - V-260496
     - NIST800-53R4_CM-5
     - permissions
+  vars:
+    warn_control_id: 'MEDIUM | UBTU-22-232055'
   block:
     - name: MEDIUM | UBTU-22-232055 | AUDIT | Ubuntu 22.04 LTS must have system commands group-owned by "root" or a system account. | Discover
       ansible.builtin.shell: find /bin /sbin /usr/bin /usr/sbin /usr/local/bin /usr/local/sbin ! -user root -type f -exec stat -c "%n" '{}' \;
@@ -478,12 +474,9 @@
         - discovered_system_bin_files_owner.stdout_lines is defined
       ansible.builtin.import_tasks:
         file: warning_facts.yml
-      vars:
-        warn_control_id: 'MEDIUM | UBTU-22-232055'
 
 - name: MEDIUM | UBTU-22-232060 | PATCH | Ubuntu 22.04 LTS library directories must be owned by "root".
-  when:
-    - ubtu_22_232060
+  when: ubtu_22_232060
   tags:
     - UBTU-22-232060
     - CAT2
@@ -493,6 +486,8 @@
     - V-260497
     - NIST800-53R4_CM-5
     - permissions
+  vars:
+    warn_control_id: 'MEDIUM | UBTU-22-232060'
   block:
     - name: MEDIUM | UBTU-22-232060 | AUDIT | Ubuntu 22.04 LTS library directories must be owned by "root". | Discover
       ansible.builtin.shell: find /lib /usr/lib /lib64 ! -user root -type d -exec stat -c "%n" '{}' \;
@@ -524,12 +519,9 @@
         - not ubtu22stig_disruption_high
       ansible.builtin.import_tasks:
         file: warning_facts.yml
-      vars:
-        warn_control_id: 'MEDIUM | UBTU-22-232060'
 
 - name: MEDIUM | UBTU-22-232065 | PATCH | Ubuntu 22.04 LTS library directories must be group-owned by "root".
-  when:
-    - ubtu_22_232065
+  when: ubtu_22_232065
   tags:
     - UBTU-22-232065
     - CAT2
@@ -539,6 +531,8 @@
     - V-260498
     - NIST800-53R4_CM-5
     - permissions
+  vars:
+    warn_control_id: 'MEDIUM | UBTU-22-232065'
   block:
     - name: MEDIUM | UBTU-22-232065 | AUDIT | Ubuntu 22.04 LTS library directories must be group-owned by "root". | Discover
       ansible.builtin.shell: find /lib /usr/lib /lib64 ! -group root -type d -exec stat -c "%n" '{}' \;
@@ -570,12 +564,9 @@
         - not ubtu22stig_disruption_high
       ansible.builtin.import_tasks:
         file: warning_facts.yml
-      vars:
-        warn_control_id: 'MEDIUM | UBTU-22-232065'
 
 - name: MEDIUM | UBTU-22-232070 | PATCH | Ubuntu 22.04 LTS library files must be owned by "root".
-  when:
-    - ubtu_22_232070
+  when: ubtu_22_232070
   tags:
     - UBTU-22-232070
     - CAT2
@@ -585,6 +576,8 @@
     - V-260499
     - NIST800-53R4_CM-5
     - permissions
+  vars:
+    warn_control_id: 'MEDIUM | UBTU-22-232070'
   block:
     - name: MEDIUM | UBTU-22-232070 | AUDIT | Ubuntu 22.04 LTS library files must be owned by "root". | Discover
       ansible.builtin.shell: find /lib /usr/lib /lib64 ! -user root -type f -exec stat -c "%n" '{}' \;
@@ -616,12 +609,9 @@
         - not ubtu22stig_disruption_high
       ansible.builtin.import_tasks:
         file: warning_facts.yml
-      vars:
-        warn_control_id: 'MEDIUM | UBTU-22-232070'
 
 - name: MEDIUM | UBTU-22-232075 | PATCH | Ubuntu 22.04 LTS library directories must be group-owned by "root".
-  when:
-    - ubtu_22_232075
+  when: ubtu_22_232075
   tags:
     - UBTU-22-232075
     - CAT2
@@ -631,6 +621,8 @@
     - V-260500
     - NIST800-53R4_CM-5
     - permissions
+  vars:
+    warn_control_id: 'MEDIUM | UBTU-22-232075'
   block:
     - name: MEDIUM | UBTU-22-232075 | AUDIT | Ubuntu 22.04 LTS library files must be group-owned by "root". | Discover
       ansible.builtin.shell: find /lib /usr/lib /lib64 ! -group root -type f -exec stat -c "%n" '{}' \;
@@ -662,8 +654,6 @@
         - not ubtu22stig_disruption_high
       ansible.builtin.import_tasks:
         file: warning_facts.yml
-      vars:
-        warn_control_id: 'MEDIUM | UBTU-22-232075'
 
 - name: MEDIUM | UBTU-22-232080 | PATCH | Ubuntu 22.04 LTS must configure the directories used by the system journal to be owned by "root".
   when:
@@ -877,6 +867,7 @@
     path: /var/log
     state: directory
     owner: root
+    mode: 'u+rwx,go+rx'
 
 - name: MEDIUM | UBTU-22-232125 | PATCH | Ubuntu 22.04 LTS must configure the "/var/log" directory to be group-owned by "syslog".
   when:

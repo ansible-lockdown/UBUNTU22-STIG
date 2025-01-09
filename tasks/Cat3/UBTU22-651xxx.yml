@@ -11,6 +11,8 @@
     - V-260587
     - NIST800-53R4_AU-4
     - auditd
+  vars:
+    warn_control_id: 'LOW | UBTU-22-651035'
   block:
     - name: LOW | UBTU-22-651035 | AUDIT | Ubuntu 22.04 LTS must have a crontab script running weekly to offload audit events of standalone systems. | get files containing audit
       ansible.builtin.find:
@@ -29,5 +31,3 @@
       when: discovered_audit_cron_copy.files is not defined
       ansible.builtin.import_tasks:
         file: warning_facts.yml
-      vars:
-        warn_control_id: 'LOW | UBTU-22-651035'

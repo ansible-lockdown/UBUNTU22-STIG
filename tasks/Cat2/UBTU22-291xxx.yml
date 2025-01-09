@@ -1,8 +1,7 @@
 ---
 
 - name: MEDIUM | UBTU-22-291010 | PATCH | USB mass storage permits easy introduction of unknown devices, thereby facilitating malicious activity.
-  when:
-    - ubtu_22_291010
+  when: ubtu_22_291010
   tags:
     - UBTU-22-291010
     - CAT2
@@ -17,11 +16,11 @@
   ansible.builtin.template:
     dest: "/etc/modprobe.d/{{ blacklist }}.conf"
     src: etc/modprobe.d/module.conf.j2
+    mode: 'u+rw,go-rwx'
   notify: Change_requires_reboot
 
 - name: MEDIUM | UBTU-22-291015 | PATCH | Ensure wireless interfaces are disabled
-  when:
-    - ubtu_22_291015
+  when: ubtu_22_291015
   tags:
     - UBTU-22-291015
     - CAT2
@@ -40,6 +39,7 @@
         regexp: '^(#)?install true(\\s|$)'
         line: install {{ item }} true
         create: true
+        mode: 'u+rw,go-rwx'
       loop: "{{ prelim_wireless_modules.stdout_lines }}"
 
     - name: MEDIUM | UBTU-22-291015 | PATCH |  Ensure wireless interfaces are disabled | blacklist
@@ -48,5 +48,5 @@
         regexp: "^(#)?blacklist {{ item }}(\\s|$)"
         line: "blacklist {{ item }}"
         create: true
-        mode: '0600'
+        mode: 'u+rw,go-rwx'
       loop: "{{ prelim_wireless_modules.stdout_lines }}"
