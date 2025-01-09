@@ -24,8 +24,7 @@
     - name: LOW | UBTU-22-651035 | AUDIT | Ubuntu 22.04 LTS must have a crontab script running weekly to offload audit events of standalone systems. | Warning
       when: discovered_audit_cron_copy.files is not defined
       ansible.builtin.debug:
-        msg:
-          - "Warning!! Not job for auditd to have logs copied off the system have been found"
+        msg: "Warning!! Not job for auditd to have logs copied off the system have been found"
 
     - name: LOW | UBTU-22-651035 | AUDIT | Ubuntu 22.04 LTS must have a crontab script running weekly to offload audit events of standalone systems.| Warn count
       when: discovered_audit_cron_copy.files is not defined

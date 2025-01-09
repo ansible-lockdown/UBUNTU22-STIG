@@ -35,8 +35,7 @@
         - discovered_system_bin_dirs_perms.stdout_lines is defined
         - not ubtu22stig_disruption_high
       ansible.builtin.debug:
-        msg:
-          - "Warning!! The following system directories permissions are not correct please investigate {{ discovered_system_bin_dirs_perms.stdout_lines }}"
+        msg: "Warning!! The following system directories permissions are not correct please investigate {{ discovered_system_bin_dirs_perms.stdout_lines }}"
 
     - name: MEDIUM | UBTU-22-232010 | WARN | Ubuntu 22.04 LTS must have directories that contain system commands set to a mode of "755" or less permissive. | Warn count
       when:
@@ -80,8 +79,7 @@
         - not ubtu22stig_disruption_high
         - discovered_system_bin_files_perms.stdout_lines is defined
       ansible.builtin.debug:
-        msg:
-          - "Warning!! The following system commands permissions need adjusting please investigate {{ discovered_system_bin_files_perms.stdout_lines }}"
+        msg: "Warning!! The following system commands permissions need adjusting please investigate {{ discovered_system_bin_files_perms.stdout_lines }}"
 
     - name: MEDIUM | UBTU-22-232015 | WARN | Ubuntu 22.04 LTS must have system commands set to a mode of "755" or less permissive. | Warn count
       when:
@@ -125,8 +123,7 @@
         - discovered_system_lib_files_perms.stdout_lines is defined
         - not ubtu22stig_disruption_high
       ansible.builtin.debug:
-        msg:
-          - "Warning!! The following library files permissions are not correct please investigate {{ discovered_system_lib_files_perms.stdout_lines }}"
+        msg: "Warning!! The following library files permissions are not correct please investigate {{ discovered_system_lib_files_perms.stdout_lines }}"
 
     - name: MEDIUM | UBTU-22-232020 | WARN | Ubuntu 22.04 LTS library files must have mode "755" or less permissive. | Warn count
       when:
@@ -187,8 +184,7 @@
         - discovered_var_log_logfiles.stdout_lines is defined
         - not ubtu22stig_disruption_high
       ansible.builtin.debug:
-        msg:
-          - "Warning!! The following log files permissions are not correct please investigate {{ discovered_var_log_logfiles.stdout_lines }}"
+        msg: "Warning!! The following log files permissions are not correct please investigate {{ discovered_var_log_logfiles.stdout_lines }}"
 
     - name: MEDIUM | UBTU-22-232026 | WARN | Ubuntu 22.04 LTS must generate error messages that provide information necessary for corrective actions without revealing information that could be exploited by adversaries. | Warn count
       when:
@@ -219,8 +215,7 @@
       register: discovered_journal_logfiles_files
 
     - name: MEDIUM | UBTU-22-232027 | PATCH | Ubuntu 22.04 LTS must generate system journal entries without revealing information that could be exploited by adversaries. | change permissions
-      when:
-        - ubtu22stig_disruption_high
+      when: ubtu22stig_disruption_high
       ansible.builtin.lineinfile:
         path: /usr/lib/tmpfiles.d/systemd.conf
         backrefs: true
@@ -239,8 +234,7 @@
         - discovered_journal_logfiles_files.stdout_lines is defined
         - not ubtu22stig_disruption_high
       ansible.builtin.debug:
-        msg:
-          - "Warning!! The following journal files permissions are not correct please investigate {{ discovered_journal_logfiles_files.stdout_lines }}"
+        msg: "Warning!! The following journal files permissions are not correct please investigate {{ discovered_journal_logfiles_files.stdout_lines }}"
 
     - name: MEDIUM | UBTU-22-232027 | WARN | Ubuntu 22.04 LTS must generate system journal entries without revealing information that could be exploited by adversaries. | Warn count
       when:
@@ -328,8 +322,7 @@
         - discovered_system_bin_dirs_owner.stdout_lines is defined
         - not ubtu22stig_disruption_high
       ansible.builtin.debug:
-        msg:
-          - "Warning!! The following system directory ownership is not correct please investigate {{ discovered_system_bin_dirs_owner.stdout_lines }}"
+        msg: "Warning!! The following system directory ownership is not correct please investigate {{ discovered_system_bin_dirs_owner.stdout_lines }}"
 
     - name: MEDIUM | UBTU-22-232040 | WARN | Ubuntu 22.04 LTS must have directories that contain system commands owned by "root". | Warn count
       when:
@@ -375,8 +368,7 @@
         - discovered_system_bin_dirs_group.stdout_lines is defined
         - not ubtu22stig_disruption_high
       ansible.builtin.debug:
-        msg:
-          - "Warning!! The following system directory group ownership is not correct please investigate {{ discovered_system_bin_dirs_group.stdout_lines }}"
+        msg: "Warning!! The following system directory group ownership is not correct please investigate {{ discovered_system_bin_dirs_group.stdout_lines }}"
 
     - name: MEDIUM | UBTU-22-232045 | WARN | Ubuntu 22.04 LTS must have directories that contain system commands group-owned by "root". | Warn count
       when:
@@ -420,8 +412,7 @@
         - not ubtu22stig_disruption_high
         - discovered_system_bin_files_owner.stdout_lines is defined
       ansible.builtin.debug:
-        msg:
-          - "Warning!! The following files are not owned by root please investigate {{ discovered_system_bin_files_owner.stdout_lines }}"
+        msg: "Warning!! The following files are not owned by root please investigate {{ discovered_system_bin_files_owner.stdout_lines }}"
 
     - name: MEDIUM | UBTU-22-232050 | AUDIT | Ubuntu 22.04 LTS must have system commands owned by "root" or a system account. | Warn count
       when:
@@ -465,8 +456,7 @@
         - not ubtu22stig_disruption_high
         - discovered_system_bin_files_owner.stdout_lines is defined
       ansible.builtin.debug:
-        msg:
-          - "Warning!! The following files are not owned by root please investigate {{ discovered_system_bin_files_owner.stdout_lines }}"
+        msg: "Warning!! The following files are not owned by root please investigate {{ discovered_system_bin_files_owner.stdout_lines }}"
 
     - name: MEDIUM | UBTU-22-232055 | AUDIT | Ubuntu 22.04 LTS must have system commands group-owned by "root" or a system account. | Warn fact
       when:
@@ -510,8 +500,7 @@
         - discovered_system_lib_dirs_owner.stdout_lines is defined
         - not ubtu22stig_disruption_high
       ansible.builtin.debug:
-        msg:
-          - "Warning!! The following library direcrtories are not owned by root please investigate {{ discovered_system_lib_dirs_owner.stdout_lines }}"
+        msg: "Warning!! The following library direcrtories are not owned by root please investigate {{ discovered_system_lib_dirs_owner.stdout_lines }}"
 
     - name: MEDIUM | UBTU-22-232060 | AUDIT | Ubuntu 22.04 LTS library directories must be owned by "root". | Warn fact
       when:
@@ -555,8 +544,7 @@
         - discovered_system_lib_dirs_group.stdout_lines is defined
         - not ubtu22stig_disruption_high
       ansible.builtin.debug:
-        msg:
-          - "Warning!! The following library directories are not group owned by root please investigate {{ discovered_system_lib_dirs_group.stdout_lines }}"
+        msg: "Warning!! The following library directories are not group owned by root please investigate {{ discovered_system_lib_dirs_group.stdout_lines }}"
 
     - name: MEDIUM | UBTU-22-232065 | AUDIT | Ubuntu 22.04 LTS library directories must be group-owned by "root". | Warn fact
       when:
@@ -600,8 +588,7 @@
         - discovered_system_lib_files_owner.stdout_lines is defined
         - not ubtu22stig_disruption_high
       ansible.builtin.debug:
-        msg:
-          - "Warning!! The following library files are not owned by root please investigate {{ discovered_system_lib_files_owner.stdout_lines }}"
+        msg: "Warning!! The following library files are not owned by root please investigate {{ discovered_system_lib_files_owner.stdout_lines }}"
 
     - name: MEDIUM | UBTU-22-232070 | AUDIT | Ubuntu 22.04 LTS library files must be owned by "root". | Warn fact
       when:
@@ -645,8 +632,7 @@
         - discovered_system_lib_files_group.stdout_lines is defined
         - not ubtu22stig_disruption_high
       ansible.builtin.debug:
-        msg:
-          - "Warning!! The following library files are not group-owned by root please investigate {{ discovered_system_lib_files_group.stdout_lines }}"
+        msg: "Warning!! The following library files are not group-owned by root please investigate {{ discovered_system_lib_files_group.stdout_lines }}"
 
     - name: MEDIUM | UBTU-22-232075 | AUDIT | Ubuntu 22.04 LTS library files must be group-owned by "root". | Warn fact
       when:
@@ -948,7 +934,7 @@
   ansible.builtin.file:
     path: /usr/bin/journalctl
     state: file
-    mode: '0740'
+    mode: 'u+rwx,g+r,o---'
 
 - name: MEDIUM | UBTU-22-232145 | PATCH | Ubuntu 22.04 LTS must set a sticky bit on all public directories to prevent unauthorized and unintended information transferred via shared system resources.
   when:
@@ -986,9 +972,9 @@
         - not ubtu22stig_disruption_high
         - discovered_public_dirs_stickybit.stdout | length > 0
       ansible.builtin.debug:
-        msg: |
-            "Warning!! The following file require sticky bit to be set
-            {{ discovered_public_dirs_stickybit.stdout_lines }}"
+        msg:
+          - "Warning!! The following file require sticky bit to be set"
+          - "{{ discovered_public_dirs_stickybit.stdout_lines }}"
 
     - name: MEDIUM | UBTU-22-232145 | WARN | Ubuntu 22.04 LTS must set a sticky bit on all public directories to prevent unauthorized and unintended information transferred via shared system resources.
       when:
@@ -996,5 +982,3 @@
         - discovered_public_dirs_stickybit.stdout | length > 0
       ansible.builtin.import_tasks:
         file: warning_facts.yml
-      vars:
-        warn_control_id: "MEDIUM | UBTU-22-232145"

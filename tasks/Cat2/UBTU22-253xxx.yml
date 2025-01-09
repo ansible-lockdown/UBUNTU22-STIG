@@ -1,8 +1,7 @@
 ---
 
 - name: MEDIUM | UBTU-22-253010 | PATCH | Ubuntu 22.04 LTS must be configured to use TCP syncookies.
-  when:
-    - ubtu_22_253010
+  when: ubtu_22_253010
   tags:
     - UBTU-22-253010
     - CAT2
@@ -22,8 +21,7 @@
       register: discovered_sysctl_conf_files
 
     - name: MEDIUM | UBTU-22-253010 | PATCH | Ubuntu 22.04 LTS must be configured to use TCP syncookies. | remove current settings
-      when:
-        - "ubtu22cis_sysctl_network_conf not in item.path"
+      when: "ubtu22cis_sysctl_network_conf not in item.path"
       ansible.builtin.replace:
         path: "{{ item.path }}"
         regexp: net.ipv4.tcp_syncookies\s*=\s*[ 0, 2 ]

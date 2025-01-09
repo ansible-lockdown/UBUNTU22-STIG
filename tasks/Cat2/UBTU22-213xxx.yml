@@ -91,8 +91,7 @@
         - discovered_nx_cpuinfo_settings.stdout is defined
         - "'protection: active' not in discovered_dmesg_nx_value.stdout or 'nx' not in discovered_nx_cpuinfo_settings.stdout"
       ansible.builtin.debug:
-        msg:
-          - "Warning!! The Ubuntu system you are on does not have NX enabled. Please validate system BIOS settings"
+        msg: "Warning!! The Ubuntu system you are on does not have NX enabled. Please validate system BIOS settings"
 
     - name: MEDIUM | UBTU-22-213025 | WARN | Ubuntu 22.04 LTS must implement nonexecutable data to protect its memory from unauthorized code execution. | Warning Count.
       when:
