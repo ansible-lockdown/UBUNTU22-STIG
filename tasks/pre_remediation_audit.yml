@@ -10,7 +10,7 @@
   ansible.builtin.file:
     path: "{{ audit_conf_dir }}"
     state: directory
-    mode: '0755'
+    mode: 'go-w'
 
 - name: "Pre Audit Setup | If using git for content set up"
   when: audit_content == 'git'
@@ -68,7 +68,7 @@
   ansible.builtin.template:
     src: ansible_vars_goss.yml.j2
     dest: "{{ audit_vars_path }}"
-    mode: '0600'
+    mode: 'go-rwx'
 
 - name: "Pre Audit | Run pre_remediation {{ benchmark }} audit" # noqa name[template]
   ansible.builtin.command: "{{ audit_conf_dir }}/run_audit.sh -v {{ audit_vars_path }} -f {{ audit_format }} -o {{ pre_audit_outfile }} -g \"{{ group_names }}\""

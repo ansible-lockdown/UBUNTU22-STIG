@@ -1,8 +1,7 @@
 ---
 
 - name: LOW | UBTU-22-411045 | PATCH | Ubuntu 22.04 LTS must automatically lock an account until the locked account is released by an administrator when three unsuccessful logon attempts have been made.
-  when:
-    - ubtu_22_411045
+  when: ubtu_22_411045
   tags:
     - UBTU-22-411045
     - CAT3

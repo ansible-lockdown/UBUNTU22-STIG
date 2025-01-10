@@ -1,8 +1,7 @@
 ---
 
 - name: MEDIUM | UBTU-22-432010 | PATCH | Ubuntu 22.04 LTS must require users to reauthenticate for privilege escalation or when changing roles.
-  when:
-    - ubtu_22_432010
+  when: ubtu_22_432010
   tags:
     - UBTU-22-432010
     - CAT2

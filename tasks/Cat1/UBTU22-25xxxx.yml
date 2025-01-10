@@ -1,8 +1,7 @@
 ---
 
 - name: HIGH | UBTU-22-255010 | PATCH | Ubuntu 22.04 LTS must have SSH installed.
-  when:
-    - ubtu_22_255010
+  when: ubtu_22_255010
   tags:
     - UBTU-22-255010
     - CAT1
@@ -21,8 +20,7 @@
     state: present
 
 - name: HIGH | UBTU-22-255015 | PATCH | Ubuntu 22.04 LTS must use SSH to protect the confidentiality and integrity of transmitted information.
-  when:
-    - ubtu_22_255015
+  when: ubtu_22_255015
   tags:
     - UBTU-22-255015
     - CAT1
@@ -42,8 +40,7 @@
     enabled: true
 
 - name: HIGH | UBTU-22-255025 | PATCH | Ubuntu 22.04 LTS must not allow unattended or automatic login via SSH.
-  when:
-    - ubtu_22_255025
+  when: ubtu_22_255025
   tags:
     - UBTU-22-255025
     - CAT1
@@ -64,8 +61,7 @@
   notify: Restart_ssh
 
 - name: HIGH | UBTU-22-255040 | PATCH |  Ubuntu 22.04 LTS must be configured so that remote X connections are disabled, unless to fulfill documented and validated mission requirements.
-  when:
-    - ubtu_22_255040
+  when: ubtu_22_255040
   tags:
     - UBTU-22-255040
     - CAT1

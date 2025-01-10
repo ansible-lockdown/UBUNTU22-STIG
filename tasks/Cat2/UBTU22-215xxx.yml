@@ -1,8 +1,7 @@
 ---
 
 - name: MEDIUM | UBTU-22-215010 | PATCH | Ubuntu 22.04 LTS must have the "libpam-pwquality" package installed.
-  when:
-    - ubtu_22_215010
+  when: ubtu_22_215010
   tags:
     - UBTU-22-215010
     - CAT2

@@ -1,8 +1,7 @@
 ---
 
 - name: LOW | UBTU-22-651035 | PATCH | Ubuntu 22.04 LTS must have a crontab script running weekly to offload audit events of standalone systems.
-  when:
-    - ubtu_22_651035
+  when: ubtu_22_651035
   tags:
     - UBTU-22-651035
     - CAT3
@@ -12,6 +11,8 @@
     - V-260587
     - NIST800-53R4_AU-4
     - auditd
+  vars:
+    warn_control_id: 'LOW | UBTU-22-651035'
   block:
     - name: LOW | UBTU-22-651035 | AUDIT | Ubuntu 22.04 LTS must have a crontab script running weekly to offload audit events of standalone systems. | get files containing audit
       ansible.builtin.find:
@@ -21,16 +22,11 @@
       register: discovered_audit_cron_copy
 
     - name: LOW | UBTU-22-651035 | AUDIT | Ubuntu 22.04 LTS must have a crontab script running weekly to offload audit events of standalone systems. | Warning
-      when:
-        - discovered_audit_cron_copy.files is not defined
+      when: discovered_audit_cron_copy.files is not defined
       ansible.builtin.debug:
-        msg:
-          - "WARN!! Not job for auditd to have logs copied off the system have been found"
+        msg: "Warning!! Not job for auditd to have logs copied off the system have been found"
 
     - name: LOW | UBTU-22-651035 | AUDIT | Ubuntu 22.04 LTS must have a crontab script running weekly to offload audit events of standalone systems.| Warn count
-      when:
-        - discovered_audit_cron_copy.files is not defined
+      when: discovered_audit_cron_copy.files is not defined
       ansible.builtin.import_tasks:
         file: warning_facts.yml
-      vars:
-        warn_control_id: 'LOW | UBTU-22-651035'

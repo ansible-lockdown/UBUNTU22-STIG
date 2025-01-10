@@ -1,8 +1,7 @@
 ---
 
 - name: MEDIUM | UBTU-22-255020 | PATCH | Ubuntu 22.04 LTS must display the Standard Mandatory DOD Notice and Consent Banner before granting any local or remote connection to the system.
-  when:
-    - ubtu_22_255020
+  when: ubtu_22_255020
   tags:
     - UBTU-22-255020
     - CAT2
@@ -30,12 +29,11 @@
         src: etc/issue.net.j2
         dest: /etc/issue.net
         group: root
-        mode: '0644'
+        mode: 'go-wx'
         owner: root
 
 - name: MEDIUM | UBTU-22-255030 | PATCH | Ubuntu 22.04 LTS must be configured so that all network connections associated with SSH traffic terminate after becoming unresponsive.
-  when:
-    - ubtu_22_255030
+  when: ubtu_22_255030
   tags:
     - UBTU-22-255030
     - CAT2
@@ -49,13 +47,12 @@
     path: "{{ ubtu22stig_sshd_config_file }}"
     regexp: ^(?i)(#|)ClientAliveCountMax\s\d*
     line: "ClientAliveCountMax {{ ubtu22stig_sshd_config_clientalivecountmax }}"
-    create: true
     validate: sshd -t -f %s
+    mode: 'go-rwx'
   notify: Restart_ssh
 
 - name: MEDIUM | UBTU-22-255035 | PATCH | Ubuntu 22.04 LTS must be configured so that all network connections associated with SSH traffic are terminated after 10 minutes of becoming unresponsive.
-  when:
-    - ubtu_22_255035
+  when: ubtu_22_255035
   tags:
     - UBTU-22-255035
     - CAT2
@@ -69,13 +66,12 @@
     path: "{{ ubtu22stig_sshd_config_file }}"
     regexp: ^(?i)(#|)ClientAliveInterval\s\d*
     line: "ClientAliveInterval {{ ubtu22stig_sshd_config_clientaliveinterval }}"
-    create: true
     validate: sshd -t -f %s
+    mode: 'go-rwx'
   notify: Restart_ssh
 
 - name: MEDIUM | UBTU-22-255045 | PATCH | Ubuntu 22.04 LTS SSH daemon must prevent remote hosts from connecting to the proxy display.
-  when:
-    - ubtu_22_255045
+  when: ubtu_22_255045
   tags:
     - UBTU-22-255045
     - CAT2
@@ -89,13 +85,12 @@
     path: "{{ ubtu22stig_sshd_config_file }}"
     regexp: ^(?i)(#|)X11UseLocalhost\s\d*
     line: "X11UseLocalhost yes"
-    create: true
     validate: sshd -t -f %s
+    mode: 'go-rwx'
   notify: Restart_ssh
 
 - name: MEDIUM | UBTU-22-255050 | PATCH | Ubuntu 22.04 LTS must configure the SSH daemon to use FIPS 140-3-approved ciphers to prevent the unauthorized disclosure of information and/or detect changes to information during transmission.
-  when:
-    - ubtu_22_255050
+  when: ubtu_22_255050
   tags:
     - UBTU-22-255050
     - CAT2
@@ -119,8 +114,7 @@
   notify: Change_requires_reboot
 
 - name: MEDIUM | UBTU-22-255055 | PATCH | Ubuntu 22.04 LTS must configure the SSH daemon to use FIPS 140-3-approved ciphers to prevent the unauthorized disclosure of information and/or detect changes to information during transmission.
-  when:
-    - ubtu_22_255055
+  when: ubtu_22_255055
   tags:
     - UBTU-22-255055
     - CAT2
@@ -139,13 +133,12 @@
   ansible.builtin.lineinfile:
     path: /etc/ssh/sshd_config
     regexp: ^MACs
-    line: "MACs {{ ubtu22stig_sshd_config_macs| join(',') }}"
+    line: "MACs {{ ubtu22stig_sshd_config_macs | join(',') }}"
     validate: sshd -t -f %s
   notify: Restart_ssh
 
 - name: MEDIUM | UBTU-22-255055 | PATCH | Ubuntu 22.04 LTS must configure the SSH daemon to use Message Authentication Codes (MACs) employing FIPS 140-3-approved cryptographic hashes to prevent the unauthorized disclosure of information and/or detect changes to information during transmission.
-  when:
-    - ubtu_22_255055
+  when: ubtu_22_255055
   tags:
     - UBTU-22-255055
     - CAT2
@@ -164,13 +157,12 @@
   ansible.builtin.lineinfile:
     path: /etc/ssh/sshd_config
     regexp: ^MACs
-    line: "MACs {{ ubtu22stig_sshd_config_macs| join(',') }}"
+    line: "MACs {{ ubtu22stig_sshd_config_macs | join(',') }}"
     validate: sshd -t -f %s
   notify: Change_requires_reboot
 
 - name: MEDIUM | UBTU-22-255060 | PATCH | Ubuntu 22.04 LTS SSH server must be configured to use only FIPS-validated key exchange algorithms.
-  when:
-    - ubtu_22_255060
+  when: ubtu_22_255060
   tags:
     - UBTU-22-255060
     - CAT2
@@ -188,8 +180,7 @@
   notify: Restart_ssh
 
 - name: MEDIUM | UBTU-22-255065 | PATCH |  Ubuntu 22.04 LTS must use strong authenticators in establishing nonlocal maintenance and diagnostic sessions
-  when:
-    - ubtu_22_255065
+  when: ubtu_22_255065
   tags:
     - UBTU-22-255065
     - CAT2
