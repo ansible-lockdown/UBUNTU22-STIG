@@ -10,7 +10,7 @@
   ansible.builtin.file:
     path: "{{ audit_conf_dir }}"
     state: directory
-    mode: 'u+x,go-w'
+    mode: 'go-w'
 
 - name: "Pre Audit Setup | If using git for content set up"
   when: audit_content == 'git'
