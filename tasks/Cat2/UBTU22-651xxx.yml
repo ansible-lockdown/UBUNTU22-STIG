@@ -94,7 +94,7 @@
 
     - name: MEDIUM | UBTU-22-651025 | PATCH | Ubuntu 22.04 LTS must be configured so that the script that runs each 30 days or less to check file integrity is the default. | replace if needed
       when: "'b71bb2cafaedf15ec3ac2f566f209d3260a37af0  /etc/cron' not in discovered_cron_script_sha1.stdout"
-      ansible.builtin.command: |
+      ansible.builtin.shell: |
         apt download aide-common; dpkg-deb --fsys-tarfile /tmp/aide-common_*.deb | sudo tar -x ./usr/share/aide/config/cron.daily/aide -C /; cp -f /usr/share/aide/config/cron.daily/aide /etc/cron.daily/aide
       changed_when: true
       args:

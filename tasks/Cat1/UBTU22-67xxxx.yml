@@ -24,7 +24,7 @@
         create: true
         regexp: 0
         line: 1
-        mode: 'u-x,g-wx,o-rwx'
+        mode: 'ugo-wx'
 
     - name: HIGH | UBTU-22-671010 | WARN | Ubuntu 22.04 LTS must implement NIST FIPS-validated cryptography to protect classified information | Warning
       when:

@@ -18,7 +18,7 @@
     section: 'org/gnome/login-screen'
     option: banner-message-enable
     value: 'true'
-    mode: 'u+rw,go+r,go-wx'
+    mode: 'go-wx'
   notify:
     - Update_dconf
     - Restart_gdm3
@@ -41,7 +41,7 @@
     section: 'org/gnome/login-screen'
     option: banner-message-text
     value: "{{ ubtu22stig_logon_banner | join('\n') }}"
-    mode: 'u+rw,go+r,go-wx'
+    mode: 'go-wx'
   notify:
     - Update_dconf
     - Restart_gdm3

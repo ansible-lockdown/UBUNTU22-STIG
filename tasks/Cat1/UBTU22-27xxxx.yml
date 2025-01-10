@@ -13,6 +13,6 @@
     - V-260539
     - NIST800-53R4_CM-6
     - gnome
-  ansible.builtin.shell: gsettings set org.gnome.settings-daemon.plugins.media-keys logout []
-  notify: Update_dconf
+  ansible.builtin.command: gsettings set org.gnome.settings-daemon.plugins.media-keys logout []
   changed_when: true
+  notify: Update_dconf

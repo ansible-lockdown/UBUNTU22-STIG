@@ -294,3 +294,8 @@
         path: "{{ item.path }}"
         group: root
       loop: "{{ discovered_audit_files.files }}"
+
+Automated CIS Benchmark Compliance Remediation for Debian 11 with Ansible
+Automated CIS Benchmark Compliance Audit for Debian 11 with Ansible
+
+🔐 Private Pre-Release Access for Subscribers: Automated CIS Benchmark Compliance Remediation for RHEL 8 with Ansible 🔐

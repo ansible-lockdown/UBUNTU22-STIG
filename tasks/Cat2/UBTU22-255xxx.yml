@@ -29,7 +29,7 @@
         src: etc/issue.net.j2
         dest: /etc/issue.net
         group: root
-        mode: 'u+rw,go+r,go-wx'
+        mode: 'go-wx'
         owner: root
 
 - name: MEDIUM | UBTU-22-255030 | PATCH | Ubuntu 22.04 LTS must be configured so that all network connections associated with SSH traffic terminate after becoming unresponsive.
@@ -47,9 +47,8 @@
     path: "{{ ubtu22stig_sshd_config_file }}"
     regexp: ^(?i)(#|)ClientAliveCountMax\s\d*
     line: "ClientAliveCountMax {{ ubtu22stig_sshd_config_clientalivecountmax }}"
-    create: true
     validate: sshd -t -f %s
-    mode: 'u+rw,go-rwx'
+    mode: 'go-rwx'
   notify: Restart_ssh
 
 - name: MEDIUM | UBTU-22-255035 | PATCH | Ubuntu 22.04 LTS must be configured so that all network connections associated with SSH traffic are terminated after 10 minutes of becoming unresponsive.
@@ -67,9 +66,8 @@
     path: "{{ ubtu22stig_sshd_config_file }}"
     regexp: ^(?i)(#|)ClientAliveInterval\s\d*
     line: "ClientAliveInterval {{ ubtu22stig_sshd_config_clientaliveinterval }}"
-    create: true
     validate: sshd -t -f %s
-    mode: 'u+rw,go-rwx'
+    mode: 'go-rwx'
   notify: Restart_ssh
 
 - name: MEDIUM | UBTU-22-255045 | PATCH | Ubuntu 22.04 LTS SSH daemon must prevent remote hosts from connecting to the proxy display.
@@ -87,9 +85,8 @@
     path: "{{ ubtu22stig_sshd_config_file }}"
     regexp: ^(?i)(#|)X11UseLocalhost\s\d*
     line: "X11UseLocalhost yes"
-    create: true
     validate: sshd -t -f %s
-    mode: 'u+rw,go-rwx'
+    mode: 'go-rwx'
   notify: Restart_ssh
 
 - name: MEDIUM | UBTU-22-255050 | PATCH | Ubuntu 22.04 LTS must configure the SSH daemon to use FIPS 140-3-approved ciphers to prevent the unauthorized disclosure of information and/or detect changes to information during transmission.

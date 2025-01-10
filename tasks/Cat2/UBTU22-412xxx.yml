@@ -52,7 +52,7 @@
         dest: /etc/profile.d/99-terminal_tmout.sh
         owner: root
         group: root
-        mode: '0644'
+        mode: 'go-wx'
 
 - name: MEDIUM | UBTU-22-412035 | PATCH | Ubuntu 22.04 LTS must automatically exit interactive command shell user sessions after 15 minutes of inactivity.
   when: ubtu_22_412035

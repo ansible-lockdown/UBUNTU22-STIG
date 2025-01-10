@@ -112,12 +112,11 @@
     - discovered_auditd_immutable_check.stdout == '1'
   ansible.builtin.debug:
     msg: "Reboot required for auditd to apply new rules as immutable set"
-  changed_when: true
+  changed_when: false
   failed_when: false
   notify: change_requires_reboot
 
 - name: Restart_auditd
-  ansible.builtin.service:
-    name: auditd
-    state: restarted
+  ansible.builtin.command: service auditd restart  # noqa: command-instead-of-module
+  changed_when: false
   failed_when: false
