@@ -18,7 +18,7 @@
     - name: LOW | UBTU-22-411045 | AUDIT | Ubuntu 22.04 LTS must automatically lock an account until the locked account is released by an administrator when three unsuccessful logon attempts have been made.
       ansible.builtin.blockinfile:
         path: /etc/pam.d/common-auth
-        marker: "# {mark} Faillock config Ubuntu2204 STIG - Ansible-lockdown sponsered by MindPointGroup"
+        marker: "# {mark} Faillock config Ubuntu2204 STIG - Ansible-lockdown Sponsored by Mindpoint Group - A Tyto Athene Company / Ansible Lockdown"
         block: |
           auth    [default=die]                   pam_faillock.so authfail
           auth    sufficient                      pam_faillock.so authsucc
