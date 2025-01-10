@@ -1,8 +1,7 @@
 ---
 
 - name: MEDIUM | UBTU-22-611010 | PATCH | Ubuntu 22.04 LTS must enforce password complexity by requiring at least one uppercase character be used.
-  when:
-    - ubtu_22_611010
+  when: ubtu_22_611010
   tags:
     - UBTU-22-611010
     - CAT2
@@ -18,8 +17,7 @@
     line: 'ucredit = -1'
 
 - name: MEDIUM | UBTU-22-611015 | PATCH | Ubuntu 22.04 LTS must enforce password complexity by requiring at least one lowercase character be used.
-  when:
-    - ubtu_22_611015
+  when: ubtu_22_611015
   tags:
     - UBTU-22-611015
     - CAT2
@@ -35,8 +33,7 @@
     line: 'lcredit = -1'
 
 - name: MEDIUM | UBTU-22-611020 | PATCH | Ubuntu 22.04 LTS must enforce password complexity by requiring that at least one numeric character be used.
-  when:
-    - ubtu_22_611020
+  when: ubtu_22_611020
   tags:
     - UBTU-22-611020
     - CAT2
@@ -52,8 +49,7 @@
     line: 'dcredit = -1'
 
 - name: MEDIUM | UBTU-22-611025 | PATCH | Ubuntu 22.04 LTS must enforce password complexity by requiring that at least one special character be used.
-  when:
-    - ubtu_22_611025
+  when: ubtu_22_611025
   tags:
     - UBTU-22-611025
     - CAT2
@@ -86,8 +82,7 @@
     line: 'dictcheck = 1'
 
 - name: MEDIUM | UBTU-22-611035 | PATCH | Ubuntu 22.04 LTS must enforce a minimum 15-character password length.
-  when:
-    - ubtu_22_611035
+  when: ubtu_22_611035
   tags:
     - UBTU-22-611035
     - CCI-000000
@@ -102,8 +97,7 @@
     line: 'minlen = {{ ubtu22stig_pass_minlen }}'
 
 - name: MEDIUM | UBTU-22-611040 | PATCH | Ubuntu 22.04 LTS must require the change of at least eight characters when passwords are changed.
-  when:
-    - ubtu_22_611040
+  when: ubtu_22_611040
   tags:
     - UBTU-22-611040
     - CAT2
@@ -119,8 +113,7 @@
     line: 'difok = {{ ubtu22stig_pass_difok }}'
 
 - name: MEDIUM | UBTU-22-611045 | PATCH | Ubuntu 22.04 LTS must be configured so that when passwords are changed or new passwords are established, pwquality must be used.
-  when:
-    - ubtu_22_611045
+  when: ubtu_22_611045
   tags:
     - UBTU-22-611045
     - CAT2
@@ -136,8 +129,7 @@
     line: 'enforcing = 1'
 
 - name: MEDIUM | UBTU-22-611055 | PATCH | Ubuntu 22.04 LTS must store only encrypted representations of passwords.
-  when:
-    - ubtu_22_611055
+  when: ubtu_22_611055
   tags:
     - UBTU-22-611055
     - CCI-000000
@@ -176,8 +168,7 @@
         state: args_present
 
 - name: MEDIUM | UBTU-22-611070 | PATCH | Ubuntu 22.04 LTS must store only encrypted representations of passwords.
-  when:
-    - ubtu_22_611070
+  when: ubtu_22_611070
   tags:
     - UBTU-22-611070
     - CAT2

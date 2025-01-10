@@ -1,8 +1,7 @@
 ---
 
 - name: MEDIUM | UBTU-22-631010 | AUDIT | Ubuntu 22.04 LTS must use DOD PKI-established certificate authorities for verification of the establishment of protected sessions.
-  when:
-    - ubtu_22_631010
+  when: ubtu_22_631010
   tags:
     - UBTU-22-631010
     - CAT2
@@ -12,6 +11,8 @@
     - V-260580
     - NIST800-53R4_SC-23
     - authorization
+  vars:
+    warn_control_id: "MEDIUM | UBTU-22-631010"
   block:
     - name: MEDIUM | UBTU-22-631010 | AUDIT | Ubuntu 22.04 LTS must use DOD PKI-established certificate authorities for verification of the establishment of protected sessions.
       ansible.builtin.find:
@@ -22,12 +23,9 @@
     - name: MEDIUM | UBTU-22-631010 | AUDIT | Ubuntu 22.04 LTS must use DOD PKI-established certificate authorities for verification of the establishment of protected sessions. | warning
       when: discovered_dod_certs.matched == 0
       ansible.builtin.debug:
-        msg: |
-            "WARN!! Please add the DOD certificate authority files and dpkg-reconfigure ca-certificates "
+        msg: "Warning!! Please add the DOD certificate authority files and dpkg-reconfigure ca-certificates "
 
     - name: MEDIUM | UBTU-22-631010 | AUDIT | Ubuntu 22.04 LTS must use DOD PKI-established certificate authorities for verification of the establishment of protected sessions. | warn_count
       when: discovered_dod_certs.matched == 0
       ansible.builtin.import_tasks:
         file: warning_facts.yml
-      vars:
-        warn_control_id: "MEDIUM | UBTU-22-631010"

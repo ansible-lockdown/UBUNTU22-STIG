@@ -1,8 +1,7 @@
 ---
 
 - name: MEDIUM | UBTU-22-411010 | PATCH | Ubuntu 22.04 LTS must prevent direct login into the root account.
-  when:
-    - ubtu_22_411010
+  when: ubtu_22_411010
   tags:
     - UBTU-22-411010
     - CAT2
@@ -17,8 +16,7 @@
     password_lock: true
 
 - name: MEDIUM | UBTU-22-411015 | PATCH | Ubuntu 22.04 LTS must uniquely identify interactive users.
-  when:
-    - ubtu_22_411015
+  when: ubtu_22_411015
   tags:
     - UBTU-22-411015
     - CAT2
@@ -31,6 +29,8 @@
     - NIST800-53R4_IA-2
     - NIST800-53R4_IA-8
     - account
+  vars:
+    warn_control_id: 'MEDIUM | UBTU-22-411015'
   block:
     - name: MEDIUM | UBTU-22-411015 | AUDIT | Ubuntu 22.04 LTS must uniquely identify interactive users. | Check for duplicate UIDs
       ansible.builtin.shell: "pwck -r | awk -F: '{if ($3 in uid) print $1 ; else uid[$3]}' /etc/passwd"
@@ -41,18 +41,15 @@
     - name: MEDIUM | UBTU-22-411015 | WARN | Ubuntu 22.04 LTS must uniquely identify interactive users. | Print warning about users with duplicate UIDs
       when: discovered_duplicate_uid.stdout | length >= 1
       ansible.builtin.debug:
-        msg: "WARN!! The following users have UIDs that are duplicates: {{ discovered_duplicate_uid.stdout_lines }}"
+        msg: "Warning!! The following users have UIDs that are duplicates: {{ discovered_duplicate_uid.stdout_lines }}"
 
     - name: MEDIUM | UBTU-22-411015 | WARN | Ubuntu 22.04 LTS must uniquely identify interactive users. | warning count
       when: discovered_duplicate_uid.stdout | length >= 1
       ansible.builtin.import_tasks:
         file: warning_facts.yml
-      vars:
-        warn_control_id: 'MEDIUM | UBTU-22-411015'
 
 - name: MEDIUM | UBTU-22-411025 | PATCH | Ubuntu 22.04 LTS must enforce 24 hours/one day as the minimum password lifetime. Passwords for new users must have a 24 hours/one day minimum password lifetime restriction.
-  when:
-    - ubtu_22_411025
+  when: ubtu_22_411025
   tags:
     - UBTU-22-411025
     - CAT2
@@ -68,8 +65,7 @@
     line: "PASS_MIN_DAYS {{ ubtu22stig_pass_min_days }}"
 
 - name: MEDIUM | UBTU-22-411030 | PATCH | Ubuntu 22.04 LTS must enforce a 60-day maximum password lifetime restriction. Passwords for new users must have a 60-day maximum password lifetime restriction.
-  when:
-    - ubtu_22_411030
+  when: ubtu_22_411030
   tags:
     - UBTU-22-411030
     - CAT2
@@ -85,8 +81,7 @@
     line: "PASS_MAX_DAYS {{ ubtu22stig_pass_max_days }}"
 
 - name: MEDIUM | UBTU-22-411035 | PATCH | Ubuntu 22.04 LTS must disable account identifiers (individuals, groups, roles, and devices) after 35 days of inactivity.
-  when:
-    - ubtu_22_411035
+  when: ubtu_22_411035
   tags:
     - UBTU-22-411035
     - CAT2
@@ -99,11 +94,10 @@
   ansible.builtin.lineinfile:
     path: /etc/default/useradd
     regexp: ^(#|)(?i)INACTIVE\s*=\s*\d*
-    line: "INACTIVE {{ ubtu22stig_user_inactive_days}}"
+    line: "INACTIVE {{ ubtu22stig_user_inactive_days }}"
 
 - name: MEDIUM | UBTU-22-411040 | WARN | Ubuntu 22.04 LTS must automatically expire temporary accounts within 72 hours.
-  when:
-    - ubtu_22_411040
+  when: ubtu_22_411040
   tags:
     - UBTU-22-411040
     - CAT2
@@ -117,7 +111,7 @@
     - account
   ansible.builtin.debug:
     msg:
-      - "WARNING!!  Please check temporary accounts for expiration dates to be 72 hours or less."
+      - "Warning!!  Please check temporary accounts for expiration dates to be 72 hours or less."
       - "To do this please run sudo chage -l account_name for the accounts you need to check"
       - "The results will display the Account Expires information"
       - 'To set account expire run sudo chage -E `date -d "+3 days" +%Y-%m-%d` account_name'

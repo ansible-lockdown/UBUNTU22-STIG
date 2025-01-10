@@ -1,8 +1,7 @@
 ---
 
 - name: HIGH | UBTU-22-211015 | PATCH | Ubuntu 22.04 LTS must disable the x86 Ctrl-Alt-Delete key sequence.
-  when:
-    - ubtu_22_211015
+  when: ubtu_22_211015
   tags:
     - UBTU-22-211015
     - CAT1
@@ -51,8 +50,7 @@
       notify: Update_grub
 
 - name: HIGH | UBTU-22-215030 | PATCH | Ubuntu 22.04 LTS must not have the "rsh-server" package installed.
-  when:
-    - ubtu_22_215030
+  when: ubtu_22_215030
   tags:
     - UBTU-22-215030
     - CAT1
@@ -68,8 +66,7 @@
     purge: "{{ ubtu22stig_purge_apt }}"
 
 - name: HIGH | UBTU-22-215035 | PATCH | Ubuntu 22.04 LTS must not have the "telnet" package installed.
-  when:
-    - ubtu_22_215035
+  when: ubtu_22_215035
   tags:
     - UBTU-22-215035
     - CAT1

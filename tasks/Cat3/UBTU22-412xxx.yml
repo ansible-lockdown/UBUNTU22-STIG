@@ -1,8 +1,7 @@
 ---
 
 - name: LOW | UBTU-22-412010 | PATCH | Ubuntu 22.04 LTS must enforce a delay of at least four seconds between logon prompts following a failed logon attempt.
-  when:
-    - ubtu_22_412010
+  when: ubtu_22_412010
   tags:
     - UBTU-22-412010
     - CAT3
@@ -20,8 +19,7 @@
     insertbefore: auth.*pam_unix.so nullok
 
 - name: LOW | UBTU-22-412015 | PATCH | Ubuntu 22.04 LTS must enforce a delay of at least four seconds between logon prompts following a failed logon attempt.
-  when:
-    - ubtu_22_412015
+  when: ubtu_22_412015
   tags:
     - UBTU-22-412015
     - CAT3
@@ -48,8 +46,7 @@
         line: session    required    pam_lastlog.so showfailed
 
 - name: LOW | UBTU-22-412020 | PATCH | Ubuntu 22.04 LTS must display the date and time of the last successful account logon upon logon.
-  when:
-    - ubtu_22_412020
+  when: ubtu_22_412020
   tags:
     - UBTU-22-412020
     - CAT3
