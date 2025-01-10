@@ -212,11 +212,11 @@
       changed_when: false
       register: discovered_auditd_logfile
 
-    - name: MEDIUM | UBTU-22-653060 | AUDIT | Ubuntu 22.04 LTS must be configured so that the audit log directory is not write-accessible by unauthorized users. |
+    - name: MEDIUM | UBTU-22-653060 | AUDIT | Ubuntu 22.04 LTS must be configured so that the audit log directory is not write-accessible by unauthorized users.
       ansible.builtin.file:
         path: "{{ discovered_auditd_logfile.stdout | dirname }}"
         state: directory
-        mode: 'u+rwx,g+rx,g-w,o-rwx'
+        mode: 'go-w'
 
 - name: MEDIUM | UBTU-22-653065 | PATCH | Ubuntu 22.04 LTS must be configured so that audit configuration files are not write-accessible by unauthorized users.
   when:
@@ -294,8 +294,3 @@
         path: "{{ item.path }}"
         group: root
       loop: "{{ discovered_audit_files.files }}"
-
-Automated CIS Benchmark Compliance Remediation for Debian 11 with Ansible
-Automated CIS Benchmark Compliance Audit for Debian 11 with Ansible
-
-🔐 Private Pre-Release Access for Subscribers: Automated CIS Benchmark Compliance Remediation for RHEL 8 with Ansible 🔐

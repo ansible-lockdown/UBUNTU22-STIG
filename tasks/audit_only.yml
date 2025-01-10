@@ -3,7 +3,7 @@
 - name: "Audit_Only | Create local Directories for hosts"
   when: fetch_audit_files
   ansible.builtin.file:
-    mode: 'u+x,go-w'
+    mode: 'go-w'
     path: "{{ audit_capture_files_dir }}/{{ inventory_hostname }}"
     recurse: true
     state: directory
