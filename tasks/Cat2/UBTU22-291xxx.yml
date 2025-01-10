@@ -16,7 +16,7 @@
   ansible.builtin.template:
     dest: "/etc/modprobe.d/{{ blacklist }}.conf"
     src: etc/modprobe.d/module.conf.j2
-    mode: 'go-rwx'
+    mode: 'go-wx'
   notify: Change_requires_reboot
 
 - name: MEDIUM | UBTU-22-291015 | PATCH | Ensure wireless interfaces are disabled
@@ -39,7 +39,7 @@
         regexp: '^(#)?install true(\\s|$)'
         line: install {{ item }} true
         create: true
-        mode: 'go-rwx'
+        mode: 'go-wx'
       loop: "{{ prelim_wireless_modules.stdout_lines }}"
 
     - name: MEDIUM | UBTU-22-291015 | PATCH |  Ensure wireless interfaces are disabled | blacklist
@@ -48,5 +48,5 @@
         regexp: "^(#)?blacklist {{ item }}(\\s|$)"
         line: "blacklist {{ item }}"
         create: true
-        mode: 'go-rwx'
+        mode: 'go-wx'
       loop: "{{ prelim_wireless_modules.stdout_lines }}"
