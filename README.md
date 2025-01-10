@@ -4,8 +4,6 @@
 
 This role is based on UBUNTU 22 DISA STIG: [Version 2, Rel 2 released on October 24, 2024](https://dl.dod.cyber.mil/wp-content/uploads/stigs/U_UBUNTU_22_V2R2_STIG.zip).
 
-## Initial Relase from STIG, still many items that not quite aligned in the documentation
-
 ---
 
 ![Org Stars](https://img.shields.io/github/stars/ansible-lockdown?label=Org%20Stars&style=social)
@@ -84,12 +82,8 @@ This audit will not only check the config has the correct setting but aims to ca
 
 The following packages must be installed on the controlling host/host where ansible is executed:
 
-- python2-passlib (or just passlib, if using python3)
 - python-lxml
 - python-xmltodict
-- python-jmespath
-
-Package 'python-xmltodict' is required if you enable the OpenSCAP tool installation and run a report. Packages python(2)-passlib and python-jmespath are required for tasks with custom filters or modules. These are all required on the controller host that executes Ansible.
 
 ## Role Variables 📋
 
