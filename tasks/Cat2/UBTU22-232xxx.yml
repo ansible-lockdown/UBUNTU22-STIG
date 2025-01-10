@@ -314,7 +314,7 @@
         path: "{{ item }}"
         state: directory
         owner: root
-        mode: 'u+rwx,go+rx'
+        mode: 'go-w'
       loop: "{{ discovered_system_bin_dirs_owner.stdout_lines }}"
 
     - name: MEDIUM | UBTU-22-232040 | WARN | Ubuntu 22.04 LTS must have directories that contain system commands owned by "root". | Warning
@@ -360,7 +360,7 @@
         path: "{{ item }}"
         state: directory
         group: root
-        mode: 'u+rwx,go+rx'
+        mode: 'go-w'
       loop: "{{ discovered_system_bin_dirs_group.stdout_lines }}"
 
     - name: MEDIUM | UBTU-22-232045 | WARN | Ubuntu 22.04 LTS must have directories that contain system commands group-owned by "root". | Warning
@@ -934,7 +934,7 @@
   ansible.builtin.file:
     path: /usr/bin/journalctl
     state: file
-    mode: 'u+rwx,g+r,o---'
+    mode: 'go-w'
 
 - name: MEDIUM | UBTU-22-232145 | PATCH | Ubuntu 22.04 LTS must set a sticky bit on all public directories to prevent unauthorized and unintended information transferred via shared system resources.
   when:
