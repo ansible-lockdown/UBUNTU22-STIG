@@ -51,5 +51,5 @@
         dest: /etc/rsyslog.d/50-default.conf
         owner: root
         group: root
-        mode: '0644'
+        mode: 'go-wx'
       notify: Restart_rsyslog
