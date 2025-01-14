@@ -1,7 +1,9 @@
 ---
 
 - name: HIGH | UBTU-22-255010 | PATCH | Ubuntu 22.04 LTS must have SSH installed.
-  when: ubtu_22_255010
+  when:
+    - ubtu_22_255010
+    - "'openssh-server' not in ansible_facts.packages"
   tags:
     - UBTU-22-255010
     - CAT1
@@ -16,7 +18,7 @@
     - NIST800-53R4_SC-8
     - ssh
   ansible.builtin.package:
-    name: ssh
+    name: openssh-server
     state: present
 
 - name: HIGH | UBTU-22-255015 | PATCH | Ubuntu 22.04 LTS must use SSH to protect the confidentiality and integrity of transmitted information.
