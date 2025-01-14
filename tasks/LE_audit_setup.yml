@@ -20,7 +20,7 @@
     owner: root
     group: root
     checksum: "{{ audit_bin_version[audit_pkg_arch_name + '_checksum'] }}"
-    mode: 'go-w'
+    mode: 'u+x,go+x,go-w'
 
 - name: "Pre Audit Setup | Copy audit binary"
   when: get_audit_binary_method == 'copy'
