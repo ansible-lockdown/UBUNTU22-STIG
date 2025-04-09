@@ -26,6 +26,11 @@
         max_int_uid: "{{ uid_max_id.stdout }}"
         min_int_gid: "{{ gid_min_id.stdout }}"
 
+- name: "PRELIM | PATCH | Run apt update"
+  tags: always
+  ansible.builtin.package:
+    cache_valid_time: 7200
+
 - name: "PRELIM | Include audit specific variables"
   when:
     - run_audit or audit_only
