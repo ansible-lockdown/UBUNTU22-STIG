@@ -16,7 +16,7 @@
   ansible.builtin.import_tasks:
     file: UBTU22-43xxxx.yml
 
-- name: Run Cat 1 STIG 61xxxx Authenticaton tasks
+- name: Run Cat 1 STIG 61xxxx Authentication tasks
   ansible.builtin.import_tasks:
     file: UBTU22-61xxxx.yml
 

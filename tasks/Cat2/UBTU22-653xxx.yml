@@ -219,8 +219,7 @@
         mode: 'go-w'
 
 - name: MEDIUM | UBTU-22-653065 | PATCH | Ubuntu 22.04 LTS must be configured so that audit configuration files are not write-accessible by unauthorized users.
-  when:
-    - ubtu_22_653065
+  when: ubtu_22_653065
   tags:
     - UBTU-22-653065
     - CCI-000171
@@ -244,8 +243,7 @@
       loop: "{{ discovered_audit_files.files }}"
 
 - name: MEDIUM | UBTU-22-653070 | PATCH | Ubuntu 22.04 LTS must be configured so that audit configuration files are not write-accessible by unauthorized users.
-  when:
-    - ubtu_22_653070
+  when: ubtu_22_653070
   tags:
     - UBTU-22-653070
     - CAT2
@@ -270,8 +268,7 @@
       loop: "{{ discovered_audit_files.files }}"
 
 - name: MEDIUM | UBTU-22-653075 | PATCH | Ubuntu 22.04 LTS must permit only authorized groups to own the audit configuration files.
-  when:
-    - ubtu_22_653075
+  when: ubtu_22_653075
   tags:
     - UBTU-22-653075
     - CAT2

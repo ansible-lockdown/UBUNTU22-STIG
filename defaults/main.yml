@@ -3,7 +3,7 @@
 ## metadata for Audit benchmark
 benchmark_version: 'v2.2.0'
 
-## Benchmark name used by audting control role
+## Benchmark name used by auditing control role
 # The audit variable found at the base
 benchmark: UBUNTU22-STIG
 
@@ -117,7 +117,7 @@ audit_log_dir: '/opt'
 fetch_audit_output: false
 
 # Method of getting,uploading the summary files
-## Ensure access and permissions are avaiable for these to occur.
+## Ensure access and permissions are available for these to occur.
 ## options are
 # fetch - fetches from server and moves to location on the ansible controller (could be a mount point available to controller)
 # copy - copies file to a location available to the managed node

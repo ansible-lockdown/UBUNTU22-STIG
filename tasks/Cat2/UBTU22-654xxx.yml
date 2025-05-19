@@ -29,8 +29,7 @@
     update_audit_template: true
 
 - name: MEDIUM | UBTU-22-654020 | Ubuntu 22.04 LTS must generate audit records for successful/unsuccessful uses of the chage command.
-  when:
-    - ubtu_22_654020
+  when: ubtu_22_654020
   tags:
     - UBTU-22-654020
     - CAT2

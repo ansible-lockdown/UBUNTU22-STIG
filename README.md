@@ -1,6 +1,6 @@
 # UBUNTU 22 DISA STIG
 
-## Configure a UBUNTU22 based system to be complaint with Disa STIG
+## Configure a UBUNTU22 based system to be complaint with DISA STIG
 
 This role is based on UBUNTU 22 DISA STIG: [Version 2, Rel 2 released on October 24, 2024](https://dl.dod.cyber.mil/wp-content/uploads/stigs/U_UBUNTU_22_V2R2_STIG.zip).
 
@@ -9,7 +9,7 @@ This role is based on UBUNTU 22 DISA STIG: [Version 2, Rel 2 released on October
 ![Org Stars](https://img.shields.io/github/stars/ansible-lockdown?label=Org%20Stars&style=social)
 ![Stars](https://img.shields.io/github/stars/ansible-lockdown/ubuntu22-stig?label=Repo%20Stars&style=social)
 ![Forks](https://img.shields.io/github/forks/ansible-lockdown/ubuntu22-stig?style=social)
-![followers](https://img.shields.io/github/followers/ansible-lockdown?style=social)
+![Followers](https://img.shields.io/github/followers/ansible-lockdown?style=social)
 [![Twitter URL](https://img.shields.io/twitter/url/https/twitter.com/AnsibleLockdown.svg?style=social&label=Follow%20%40AnsibleLockdown)](https://twitter.com/AnsibleLockdown)
 
 ![Ansible Galaxy Quality](https://img.shields.io/ansible/quality/56380?label=Quality&&logo=ansible)
@@ -172,7 +172,7 @@ If you would are interested in dedicated support to assist or provide bespoke se
 
 ## Credits 🙏
 
-The inspriation for this work repo originated from work done by [Sam Doran](https://github.com/samdoran/ansible-role-stig)
+The inspiration for this work repo originated from work done by [Sam Doran](https://github.com/samdoran/ansible-role-stig)
 
 ## Added Extras
 

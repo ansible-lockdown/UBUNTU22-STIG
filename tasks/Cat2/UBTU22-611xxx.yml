@@ -65,8 +65,7 @@
     line: 'ocredit = -1'
 
 - name: MEDIUM | UBTU-22-611030 | PATCH | Ubuntu 22.04 LTS must prevent the use of dictionary words for passwords.
-  when:
-    - ubtu_22_611030
+  when: ubtu_22_611030
   tags:
     - UBTU-22-611030
     - CAT2
