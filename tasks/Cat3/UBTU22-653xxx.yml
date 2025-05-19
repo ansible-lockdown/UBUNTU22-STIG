@@ -53,7 +53,9 @@
   notify: Restart_auditd
 
 - name: "LOW | UBTU-22-653035 | PATCH | Ubuntu 22.04 LTS must allocate audit record storage capacity to store at least one weeks' worth of audit records, when audit records are not immediately sent to a central audit record storage facility."
-  when: ubtu_22_653035
+  when:
+    - ubtu_22_653035
+    - ansible_facts['mounts']| selectattr('mount', '==', ubtu22stig_audit_log_filesystem)
   tags:
     - UBTU-22-653035
     - CAT3

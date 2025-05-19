@@ -54,8 +54,7 @@
       changed_when: true
 
 - name: MEDIUM | UBTU-22-651020 | PATCH | Ubuntu 22.04 LTS must notify designated personnel if baseline configurations are changed in an unauthorized manner. The file integrity tool must notify the system administrator when changes to the baseline configuration or anomalies in the operation of any security functions are discovered.
-  when:
-    - ubtu_22_651020
+  when: ubtu_22_651020
   tags:
     - UBTU-22-651020
     - CAT2
@@ -74,8 +73,7 @@
     line: SILENTREPORTS=no
 
 - name: MEDIUM | UBTU-22-651025 | PATCH | Ubuntu 22.04 LTS must be configured so that the script that runs each 30 days or less to check file integrity is the default.
-  when:
-    - ubtu_22_651025
+  when: ubtu_22_651025
   tags:
     - UBTU-22-651025
     - CAT2
