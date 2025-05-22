@@ -1,0 +1,36 @@
+---
+
+- name: MEDIUM | UBTU-22-253010 | PATCH | Ubuntu 22.04 LTS must be configured to use TCP syncookies.
+  when: ubtu22stig_253010
+  tags:
+    - UBTU-22-253010
+    - CAT2
+    - CCI-001095
+    - SRG-OS-000142-GPOS-00071
+    - SV-260522r958528_rule
+    - V-260522
+    - NIST800-53R4_SC-5
+    - network
+  block:
+    - name: MEDIUM | UBTU-22-253010 | PATCH | Ubuntu 22.04 LTS must be configured to use TCP syncookies. | find file with current settings
+      ansible.builtin.find:
+        paths: [ '/etc/sysctl.d', '/run/sysctl.d', '/usr/local/lib/sysctl.d', '/usr/lib/sysctl.d', '/lib/sysctl.d' ]
+        file_type: file
+        pattern: '*.conf'
+        contains: net.ipv4.tcp_syncookies
+      register: discovered_sysctl_conf_files
+
+    - name: MEDIUM | UBTU-22-253010 | PATCH | Ubuntu 22.04 LTS must be configured to use TCP syncookies. | remove current settings
+      when: "ubtu22stig_sysctl_network_conf not in item.path"
+      ansible.builtin.replace:
+        path: "{{ item.path }}"
+        regexp: net.ipv4.tcp_syncookies\s*=\s*[ 0, 2 ]
+        replace: ''
+      loop: "{{ discovered_sysctl_conf_files.files }}"
+
+    - name: MEDIUM | UBTU-22-253010 | PATCH | Ubuntu 22.04 LTS must be configured to use TCP syncookies. | ensure setting on correct file
+      ansible.posix.sysctl:
+        name: net.ipv4.tcp_syncookies
+        reload: true
+        sysctl_file: "{{ ubtu22stig_sysctl_network_conf }}"
+        value: '1'

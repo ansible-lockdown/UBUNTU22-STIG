@@ -4,6 +4,8 @@
 
 ### 1.0.0
 
+Renaming of prefix on vars
+UFW fix on controls section UBTU-22-251xxx
 Updated lint configs
 spacing aligned
 lint updates

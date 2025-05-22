@@ -61,7 +61,7 @@
   when:
     - not system_is_ec2
     - not system_is_container
-    - ubtu_22_212010
+    - ubtu22stig_212010
     - ubtu22stig_set_bootloader_password
     - not audit_only
   ansible.builtin.assert:

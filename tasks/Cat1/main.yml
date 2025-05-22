@@ -2,24 +2,24 @@
 
 - name: Run Cat 1 STIG 21xxxx Core tasks
   ansible.builtin.import_tasks:
-    file: UBTU22-21xxxx.yml
+    file: UBTU-22-21xxxx.yml
 
 - name: Run Cat 1 STIG 25xxxx Network tasks
   ansible.builtin.import_tasks:
-    file: UBTU22-25xxxx.yml
+    file: UBTU-22-25xxxx.yml
 
 - name: Run Cat 1 STIG 27xxxx GUI tasks
   ansible.builtin.import_tasks:
-    file: UBTU22-27xxxx.yml
+    file: UBTU-22-27xxxx.yml
 
 - name: Run Cat 1 STIG 43xxxx Privilege Escalation tasks
   ansible.builtin.import_tasks:
-    file: UBTU22-43xxxx.yml
+    file: UBTU-22-43xxxx.yml
 
 - name: Run Cat 1 STIG 61xxxx Authentication tasks
   ansible.builtin.import_tasks:
-    file: UBTU22-61xxxx.yml
+    file: UBTU-22-61xxxx.yml
 
 - name: Run Cat 1 STIG 67xxxx Cryptography tasks
   ansible.builtin.import_tasks:
-    file: UBTU22-67xxxx.yml
+    file: UBTU-22-67xxxx.yml

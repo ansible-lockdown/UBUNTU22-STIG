@@ -1,0 +1,113 @@
+---
+
+- name: LOW | UBTU-22-653020 | PATCH | Ubuntu 22.04 LTS audit event multiplexor must be configured to offload audit logs onto a different system from the system being audited.
+  when: ubtu22stig_653020
+  tags:
+    - UBTU-22-653020
+    - CAT3
+    - CCI-001851
+    - SRG-OS-000342-GPOS-00133
+    - SV-260592r958754_rule
+    - V-260592
+    - NIST800-53R4_AU-4
+    - auditd
+  block:
+    - name: LOW | UBTU-22-653020 | PATCH | Ubuntu 22.04 LTS audit event multiplexor must be configured to offload audit logs onto a different system from the system being audited.
+      ansible.builtin.package:
+        name: audispd-plugins
+        state: present
+
+    - name: "LOW | UBTU-22-653020 | PATCH | Ubuntu 22.04 LTS audit event multiplexor must be configured to offload audit logs onto a different system from the system being audited."
+      ansible.builtin.lineinfile:
+        path: /etc/audit/plugins.d/au-remote.conf
+        regexp: (?i)active\s*=\s*no
+        line: active = yes
+        mode: 'u-x,go-rwx'
+        create: true
+      notify: Restart_auditd
+
+    - name: "LOW | UBTU-22-653020 | PATCH | Ubuntu 22.04 LTS audit event multiplexor must be configured to offload audit logs onto a different system from the system being audited."
+      ansible.builtin.lineinfile:
+        path: /etc/audit/plugins.d/audisp-remote.conf
+        regexp: remote_server\s*=\s*
+        line: "remote_server = {{ ubtu22stig_remotelog_server_address }}"
+        mode: 'u-x,go-rwx'
+        create: true
+      notify: Restart_auditd
+
+- name: "LOW | UBTU-22-653025 | PATCH | Ubuntu 22.04 LTS must alert the information system security officer (ISSO) and system administrator (SA) in the event of an audit processing failure."
+  when: ubtu22stig_653025
+  tags:
+    - UBTU-22-653025
+    - CAT3
+    - CCI-000139
+    - SRG-OS-000046-GPOS-00022
+    - SV-260593r958424_rule
+    - V-260593
+    - NIST800-53R4_AU-5
+    - auditd
+  ansible.builtin.lineinfile:
+    path: /etc/audit/auditd.conf
+    regexp: (?i)^(#|)action_mail_acct\s*=\s*
+    line: "action_mail_acct = {{ ubtu22stig_auditd_email_acct }}"
+  notify: Restart_auditd
+
+- name: "LOW | UBTU-22-653035 | PATCH | Ubuntu 22.04 LTS must allocate audit record storage capacity to store at least one weeks' worth of audit records, when audit records are not immediately sent to a central audit record storage facility."
+  when:
+    - ubtu22stig_653035
+    - ansible_facts['mounts']| selectattr('mount', '==', ubtu22stig_audit_log_filesystem)
+  tags:
+    - UBTU-22-653035
+    - CAT3
+    - CCI-001849
+    - SRG-OS-000341-GPOS-00132
+    - SV-260595r958752_rule
+    - V-260595
+    - NIST800-53R4_AU-4
+    - auditd
+  vars:
+    warn_control_id: "LOW | UBTU-22-653035"
+  block:
+    - name: "LOW | UBTU-22-653035 | AUDIT | Ubuntu 22.04 LTS must allocate audit record storage capacity to store at least one weeks' worth of audit records, when audit records are not immediately sent to a central audit record storage facility."
+      ansible.builtin.shell: grep ^log_file /etc/audit/auditd.conf | awk '{ print $NF }'
+      changed_when: false
+      register: discovered_auditd_logfile
+
+    - name: "LOW | UBTU-22-653035 | AUDIT | Ubuntu 22.04 LTS must allocate audit record storage capacity to store at least one weeks' worth of audit records, when audit records are not immediately sent to a central audit record storage facility."
+      ansible.builtin.set_fact:
+        audit_filesystem_space_left: "{{ (audit_mount.size_available / 1024 / 1024) | int }}"
+      vars:
+        audit_mount: "{{ ansible_facts.mounts | selectattr('mount', 'equalto', ubtu22stig_audit_log_filesystem) | list | first }}"
+
+    - name: "LOW | UBTU-22-653035 | WARN | Ubuntu 22.04 LTS must allocate audit record storage capacity to store at least one weeks' worth of audit records, when audit records are not immediately sent to a central audit record storage facility."
+      ansible.builtin.debug:
+        msg:
+          - "WARNING!! Below is the path and size of the partition for the audit logs."
+          - "Please make sure there is enough disk space for 1 week of logs"
+          - "Mount: {{ ubtu22stig_audit_log_filesystem }}"
+          - "Logfile: {{ discovered_auditd_logfile.stdout }}"
+          - "Disk Space remaining: {{ audit_filesystem_space_left }}MB"
+
+    - name: "LOW | UBTU-22-653035| WARN | Ubuntu 22.04 LTS must allocate audit record storage capacity to store at least one weeks' worth of audit records, when audit records are not immediately sent to a central audit record storage facility."
+      ansible.builtin.import_tasks:
+        file: warning_facts.yml
+
+- name: "LOW | UBTU-22-653040 | PATCH | Ubuntu 22.04 LTS must immediately notify the system administrator (SA) and information system security officer (ISSO) when the audit record storage volume reaches 25 percent remaining of the allocated capacity."
+  when: ubtu22stig_653040
+  tags:
+    - UBTU-22-653040
+    - CAT3
+    - CCI-001855
+    - SRG-OS-000343-GPOS-00134
+    - SV-260596r971542_rule
+    - V-260596
+    - NIST800-53R4_AU-5
+    - auditd
+  ansible.builtin.lineinfile:
+    path: /etc/audit/auditd.conf
+    regexp: "{{ item.regexp }}"
+    line: "{{ item.line }}"
+  loop:
+    - { regexp: '^(#|)space_left\s*=\s*', line: 'space_left = {{ ubtu22stig_auditd_space_left }}' }
+    - { regexp: '^(#|)space_left_action\s*=\s*', line: 'space_left_action = {{ ubtu22stig_auditd_space_left_action }}' }
+  notify: Restart_auditd
