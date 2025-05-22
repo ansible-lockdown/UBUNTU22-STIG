@@ -1,0 +1,18 @@
+---
+
+- name: HIGH | UBTU-22-271030 | PATCH | Ubuntu 22.04 LTS must disable the x86 Ctrl-Alt-Delete key sequence if a graphical user interface is installed.
+  when:
+    - ubtu22stig_271030
+    - ubtu22stig_gui
+  tags:
+    - UBTU-22-271030
+    - CAT1
+    - CCI-000366
+    - SRG-OS-000480-GPOS-00227
+    - SV-260539r991589_rule
+    - V-260539
+    - NIST800-53R4_CM-6
+    - gnome
+  ansible.builtin.command: gsettings set org.gnome.settings-daemon.plugins.media-keys logout []
+  changed_when: true
+  notify: Update_dconf

@@ -1,0 +1,183 @@
+---
+
+- name: MEDIUM | UBTU-22-611010 | PATCH | Ubuntu 22.04 LTS must enforce password complexity by requiring at least one uppercase character be used.
+  when: ubtu22stig_611010
+  tags:
+    - UBTU-22-611010
+    - CAT2
+    - CCI-000000
+    - SRG-OS-000069-GPOS-00037
+    - SV-260560r986285_rule
+    - V-260560
+    - NIST800-53R4_NA
+    - password
+  ansible.builtin.lineinfile:
+    path: /etc/security/pwquality.conf
+    regexp: ^(#|)ucredit\s*=
+    line: 'ucredit = -1'
+
+- name: MEDIUM | UBTU-22-611015 | PATCH | Ubuntu 22.04 LTS must enforce password complexity by requiring at least one lowercase character be used.
+  when: ubtu22stig_611015
+  tags:
+    - UBTU-22-611015
+    - CAT2
+    - CCI-000000
+    - SRG-OS-000070-GPOS-00038
+    - SV-260561r986286_rule
+    - V-260561
+    - NIST800-53R4_NA
+    - password
+  ansible.builtin.lineinfile:
+    path: /etc/security/pwquality.conf
+    regexp: ^(#|)lcredit\s*=
+    line: 'lcredit = -1'
+
+- name: MEDIUM | UBTU-22-611020 | PATCH | Ubuntu 22.04 LTS must enforce password complexity by requiring that at least one numeric character be used.
+  when: ubtu22stig_611020
+  tags:
+    - UBTU-22-611020
+    - CAT2
+    - CCI-000000
+    - SRG-OS-000071-GPOS-00039
+    - SV-260562r986287_rule
+    - V-260562
+    - NIST800-53R4_NA
+    - password
+  ansible.builtin.lineinfile:
+    path: /etc/security/pwquality.conf
+    regexp: ^(#|)dcredit\s*=
+    line: 'dcredit = -1'
+
+- name: MEDIUM | UBTU-22-611025 | PATCH | Ubuntu 22.04 LTS must enforce password complexity by requiring that at least one special character be used.
+  when: ubtu22stig_611025
+  tags:
+    - UBTU-22-611025
+    - CAT2
+    - CCI-000000
+    - SRG-OS-000266-GPOS-00101
+    - SV-260563r991561_rule
+    - V-260563
+    - NIST800-53R4_NA
+    - password
+  ansible.builtin.lineinfile:
+    path: /etc/security/pwquality.conf
+    regexp: ^(#|)ocredit\s*=
+    line: 'ocredit = -1'
+
+- name: MEDIUM | UBTU-22-611030 | PATCH | Ubuntu 22.04 LTS must prevent the use of dictionary words for passwords.
+  when: ubtu22stig_611030
+  tags:
+    - UBTU-22-611030
+    - CAT2
+    - CCI-000000
+    - SRG-OS-000480-GPOS-00225
+    - SV-260564r991587_rule
+    - V-260564
+    - NIST800-53R4_NA
+    - password
+  ansible.builtin.lineinfile:
+    path: /etc/security/pwquality.conf
+    regexp: ^(#|)dictcheck\s*=
+    line: 'dictcheck = 1'
+
+- name: MEDIUM | UBTU-22-611035 | PATCH | Ubuntu 22.04 LTS must enforce a minimum 15-character password length.
+  when: ubtu22stig_611035
+  tags:
+    - UBTU-22-611035
+    - CCI-000000
+    - SRG-OS-000078-GPOS-00046
+    - SV-260565r986289_rule
+    - V-260565
+    - NIST800-53R4_NA
+    - password
+  ansible.builtin.lineinfile:
+    path: /etc/security/pwquality.conf
+    regexp: ^(#|)minlen\s*=
+    line: 'minlen = {{ ubtu22stig_pass_minlen }}'
+
+- name: MEDIUM | UBTU-22-611040 | PATCH | Ubuntu 22.04 LTS must require the change of at least eight characters when passwords are changed.
+  when: ubtu22stig_611040
+  tags:
+    - UBTU-22-611040
+    - CAT2
+    - NA
+    - SRG-OS-000072-GPOS-00040
+    - SV-260566r986290_rule
+    - V-260566
+    - NIST800-53R4_NA
+    - password
+  ansible.builtin.lineinfile:
+    path: /etc/security/pwquality.conf
+    regexp: ^(#|)difok\s*=
+    line: 'difok = {{ ubtu22stig_pass_difok }}'
+
+- name: MEDIUM | UBTU-22-611045 | PATCH | Ubuntu 22.04 LTS must be configured so that when passwords are changed or new passwords are established, pwquality must be used.
+  when: ubtu22stig_611045
+  tags:
+    - UBTU-22-611045
+    - CAT2
+    - CCI-000366
+    - SRG-OS-000480-GPOS-00225
+    - SV-260567r991587_rule
+    - V-260567
+    - NIST800-53R4_CM-6
+    - password
+  ansible.builtin.lineinfile:
+    path: /etc/security/pwquality.conf
+    regexp: ^(#|)enforcing\s*=
+    line: 'enforcing = 1'
+
+- name: MEDIUM | UBTU-22-611055 | PATCH | Ubuntu 22.04 LTS must store only encrypted representations of passwords.
+  when: ubtu22stig_611055
+  tags:
+    - UBTU-22-611055
+    - CCI-000000
+    - CAT2
+    - SRG-OS-000073-GPOS-00041
+    - SV-260569r986291_rule
+    - V-260569
+    - NIST800-53R4_NA
+    - password
+  block:
+    - name: MEDIUM | UBTU-22-611055 | AUDIT | Ubuntu 22.04 LTS must store only encrypted representations of passwords. | get current setting
+      ansible.builtin.shell: grep -v ^# /etc/pam.d/common-password | grep -E "(yescrypt|md5|bigcrypt|sha256|sha512|blowfish)"
+      changed_when: false
+      failed_when: discovered_common_pwd_sha512.rc not in [ 0, 1 ]
+      register: discovered_common_pwd_sha512
+
+    - name: MEDIUM | UBTU-22-611055 | AUDIT | Ubuntu 22.04 LTS must store only encrypted representations of passwords. | replace current setting if incorrect
+      when:
+        - discovered_common_pwd_sha512 | length > 0
+        - "ubtu22stig_passwd_hash_algo not in discovered_common_pwd_sha512.stdout"
+      ansible.builtin.lineinfile:
+        path: /etc/pam.d/common-password
+        backrefs: true
+        regexp: ^(password\s*\[success=1 default=ignore\]\s*pam_unix.so.*)(yescrypt|md5|bigcrypt|sha256|sha512|blowfish)(.*)
+        line: \1{{ ubtu22stig_passwd_hash_algo }}\3
+
+    - name: MEDIUM | UBTU-22-611055 | PATCH | Ubuntu 22.04 LTS must store only encrypted representations of passwords.
+      when:
+        - discovered_common_pwd_sha512 | length > 0
+      community.general.pamd:
+        name: common-password
+        type: password
+        control: '[success=1 default=ignore]'
+        module_path: pam_unix.so
+        module_arguments: "{{ ubtu22stig_passwd_hash_algo }}"
+        state: args_present
+
+- name: MEDIUM | UBTU-22-611070 | PATCH | Ubuntu 22.04 LTS must store only encrypted representations of passwords.
+  when: ubtu22stig_611070
+  tags:
+    - UBTU-22-611070
+    - CAT2
+    - CCI-000803
+    - SRG-OS-000120-GPOS-00061
+    - SV-260572r971535_rule
+    - V-260572
+    - NIST800-53R4_IA-7
+    - password
+  ansible.builtin.lineinfile:
+    path: /etc/login.defs
+    regexp: (?i)^(#|)ENCRYPT_METHOD
+    line: ENCRYPT_METHOD "{{ ubtu22stig_passwd_hash_algo }}"

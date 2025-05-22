@@ -1,0 +1,170 @@
+---
+
+- name: MEDIUM | UBTU-22-612010 | PATCH | Ubuntu 22.04 LTS must implement multifactor authentication for remote access to privileged accounts in such a way that one of the factors is provided by a device separate from the system gaining access.
+  when: ubtu22stig_612010
+  tags:
+    - UBTU-22-612010
+    - CAT2
+    - CCI-000765
+    - CCI-000766
+    - SRG-OS-000375-GPOS-00160
+    - SRG-OS-000105-GPOS-00052
+    - SRG-OS-000106-GPOS-00053
+    - SRG-OS-000107-GPOS-00054
+    - SRG-OS-000108-GPOS-00055
+    - SV-260573r986292_rule
+    - V-260573
+    - NIST800-53R4_IA-2
+    - multifactor
+  ansible.builtin.package:
+    name: libpam-pkcs11
+    state: present
+
+- name: MEDIUM | UBTU-22-612015 | PATCH | Ubuntu 22.04 LTS must accept personal identity verification (PIV) credentials.
+  when: ubtu22stig_612015
+  tags:
+    - UBTU-22-612015
+    - CAT2
+    - CCI-001953
+    - SRG-OS-000376-GPOS-00161
+    - SV-260574r958816_rule
+    - V-260574
+    - NIST800-53R4_IA-2
+    - multifactor
+  ansible.builtin.package:
+    name: opensc-pkcs11
+    state: present
+
+- name: MEDIUM | UBTU-22-612020 | PATCH | Ubuntu 22.04 LTS must implement smart card logins for multifactor authentication for local and network access to privileged and nonprivileged accounts.
+  when:
+    - ubtu22stig_612020
+    - ubtu22stig_disruption_high
+  tags:
+    - UBTU-22-612020
+    - CAT2
+    - CCI-000765
+    - CCI-000766
+    - SRG-OS-000105-GPOS-00052
+    - SRG-OS-000106-GPOS-00053
+    - SRG-OS-000107-GPOS-00054
+    - SRG-OS-000108-GPOS-00055
+    - SV-260575r986293_rule
+    - V-260575
+    - NIST800-53R4_IA-2
+    - multifactor
+  block:
+    - name: MEDIUM | UBTU-22-612020 | PATCH | Ubuntu 22.04 LTS must implement smart card logins for multifactor authentication for local and network access to privileged and nonprivileged accounts. | sshd pubkey
+      ansible.builtin.lineinfile:
+        path: /etc/ssh/sshd_config
+        regexp: (?i)^(#|)PubkeyAuthentication
+        line: PubkeyAuthentication yes
+        validate: sshd -t -f %s
+      notify: Restart_ssh
+
+    - name: MEDIUM | UBTU-22-612020 | AUDIT | Ubuntu 22.04 LTS must implement smart card logins for multifactor authentication for local and network access to privileged and nonprivileged accounts. | Check common-auth
+      ansible.builtin.shell: grep -iE "^auth.*pam_pkcs11.so" /etc/pam.d/common-auth
+      changed_when: false
+      failed_when: discovered_pamd_pkcs_enabled.rc not in [ 0, 1 ]
+      register: discovered_pamd_pkcs_enabled
+
+    - name: MEDIUM | UBTU-22-612020 | PATCH | Ubuntu 22.04 LTS must implement smart card logins for multifactor authentication for local and network access to privileged and nonprivileged accounts. | add pkcs
+      ansible.builtin.lineinfile:
+        path: /etc/pam.d/common-auth
+        regexp: ^auth.*pam_pkcs11.so
+        line: auth [success=2 default=ignore] pam_pkcs11.so
+        insertbefore: ^auth.*pam_unix.so
+
+- name: MEDIUM | UBTU-22-612025 | PATCH | Ubuntu 22.04 LTS must electronically verify personal identity verification (PIV) credentials.
+  when:
+    - ubtu22stig_612025
+    - ubtu22stig_disruption_high
+  tags:
+    - UBTU-22-612025
+    - CAT2
+    - CCI-000185
+    - SRG-OS-000066-GPOS-00034
+    - SV-260577r986294_rule
+    - V-260577
+    - NIST800-53R4_IA-5
+    - multifactor
+  block:
+    - name: MEDIUM | UBTU-22-612025 | AUDIT | Ubuntu 22.04 LTS must electronically verify personal identity verification (PIV) credentials. | find current settings
+      ansible.builtin.shell: grep -E "^cert_policy=" /etc/pam_pkcs11/pam_pkcs11.conf | cut -d ';' -f1 | grep -v ocsp_on
+      changed_when: false
+      failed_when: discovered_pkcs_cert_ocsp_policy.rc not in [ 0, 1 ]
+      register: discovered_pkcs_cert_ocsp_policy
+
+    - name: MEDIUM | UBTU-22-612025 | PATCH | Ubuntu 22.04 LTS must electronically verify personal identity verification (PIV) credentials. | change where needed
+      when:
+        - discovered_pkcs_cert_ocsp_policy is defined
+        - discovered_pkcs_cert_ocsp_policy.stdout | length > 0
+      ansible.builtin.lineinfile:
+        path: /etc/pam_pkcs11/pam_pkcs11.conf
+        line: "{{ item }},ocsp_on;"
+      loop: "{{ discovered_pkcs_cert_ocsp_policy.stdout_lines }}"
+
+- name: MEDIUM | UBTU-22-612030 | PATCH | Ubuntu 22.04 LTS, for PKI-based authentication, must validate certificates by constructing a certification path (which includes status information) to an accepted trust anchor.
+  when:
+    - ubtu22stig_612030
+    - ubtu22stig_disruption_high
+  tags:
+    - UBTU-22-612030
+    - CAT2
+    - CCI-000000
+    - SRG-OS-000384-GPOS-00167
+    - SV-260578r986295_rule
+    - V-260578
+    - NIST800-53R4_NA
+    - multifactor
+  block:
+    - name: MEDIUM | UBTU-22-612030 | AUDIT | Ubuntu 22.04 LTS, for PKI-based authentication, must validate certificates by constructing a certification path (which includes status information) to an accepted trust anchor. | find current settings
+      ansible.builtin.shell: grep -E "^cert_policy=" /etc/pam_pkcs11/pam_pkcs11.conf | cut -d ';' -f1 | grep -v ca
+      changed_when: false
+      failed_when: discovered_pkcs_cert_ca_policy.rc not in [ 0, 1 ]
+      register: discovered_pkcs_cert_ca_policy
+
+    - name: MEDIUM | UBTU-22-612030 | PATCH | Ubuntu 22.04 LTS, for PKI-based authentication, must validate certificates by constructing a certification path (which includes status information) to an accepted trust anchor. | change where needed
+      when:
+        - discovered_pkcs_cert_ca_policy is defined
+        - discovered_pkcs_cert_ca_policy.stdout | length > 0
+      ansible.builtin.lineinfile:
+        path: /etc/pam_pkcs11/pam_pkcs11.conf
+        line: "{{ item }},ocsp_on;"
+      loop: "{{ discovered_pkcs_cert_ca_policy.stdout_lines }}"
+
+- name: MEDIUM | UBTU-22-612035 | PATCH | Ubuntu 22.04 LTS for PKI-based authentication, must implement a local cache of revocation data in case of the inability to access revocation information via the network.
+  when:
+    - ubtu22stig_612035
+    - ubtu22stig_disruption_high
+  tags:
+    - UBTU-22-612035
+    - CAT2
+    - CCI-000000
+    - SRG-OS-000384-GPOS-00167
+    - SV-260578r986295_rule
+    - V-260578
+    - NIST800-53R4_NA
+    - multifactor
+  block:
+    - name: MEDIUM | UBTU-22-612035 | AUDIT | Ubuntu 22.04 LTS for PKI-based authentication, must implement a local cache of revocation data in case of the inability to access revocation information via the network. | find current settings
+      ansible.builtin.shell: grep -E "^cert_policy=" /etc/pam_pkcs11/pam_pkcs11.conf | cut -d ';' -f1 | grep -Ev "crl_auto|crl_offline"
+      changed_when: false
+      failed_when: discovered_pkcs_cert_crl_policy.rc not in [ 0, 1 ]
+      register: discovered_pkcs_cert_crl_policy
+
+    - name: MEDIUM | UBTU-22-612035 | PATCH | Ubuntu 22.04 LTS for PKI-based authentication, must implement a local cache of revocation data in case of the inability to access revocation information via the network. | change where needed
+      when: "'No such file' not in discovered_pkcs_cert_crl_policy.stderr"
+      ansible.builtin.replace:
+        path: /etc/pam_pkcs11/pam_pkcs11.conf
+        regexp: crl_offline
+        replace: "crl_auto"
+      register: discovered_pkcs_crl_change
+
+    - name: MEDIUM | UBTU-22-612035 | PATCH | Ubuntu 22.04 LTS, for PKI-based authentication, must validate certificates by constructing a certification path (which includes status information) to an accepted trust anchor. | change where needed
+      when:
+        - discovered_pkcs_cert_crl_policy is defined
+        - discovered_pkcs_cert_crl_policy.stdout | length > 0
+      ansible.builtin.lineinfile:
+        path: /etc/pam_pkcs11/pam_pkcs11.conf
+        line: "{{ item }},crl_auto;"
+      loop: "{{ discovered_pkcs_cert_crl_policy.stdout_lines }}"

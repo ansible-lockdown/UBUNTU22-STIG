@@ -1,0 +1,293 @@
+---
+
+- name: MEDIUM | UBTU-22-653010 | PATCH | Ubuntu 22.04 LTS must have the "auditd" package installed.
+  when: ubtu22stig_653010
+  tags:
+    - UBTU-22-653010
+    - CAT2
+    - CCI-000132
+    - CCI-000133
+    - CCI-000134
+    - CCI-000135
+    - CCI-000154
+    - CCI-000158
+    - CCI-000169
+    - CCI-000172
+    - CCI-001875
+    - CCI-001876
+    - CCI-001877
+    - CCI-001878
+    - CCI-001879
+    - CCI-001880
+    - CCI-001881
+    - CCI-001882
+    - CCI-001914
+    - SRG-OS-000037-GPOS-00015
+    - SRG-OS-000038-GPOS-00016
+    - SRG-OS-000039-GPOS-00017
+    - SRG-OS-000040-GPOS-00018
+    - SRG-OS-000041-GPOS-00019
+    - SRG-OS-000042-GPOS-00020
+    - SRG-OS-000042-GPOS-00021
+    - SRG-OS-000051-GPOS-00024
+    - SRG-OS-000054-GPOS-00025
+    - SRG-OS-000062-GPOS-00031
+    - SRG-OS-000122-GPOS-00063
+    - SRG-OS-000337-GPOS-00129
+    - SRG-OS-000348-GPOS-00136
+    - SRG-OS-000349-GPOS-00137
+    - SRG-OS-000350-GPOS-00138
+    - SRG-OS-000351-GPOS-00139
+    - SRG-OS-000352-GPOS-00140
+    - SRG-OS-000353-GPOS-00141
+    - SRG-OS-000354-GPOS-00142
+    - SRG-OS-000365-GPOS-00152
+    - SRG-OS-000475-GPOS-00220
+    - SV-260590r986296_rule
+    - V-260590
+    - NIST800-53R4_AU-3
+    - NIST800-53R4_AU-6
+    - NIST800-53R4_AU-7
+    - NIST800-53R4_AU-12
+    - auditd
+  ansible.builtin.package:
+    name: auditd
+    state: present
+
+- name: MEDIUM | UBTU-22-653015 | PATCH | Ubuntu 22.04 LTS must produce audit records and reports containing information to establish when, where, what type, the source, and the outcome for all DOD-defined auditable events and actions in near real time.
+  when: ubtu22stig_653015
+  tags:
+    - UBTU-22-653015
+    - CAT2
+    - CCI-000132
+    - CCI-000133
+    - CCI-000134
+    - CCI-000135
+    - CCI-000154
+    - CCI-000158
+    - CCI-000169
+    - CCI-000172
+    - CCI-001875
+    - CCI-001876
+    - CCI-001877
+    - CCI-001878
+    - CCI-001879
+    - CCI-001880
+    - CCI-001881
+    - CCI-001882
+    - CCI-001914
+    - SRG-OS-000037-GPOS-00015
+    - SRG-OS-000038-GPOS-00016
+    - SRG-OS-000039-GPOS-00017
+    - SRG-OS-000040-GPOS-00018
+    - SRG-OS-000041-GPOS-00019
+    - SRG-OS-000042-GPOS-00020
+    - SRG-OS-000042-GPOS-00021
+    - SRG-OS-000051-GPOS-00024
+    - SRG-OS-000054-GPOS-00025
+    - SRG-OS-000062-GPOS-00031
+    - SRG-OS-000122-GPOS-00063
+    - SRG-OS-000337-GPOS-00129
+    - SRG-OS-000348-GPOS-00136
+    - SRG-OS-000349-GPOS-00137
+    - SRG-OS-000350-GPOS-00138
+    - SRG-OS-000351-GPOS-00139
+    - SRG-OS-000352-GPOS-00140
+    - SRG-OS-000353-GPOS-00141
+    - SRG-OS-000354-GPOS-00142
+    - SRG-OS-000365-GPOS-00152
+    - SRG-OS-000475-GPOS-00220
+    - SV-260591r986297_rule
+    - V-260591
+    - NIST800-53R4_AU-3
+    - NIST800-53R4_AU-6
+    - NIST800-53R4_AU-7
+    - NIST800-53R4_AU-12
+    - auditd
+  ansible.builtin.systemd_service:
+    name: auditd
+    enabled: true
+    state: started
+
+- name: MEDIUM | UBTU-22-653030 | PATCH | Ubuntu 22.04 LTS must shut down by default upon audit failure.
+  when: ubtu22stig_653030
+  tags:
+    - UBTU-22-653030
+    - CAT2
+    - CCI-000140
+    - SRG-OS-000047-GPOS-00023
+    - SV-260594r958426_rule
+    - V-260594
+    - NIST800-53R4_AU-5
+    - auditd
+  ansible.builtin.lineinfile:
+    path: /etc/audit/auditd.conf
+    regexp: ^\s*disk_full_action
+    line: disk_full_action = {{ ubtu22stig_auditd_disk_full_action }}
+
+- name: MEDIUM | UBTU-22-653045 | PATCH | Ubuntu 22.04 LTS must be configured so that audit log files are not read- or write-accessible by unauthorized users.
+  when: ubtu22stig_653045
+  tags:
+    - UBTU-22-653045
+    - CAT2
+    - CCI-000162
+    - CCI-000163
+    - SRG-OS-000057-GPOS-00027
+    - SRG-OS-000058-GPOS-00028
+    - SV-260597r958434_rule
+    - V-260597
+    - NIST800-53R4_AU-9
+    - auditd
+  block:
+    - name: MEDIUM | UBTU-22-653045 | PATCH | Ubuntu 22.04 LTS must be configured so that audit log files are not read- or write-accessible by unauthorized users. | discover file
+      ansible.builtin.shell: grep ^log_file /etc/audit/auditd.conf | awk '{ print $NF }'
+      changed_when: false
+      register: discovered_auditd_logfile
+
+    - name: MEDIUM | UBTU-22-653045 | PATCH | Ubuntu 22.04 LTS must be configured so that audit log files are not read- or write-accessible by unauthorized users.
+      ansible.builtin.file:
+        path: "{{ discovered_auditd_logfile.stdout }}"
+        mode: 'go-rwx'
+
+- name: MEDIUM | UBTU-22-653050 | PATCH | Ubuntu 22.04 LTS must be configured to permit only authorized users ownership of the audit log files.
+  when: ubtu22stig_653050
+  tags:
+    - UBTU-22-653050
+    - CAT2
+    - CCI-000162
+    - CCI-000163
+    - CCI-000164
+    - SRG-OS-000057-GPOS-00027
+    - SRG-OS-000058-GPOS-00028
+    - SRG-OS-000059-GPOS-00029
+    - SV-260598r958434_rule
+    - V-260598
+    - NIST800-53R4_AU-9
+    - auditd
+  block:
+    - name: MEDIUM | UBTU-22-653050 | PATCH | Ubuntu 22.04 LTS must be configured to permit only authorized users ownership of the audit log files. | discover file
+      ansible.builtin.shell: grep ^log_file /etc/audit/auditd.conf | awk '{ print $NF }'
+      changed_when: false
+      register: discovered_auditd_logfile
+
+    - name: MEDIUM | UBTU-22-653050 | PATCH |Ubuntu 22.04 LTS must be configured to permit only authorized users ownership of the audit log files.
+      ansible.builtin.file:
+        path: "{{ discovered_auditd_logfile.stdout }}"
+        owner: root
+
+- name: MEDIUM | UBTU-22-653055 | PATCH | Ubuntu 22.04 LTS must permit only authorized groups ownership of the audit log files.
+  when: ubtu22stig_653055
+  tags:
+    - UBTU-22-653055
+    - CAT2
+    - CCI-000162
+    - CCI-000163
+    - CCI-000164
+    - SRG-OS-000057-GPOS-00027
+    - SRG-OS-000058-GPOS-00028
+    - SRG-OS-000059-GPOS-00029
+    - SV-260599r958434_rule
+    - V-260599
+    - NIST800-53R4_AU-9
+    - auditd
+  ansible.builtin.lineinfile:
+    path: /etc/audit/auditd.conf
+    regexp: ^(#|)log_group\s*=\s*
+    line: "log_group = {{ ubtu22stig_auditd_log_group }}"
+
+- name: MEDIUM | UBTU-22-653060 | PATCH | Ubuntu 22.04 LTS must be configured so that the audit log directory is not write-accessible by unauthorized users.
+  when: ubtu22stig_653060
+  tags:
+    - UBTU-22-653060
+    - CAT2
+    - CCI-000164
+    - SRG-OS-000059-GPOS-00029
+    - SV-260600r958438_rule
+    - V-260600
+    - NIST800-53R4_AU-9
+    - auditd
+  block:
+    - name: MEDIUM | UBTU-22-653060 | AUDIT | Ubuntu 22.04 LTS must be configured so that the audit log directory is not write-accessible by unauthorized users. | discover file
+      ansible.builtin.shell: grep ^log_file /etc/audit/auditd.conf | awk '{ print $NF }'
+      changed_when: false
+      register: discovered_auditd_logfile
+
+    - name: MEDIUM | UBTU-22-653060 | AUDIT | Ubuntu 22.04 LTS must be configured so that the audit log directory is not write-accessible by unauthorized users.
+      ansible.builtin.file:
+        path: "{{ discovered_auditd_logfile.stdout | dirname }}"
+        state: directory
+        mode: 'go-w'
+
+- name: MEDIUM | UBTU-22-653065 | PATCH | Ubuntu 22.04 LTS must be configured so that audit configuration files are not write-accessible by unauthorized users.
+  when: ubtu22stig_653065
+  tags:
+    - UBTU-22-653065
+    - CCI-000171
+    - SRG-OS-000063-GPOS-00032
+    - SV-260601r958444_rule
+    - V-260601
+    - NIST800-53R4_AU-12
+    - auditd
+  block:
+    - name: MEDIUM | UBTU-22-653065 | AUDIT | Ubuntu 22.04 LTS must be configured so that audit configuration files are not write-accessible by unauthorized users.
+      ansible.builtin.find:
+        paths: /etc/audit
+        file_type: file
+        recurse: true
+      register: discovered_audit_files
+
+    - name: MEDIUM | UBTU-22-653065 | PATCH | Ubuntu 22.04 LTS must be configured so that audit configuration files are not write-accessible by unauthorized users.
+      ansible.builtin.file:
+        path: "{{ item.path }}"
+        mode: 'go-wx'
+      loop: "{{ discovered_audit_files.files }}"
+
+- name: MEDIUM | UBTU-22-653070 | PATCH | Ubuntu 22.04 LTS must be configured so that audit configuration files are not write-accessible by unauthorized users.
+  when: ubtu22stig_653070
+  tags:
+    - UBTU-22-653070
+    - CAT2
+    - CCI-000171
+    - SRG-OS-000063-GPOS-00032
+    - SV-260602r958444_rule
+    - V-260602
+    - NIST800-53R4_AU-12
+    - auditd
+  block:
+    - name: MEDIUM | UBTU-22-653070 | AUDIT | Ubuntu 22.04 LTS must permit only authorized accounts to own the audit configuration files.
+      ansible.builtin.find:
+        paths: /etc/audit
+        file_type: file
+        recurse: true
+      register: discovered_audit_files
+
+    - name: MEDIUM | UBTU-22-653070 | PATCH | Ubuntu 22.04 LTS must permit only authorized accounts to own the audit configuration files.
+      ansible.builtin.file:
+        path: "{{ item.path }}"
+        owner: root
+      loop: "{{ discovered_audit_files.files }}"
+
+- name: MEDIUM | UBTU-22-653075 | PATCH | Ubuntu 22.04 LTS must permit only authorized groups to own the audit configuration files.
+  when: ubtu22stig_653075
+  tags:
+    - UBTU-22-653075
+    - CAT2
+    - CCI-000171
+    - SRG-OS-000063-GPOS-00032
+    - SV-260603r958444_rule
+    - V-260603
+    - NIST800-53R4_AU-12
+    - auditd
+  block:
+    - name: MEDIUM | UBTU-22-653075 | AUDIT | Ubuntu 22.04 LTS must permit only authorized groups to own the audit configuration files.
+      ansible.builtin.find:
+        paths: /etc/audit
+        file_type: file
+        recurse: true
+      register: discovered_audit_files
+
+    - name: MEDIUM | UBTU-22-653075 | PATCH | Ubuntu 22.04 LTS must permit only authorized groups to own the audit configuration files.
+      ansible.builtin.file:
+        path: "{{ item.path }}"
+        group: root
+      loop: "{{ discovered_audit_files.files }}"
