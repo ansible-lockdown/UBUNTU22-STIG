@@ -1,0 +1,40 @@
+---
+
+- name: LOW | UBTU-22-213010 | PATCH | Ubuntu 22.04 LTS must restrict access to the kernel message buffer.
+  when: ubtu22stig_213010
+  tags:
+    - UBTU-22-213010
+    - CAT3
+    - CCI-001090
+    - SRG-OS-000138-GPOS-00069
+    - SV-260472r958524
+    - V-260472
+    - NIST800-53R4_SC-4
+    - kernel
+  block:
+    - name: LOW | UBTU-22-213010 | PATCH | Ubuntu 22.04 LTS must restrict access to the kernel message buffer. | find existing settings
+      ansible.builtin.find:
+        paths: [ '/etc/sysctl.d', '/run/sysctl.d', '/usr/local/lib/sysctl.d', '/usr/lib/sysctl.d', '/lib/sysctl.d' ]
+        pattern: '*.conf'
+        contains: kernel.dmesg_restrict
+      register: discovered_sysctl_conf_files
+
+    - name: LOW | UBTU-22-213010 | PATCH | Ubuntu 22.04 LTS must restrict access to the kernel message buffer. | remove existing
+      when: "ubtu22stig_sysctl_kernel_conf not in item"
+      ansible.builtin.replace:
+        path: "{{ item.path | default(item) }}"
+        regexp: ^\s*kernel.dmesg_restrict\s*=\s*[ 0, 1 ]
+        replace: ''
+      with_items:
+        - "{{ discovered_sysctl_conf_files.files | map(attribute='path') }}"
+        - /etc/sysctl.conf
+
+    - name: LOW | UBTU-22-213010 | PATCH | Ubuntu 22.04 LTS must restrict access to the kernel message buffer. | add file specific settings
+      ansible.posix.sysctl:
+        name: kernel.dmesg_restrict
+        value: '1'
+        state: present
+        sysctl_file: "{{ ubtu22stig_sysctl_kernel_conf }}"
+        reload: true
+        sysctl_set: true
+        ignoreerrors: true

@@ -1,0 +1,82 @@
+---
+
+- name: LOW | UBTU-22-412010 | PATCH | Ubuntu 22.04 LTS must enforce a delay of at least four seconds between logon prompts following a failed logon attempt.
+  when: ubtu22stig_412010
+  tags:
+    - UBTU-22-412010
+    - CAT3
+    - CCI-000366
+    - SRG-OS-000480-GPOS-00226
+    - SV-260550r991588_rule
+    - V-260550
+    - NIST800-53R4_CM-6
+    - account
+    - pam
+  ansible.builtin.lineinfile:
+    path: /etc/pam.d/common-auth
+    regexp: ^auth required pam_faildelay.so delay=
+    line: "auth required pam_faildelay.so delay={{ ubtu22stig_faildelay }}"
+    insertbefore: auth.*pam_unix.so nullok
+
+- name: LOW | UBTU-22-412015 | PATCH | Ubuntu 22.04 LTS must enforce a delay of at least four seconds between logon prompts following a failed logon attempt.
+  when: ubtu22stig_412015
+  tags:
+    - UBTU-22-412015
+    - CAT3
+    - CCI-000366
+    - SRG-OS-000480-GPOS-00227
+    - SV-260551r991589_rule
+    - V-260551
+    - NIST800-53R4_CM-6
+    - account
+    - pam
+  block:
+    - name: LOW | UBTU-22-412015 | PATCH | Ubuntu 22.04 LTS must enforce a delay of at least four seconds between logon prompts following a failed logon attempt. | remove silent
+      ansible.builtin.lineinfile:
+        path: /etc/pam.d/login
+        backrefs: true
+        regexp: silent
+        line: ''
+
+    - name: LOW | UBTU-22-412015 | PATCH | Ubuntu 22.04 LTS must enforce a delay of at least four seconds between logon prompts following a failed logon attempt. | Add showfailed
+      ansible.builtin.lineinfile:
+        path: /etc/pam.d/login
+        backrefs: true
+        regexp: ^session.*pam_lastlog.so
+        line: session    required    pam_lastlog.so showfailed
+
+- name: LOW | UBTU-22-412020 | PATCH | Ubuntu 22.04 LTS must display the date and time of the last successful account logon upon logon.
+  when: ubtu22stig_412020
+  tags:
+    - UBTU-22-412020
+    - CAT3
+    - CCI-000054
+    - SRG-OS-000027-GPOS-00008
+    - SV-260552r958398_rule
+    - V-260552
+    - NIST800-53R4_AC-10
+    - account
+    - pam
+  block:
+    - name: LOW | UBTU-22-412020 | AUDIT | Ubuntu 22.04 LTS must limit the number of concurrent sessions to ten for all accounts and/or account types. | find current settings
+      ansible.builtin.find:
+        paths: /etc/security
+        contains: \* hard maxlogins
+        recurse: true
+        patterns: '*.conf'
+        read_whole_file: true
+      register: discovered_security_maxlogins
+
+    - name: LOW | UBTU-22-412020 | PATCH | Ubuntu 22.04 LTS must limit the number of concurrent sessions to ten for all accounts and/or account types. | comment out settings
+      when: "'/etc/security/limits.conf' not in item.path"
+      ansible.builtin.lineinfile:
+        path: "{{ item.path }}"
+        regexp: ^\* hard maxlogins
+        line: '#* hard maxlogins'
+      loop: "{{ discovered_security_maxlogins.files }}"
+
+    - name: LOW | UBTU-22-412020 | PATCH | Ubuntu 22.04 LTS must limit the number of concurrent sessions to ten for all accounts and/or account types. | Ensure settings
+      ansible.builtin.lineinfile:
+        path: /etc/security/limits.conf
+        regexp: ^\* hard maxlogins
+        line: '* hard maxlogins {{ ubtu22stig_maxlogins }}'

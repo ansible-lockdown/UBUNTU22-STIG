@@ -1,0 +1,723 @@
+---
+
+- name: MEDIUM | UBTU-22-654010 | Ubuntu 22.04 LTS must generate audit records for successful/unsuccessful uses of the apparmor_parser command.
+  when: ubtu22stig_654010
+  tags:
+    - UBTU-22-654010
+    - CAT2
+    - CCI-000172
+    - SRG-OS-000064-GPOS-00033
+    - SV-260604r958446_rule
+    - V-260604
+    - NIST800-53R4_AU-12
+    - auditd
+  ansible.builtin.set_fact:
+    update_audit_template: true
+
+- name: MEDIUM | UBTU-22-654015 | Ubuntu 22.04 LTS must generate audit records for successful/unsuccessful uses of the chacl command.
+  when: ubtu22stig_654015
+  tags:
+    - UBTU-22-654015
+    - CAT2
+    - CCI-000172
+    - SRG-OS-000064-GPOS-00033
+    - SV-260605r958446_rule
+    - V-260605
+    - NIST800-53R4_AU-12
+    - auditd
+  ansible.builtin.set_fact:
+    update_audit_template: true
+
+- name: MEDIUM | UBTU-22-654020 | Ubuntu 22.04 LTS must generate audit records for successful/unsuccessful uses of the chage command.
+  when: ubtu22stig_654020
+  tags:
+    - UBTU-22-654020
+    - CAT2
+    - CCI-000172
+    - SRG-OS-000064-GPOS-00033
+    - SV-260606r958446_rule
+    - V-260606
+    - NIST800-53R4_AU-12
+    - auditd
+  ansible.builtin.set_fact:
+    update_audit_template: true
+
+- name: MEDIUM | UBTU-22-654025 | Ubuntu 22.04 LTS must generate audit records for successful/unsuccessful uses of the chcon command.
+  when: ubtu22stig_654025
+  tags:
+    - UBTU-22-654025
+    - CAT2
+    - CCI-000172
+    - SRG-OS-000064-GPOS-00033
+    - SV-260607r958446_rule
+    - V-260607
+    - NIST800-53R4_AU-12
+    - auditd
+  ansible.builtin.set_fact:
+    update_audit_template: true
+
+- name: MEDIUM | UBTU-22-654030 | Ubuntu 22.04 LTS must generate audit records for successful/unsuccessful uses of the chfn command.
+  when: ubtu22stig_654030
+  tags:
+    - UBTU-22-654030
+    - CAT2
+    - CCI-000172
+    - SRG-OS-000064-GPOS-00033
+    - SV-260608r958446_rule
+    - V-260608
+    - NIST800-53R4_AU-12
+    - auditd
+  ansible.builtin.set_fact:
+    update_audit_template: true
+
+- name: MEDIUM | UBTU-22-654035 | Ubuntu 22.04 LTS must generate audit records for successful/unsuccessful uses of the chsh command.
+  when: ubtu22stig_654035
+  tags:
+    - UBTU-22-654035
+    - CAT2
+    - CCI-000172
+    - SRG-OS-000064-GPOS-00033
+    - SV-260609r958446_rule
+    - V-260609
+    - NIST800-53R4_AU-12
+    - auditd
+  ansible.builtin.set_fact:
+    update_audit_template: true
+
+- name: MEDIUM | UBTU-22-654040 | Ubuntu 22.04 LTS must generate audit records for successful/unsuccessful uses of the crontab command.
+  when: ubtu22stig_654040
+  tags:
+    - UBTU-22-654040
+    - CAT2
+    - CCI-000172
+    - SRG-OS-000064-GPOS-00033
+    - SV-260610r958446_rule
+    - V-260610
+    - NIST800-53R4_AU-12
+    - auditd
+  ansible.builtin.set_fact:
+    update_audit_template: true
+
+- name: MEDIUM | UBTU-22-654045 | Ubuntu 22.04 LTS must generate audit records for successful/unsuccessful attempts to use the fdisk command.
+  when: ubtu22stig_654045
+  tags:
+    - UBTU-22-654045
+    - CAT2
+    - CCI-000172
+    - SRG-OS-000064-GPOS-00033
+    - SV-260611r958446_rule
+    - V-260611
+    - NIST800-53R4_AU-12
+    - auditd
+  ansible.builtin.set_fact:
+    update_audit_template: true
+
+- name: MEDIUM | UBTU-22-654050 | Ubuntu 22.04 LTS must generate audit records for successful/unsuccessful uses of the gpasswd command.
+  when: ubtu22stig_654050
+  tags:
+    - UBTU-22-654050
+    - CAT2
+    - CCI-000172
+    - SRG-OS-000064-GPOS-00033
+    - SV-260612r958446_rule
+    - V-260612
+    - NIST800-53R4_AU-12
+    - auditd
+  ansible.builtin.set_fact:
+    update_audit_template: true
+
+- name: MEDIUM | UBTU-22-654055 | Ubuntu 22.04 LTS must generate audit records for successful/unsuccessful attempts to use the kmod command.
+  when: ubtu22stig_654055
+  tags:
+    - UBTU-22-654055
+    - CAT2
+    - CCI-000172
+    - SRG-OS-000064-GPOS-00033
+    - SV-260613r958446_rule
+    - V-260613
+    - NIST800-53R4_AU-12
+    - auditd
+  ansible.builtin.set_fact:
+    update_audit_template: true
+
+- name: MEDIUM | UBTU-22-654060 | Ubuntu 22.04 LTS must generate audit records for successful/unsuccessful attempts to use modprobe command.
+  when: ubtu22stig_654060
+  tags:
+    - UBTU-22-654060
+    - CAT2
+    - CCI-000172
+    - SRG-OS-000477-GPOS-00222
+    - SV-260614r958446_rule
+    - V-260614
+    - NIST800-53R4_AU-12
+    - auditd
+  ansible.builtin.set_fact:
+    update_audit_template: true
+
+- name: MEDIUM | UBTU-22-654065 | Ubuntu 22.04 LTS must generate audit records for successful/unsuccessful uses of the mount command.
+  when: ubtu22stig_654065
+  tags:
+    - UBTU-22-654065
+    - CAT2
+    - CCI-000172
+    - SRG-OS-000064-GPOS-00033
+    - SV-260615r958446_rule
+    - V-260615
+    - NIST800-53R4_AU-12
+    - auditd
+  ansible.builtin.set_fact:
+    update_audit_template: true
+
+- name: MEDIUM | UBTU-22-654070 | Ubuntu 22.04 LTS must generate audit records for successful/unsuccessful uses of the newgrp command.
+  when: ubtu22stig_654070
+  tags:
+    - UBTU-22-654070
+    - CAT2
+    - CCI-000172
+    - SRG-OS-000064-GPOS-00033
+    - SV-260616r958446_rule
+    - V-260616
+    - NIST800-53R4_AU-12
+    - auditd
+  ansible.builtin.set_fact:
+    update_audit_template: true
+
+- name: MEDIUM | UBTU-22-654075 | Ubuntu 22.04 LTS must generate audit records for successful/unsuccessful uses of the pam_timestamp_check command.
+  when: ubtu22stig_654075
+  tags:
+    - UBTU-22-654075
+    - CAT2
+    - CCI-000172
+    - SRG-OS-000064-GPOS-00033
+    - SV-260617r958446_rule
+    - V-260617
+    - NIST800-53R4_AU-12
+    - auditd
+  ansible.builtin.set_fact:
+    update_audit_template: true
+
+- name: MEDIUM | UBTU-22-654080 | Ubuntu 22.04 LTS must generate audit records for successful/unsuccessful uses of the passwd command.
+  when: ubtu22stig_654080
+  tags:
+    - UBTU-22-654080
+    - CAT2
+    - CCI-000172
+    - SRG-OS-000064-GPOS-00033
+    - SV-260618r958446_rule
+    - V-260618
+    - NIST800-53R4_AU-12
+    - auditd
+  ansible.builtin.set_fact:
+    update_audit_template: true
+
+- name: MEDIUM | UBTU-22-654085 | Ubuntu 22.04 LTS must generate audit records for successful/unsuccessful uses of the setfacl command.
+  when: ubtu22stig_654085
+  tags:
+    - UBTU-22-654085
+    - CAT2
+    - CCI-000172
+    - SRG-OS-000064-GPOS-00033
+    - SV-260619r958446_rule
+    - V-260619
+    - NIST800-53R4_AU-12
+    - auditd
+  ansible.builtin.set_fact:
+    update_audit_template: true
+
+- name: MEDIUM | UBTU-22-654090 | Ubuntu 22.04 LTS must generate audit records for successful/unsuccessful uses of the ssh-agent command.
+  when: ubtu22stig_654090
+  tags:
+    - UBTU-22-654090
+    - CAT2
+    - CCI-000172
+    - SRG-OS-000064-GPOS-00033
+    - SV-260620r958446_rule
+    - V-260620
+    - NIST800-53R4_AU-12
+    - auditd
+  ansible.builtin.set_fact:
+    update_audit_template: true
+
+- name: MEDIUM | UBTU-22-654095 | Ubuntu 22.04 LTS must generate audit records for successful/unsuccessful uses of the ssh-keysign command.
+  when: ubtu22stig_654095
+  tags:
+    - UBTU-22-654095
+    - CAT2
+    - CCI-000172
+    - SRG-OS-000064-GPOS-00033
+    - SV-260621r958446_rule
+    - V-260621
+    - NIST800-53R4_AU-12
+    - auditd
+  ansible.builtin.set_fact:
+    update_audit_template: true
+
+- name: MEDIUM | UBTU-22-654100 | Ubuntu 22.04 LTS must generate audit records for successful/unsuccessful uses of the su command.
+  when: ubtu22stig_654100
+  tags:
+    - UBTU-22-654100
+    - CAT2
+    - CCI-000172
+    - SRG-OS-000064-GPOS-00033
+    - SV-260622r958446_rule
+    - V-260622
+    - NIST800-53R4_AU-12
+    - auditd
+  ansible.builtin.set_fact:
+    update_audit_template: true
+
+- name: MEDIUM | UBTU-22-654105 | Ubuntu 22.04 LTS must generate audit records for successful/unsuccessful uses of the sudo command.
+  when: ubtu22stig_654105
+  tags:
+    - UBTU-22-654105
+    - CAT2
+    - CCI-000172
+    - SRG-OS-000064-GPOS-00033
+    - SV-260623r958446_rule
+    - V-260623
+    - NIST800-53R4_AU-12
+    - auditd
+  ansible.builtin.set_fact:
+    update_audit_template: true
+
+- name: MEDIUM | UBTU-22-654110 | Ubuntu 22.04 LTS must generate audit records for successful/unsuccessful uses of the sudoedit command.
+  when: ubtu22stig_654110
+  tags:
+    - UBTU-22-654110
+    - CAT2
+    - CCI-000172
+    - SRG-OS-000064-GPOS-00033
+    - SV-260624r958446_rule
+    - V-260624
+    - NIST800-53R4_AU-12
+    - auditd
+  ansible.builtin.set_fact:
+    update_audit_template: true
+
+- name: MEDIUM | UBTU-22-654115 | Ubuntu 22.04 LTS must generate audit records for successful/unsuccessful uses of the umount command.
+  when: ubtu22stig_654115
+  tags:
+    - UBTU-22-654115
+    - CAT2
+    - CCI-000172
+    - SRG-OS-000064-GPOS-00033
+    - SV-260625r958446_rule
+    - V-260625
+    - NIST800-53R4_AU-12
+    - auditd
+  ansible.builtin.set_fact:
+    update_audit_template: true
+
+- name: MEDIUM | UBTU-22-654120 | Ubuntu 22.04 LTS must generate audit records for successful/unsuccessful uses of the unix_update command.
+  when: ubtu22stig_654120
+  tags:
+    - UBTU-22-654120
+    - CAT2
+    - CCI-000172
+    - SRG-OS-000064-GPOS-00033
+    - SV-260626r958446_rule
+    - V-260626
+    - NIST800-53R4_AU-12
+    - auditd
+  ansible.builtin.set_fact:
+    update_audit_template: true
+
+- name: MEDIUM | UBTU-22-654125 | Ubuntu 22.04 LTS must generate audit records for successful/unsuccessful uses of the usermod command.
+  when: ubtu22stig_654125
+  tags:
+    - UBTU-22-654125
+    - CAT2
+    - CCI-000172
+    - SRG-OS-000064-GPOS-00033
+    - SV-260627r958446_rule
+    - V-260627
+    - NIST800-53R4_AU-12
+    - auditd
+  ansible.builtin.set_fact:
+    update_audit_template: true
+
+- name: MEDIUM | UBTU-22-654130 | Ubuntu 22.04 LTS must generate audit records for all account creations, modifications, disabling, and termination events that affect /etc/group.
+  when: ubtu22stig_654130
+  tags:
+    - UBTU-22-654130
+    - CAT2
+    - CCI-000018
+    - CCI-000172
+    - CCI-001403
+    - CCI-001404
+    - CCI-001405
+    - CCI-002130
+    - SRG-OS-000004-GPOS-00004
+    - SRG-OS-000239-GPOS-00089
+    - SRG-OS-000240-GPOS-00090
+    - SRG-OS-000241-GPOS-00091
+    - SRG-OS-000303-GPOS-00120
+    - SRG-OS-000458-GPOS-00203
+    - SRG-OS-000463-GPOS-00207
+    - SRG-OS-000476-GPOS-00221
+    - SV-260628r958368_rule
+    - V-260628
+    - NIST800-53R4_AC-2
+    - NIST800-53R4_AU-12
+    - auditd
+  ansible.builtin.set_fact:
+    update_audit_template: true
+
+- name: MEDIUM | UBTU-22-654135 | Ubuntu 22.04 LTS must generate audit records for all account creations, modifications, disabling, and termination events that affect /etc/gshadow.
+  when: ubtu22stig_654135
+  tags:
+    - UBTU-22-654135
+    - CAT2
+    - CCI-000018
+    - CCI-000172
+    - CCI-001403
+    - CCI-001404
+    - CCI-001405
+    - CCI-002130
+    - SRG-OS-000004-GPOS-00004
+    - SRG-OS-000239-GPOS-00089
+    - SRG-OS-000240-GPOS-00090
+    - SRG-OS-000241-GPOS-00091
+    - SRG-OS-000303-GPOS-00120
+    - SRG-OS-000458-GPOS-00203
+    - SRG-OS-000463-GPOS-00207
+    - SRG-OS-000476-GPOS-00221
+    - SV-260629r958368_rule
+    - V-260629
+    - NIST800-53R4_AC-2
+    - NIST800-53R4_AU-12
+    - auditd
+  ansible.builtin.set_fact:
+    update_audit_template: true
+
+- name: MEDIUM | UBTU-22-654140 | Ubuntu 22.04 LTS must generate audit records for all account creations, modifications, disabling, and termination events that affect /etc/opasswd.
+  when: ubtu22stig_654140
+  tags:
+    - UBTU-22-654140
+    - CAT2
+    - CCI-000018
+    - CCI-000172
+    - CCI-001403
+    - CCI-001404
+    - CCI-001405
+    - CCI-002130
+    - SRG-OS-000004-GPOS-00004
+    - SRG-OS-000239-GPOS-00089
+    - SRG-OS-000240-GPOS-00090
+    - SRG-OS-000241-GPOS-00091
+    - SRG-OS-000303-GPOS-00120
+    - SRG-OS-000458-GPOS-00203
+    - SRG-OS-000463-GPOS-00207
+    - SRG-OS-000476-GPOS-00221
+    - SV-260630r958368_rule
+    - V-260630
+    - NIST800-53R4_AC-2
+    - NIST800-53R4_AU-12
+    - auditd
+  ansible.builtin.set_fact:
+    update_audit_template: true
+
+- name: MEDIUM | UBTU-22-654145 | Ubuntu 22.04 LTS must generate audit records for all account creations, modifications, disabling, and termination events that affect /etc/passwd.
+  when: ubtu22stig_654145
+  tags:
+    - UBTU-22-654145
+    - CAT2
+    - CCI-000018
+    - CCI-000172
+    - CCI-001403
+    - CCI-001404
+    - CCI-001405
+    - CCI-002130
+    - SRG-OS-000004-GPOS-00004
+    - SRG-OS-000239-GPOS-00089
+    - SRG-OS-000240-GPOS-00090
+    - SRG-OS-000241-GPOS-00091
+    - SRG-OS-000303-GPOS-00120
+    - SRG-OS-000458-GPOS-00203
+    - SRG-OS-000463-GPOS-00207
+    - SRG-OS-000476-GPOS-00221
+    - SV-260631r958368_rule
+    - V-260631
+    - NIST800-53R4_AC-2
+    - NIST800-53R4_AU-12
+    - auditd
+  ansible.builtin.set_fact:
+    update_audit_template: true
+
+- name: MEDIUM | UBTU-22-654150 | Ubuntu 22.04 LTS must generate audit records for all account creations, modifications, disabling, and termination events that affect /etc/shadow.
+  when: ubtu22stig_654150
+  tags:
+    - UBTU-22-654150
+    - CAT2
+    - CCI-000018
+    - CCI-000172
+    - CCI-001403
+    - CCI-001404
+    - CCI-001405
+    - CCI-002130
+    - SRG-OS-000004-GPOS-00004
+    - SRG-OS-000239-GPOS-00089
+    - SRG-OS-000240-GPOS-00090
+    - SRG-OS-000241-GPOS-00091
+    - SRG-OS-000303-GPOS-00120
+    - SRG-OS-000458-GPOS-00203
+    - SRG-OS-000463-GPOS-00207
+    - SRG-OS-000476-GPOS-00221
+    - SV-260632r958368_rule
+    - V-260632
+    - NIST800-53R4_AC-2
+    - NIST800-53R4_AU-12
+    - auditd
+  ansible.builtin.set_fact:
+    update_audit_template: true
+
+- name: MEDIUM | UBTU-22-654155 | Ubuntu 22.04 LTS must generate audit records for successful/unsuccessful uses of the chmod, fchmod, and fchmodat system calls.
+  when: ubtu22stig_654155
+  tags:
+    - UBTU-22-654155
+    - CAT2
+    - CCI-000172
+    - SRG-OS-000064-GPOS-00033
+    - SRG-OS-000462-GPOS-00206
+    - SV-260633r958446_rule
+    - V-260633
+    - NIST800-53R4_AU-12
+    - auditd
+  ansible.builtin.set_fact:
+    update_audit_template: true
+
+- name: MEDIUM | UBTU-22-654160 | Ubuntu 22.04 LTS must generate audit records for successful/unsuccessful uses of the chown, fchown, fchownat, and lchown system calls.
+  when: ubtu22stig_654160
+  tags:
+    - UBTU-22-654160
+    - CAT2
+    - CCI-000172
+    - SRG-OS-000064-GPOS-00033
+    - SRG-OS-000462-GPOS-00206
+    - SV-260634r958446_rule
+    - V-260634
+    - NIST800-53R4_AU-12
+    - auditd
+  ansible.builtin.set_fact:
+    update_audit_template: true
+
+- name: MEDIUM | UBTU-22-654165 | Ubuntu 22.04 LTS must generate audit records for successful/unsuccessful uses of the creat, open, openat, open_by_handle_at, truncate, and ftruncate system calls.
+  when: ubtu22stig_654165
+  tags:
+    - UBTU-22-654165
+    - CAT2
+    - CCI-000172
+    - SRG-OS-000064-GPOS-00033
+    - SRG-OS-000474-GPOS-00219
+    - SV-260635r958446_rule
+    - V-260635
+    - NIST800-53R4_AU-12
+    - auditd
+  ansible.builtin.set_fact:
+    update_audit_template: true
+
+- name: MEDIUM | UBTU-22-654170 | Ubuntu 22.04 LTS must generate audit records for successful/unsuccessful uses of the delete_module system call.
+  when: ubtu22stig_654170
+  tags:
+    - UBTU-22-654170
+    - CAT2
+    - CCI-000172
+    - SRG-OS-000064-GPOS-00033
+    - SRG-OS-000477-GPOS-00222
+    - SV-260636r958446_rule
+    - V-260636
+    - NIST800-53R4_AU-12
+    - auditd
+  ansible.builtin.set_fact:
+    update_audit_template: true
+
+- name: MEDIUM | UBTU-22-654175 | Ubuntu 22.04 LTS must generate audit records for successful/unsuccessful uses of the init_module and finit_module system calls.
+  when: ubtu22stig_654175
+  tags:
+    - UBTU-22-654175
+    - CAT2
+    - CCI-000172
+    - SRG-OS-000064-GPOS-00033
+    - SRG-OS-000471-GPOS-00216
+    - SV-260637r958446_rule
+    - V-260637
+    - NIST800-53R4_AU-12
+    - auditd
+  ansible.builtin.set_fact:
+    update_audit_template: true
+
+- name: MEDIUM | UBTU-22-654180 | Ubuntu 22.04 LTS must generate audit records for any use of the setxattr, fsetxattr, lsetxattr, removexattr, fremovexattr, and lremovexattr system calls.
+  when: ubtu22stig_654180
+  tags:
+    - UBTU-22-654180
+    - CAT2
+    - CCI-000172
+    - SRG-OS-000064-GPOS-00033
+    - SRG-OS-000462-GPOS-00206
+    - SV-260638r958446_rule
+    - V-260638
+    - NIST800-53R4_AU-12
+    - auditd
+  ansible.builtin.set_fact:
+    update_audit_template: true
+
+- name: MEDIUM | UBTU-22-654185 | Ubuntu 22.04 LTS must generate audit records for any successful/unsuccessful use of unlink, unlinkat, rename, renameat, and rmdir system calls.
+  when: ubtu22stig_654185
+  tags:
+    - UBTU-22-654185
+    - CAT2
+    - CCI-000172
+    - SRG-OS-000468-GPOS-00212
+    - SV-260639r991577_rule
+    - V-260639
+    - NIST800-53R4_AU-12
+    - auditd
+  ansible.builtin.set_fact:
+    update_audit_template: true
+
+- name: MEDIUM | UBTU-22-654190 | Ubuntu 22.04 LTS must generate audit records for all events that affect the systemd journal files.
+  when: ubtu22stig_654190
+  tags:
+    - UBTU-22-654190
+    - CAT2
+    - CCI-000366
+    - SRG-OS-000480-GPOS-00227
+    - SV-260640r991589_rule
+    - V-260640
+    - NIST800-53R4_CM-6
+    - auditd
+  ansible.builtin.set_fact:
+    update_audit_template: true
+
+- name: MEDIUM | UBTU-22-654195 | Ubuntu 22.04 LTS must generate audit records for the /var/log/btmp file.
+  when: ubtu22stig_654195
+  tags:
+    - UBTU-22-654195
+    - CAT2
+    - CCI-000172
+    - SRG-OS-000472-GPOS-00217
+    - SV-260641r991581_rule
+    - V-260641
+    - NIST800-53R4_AU-12
+    - auditd
+  ansible.builtin.set_fact:
+    update_audit_template: true
+
+- name: MEDIUM | UBTU-22-654200 | Ubuntu 22.04 LTS must generate audit records for the /var/log/wtmp file.
+  when: ubtu22stig_654200
+  tags:
+    - UBTU-22-654200
+    - CAT2
+    - CCI-000172
+    - SRG-OS-000472-GPOS-00217
+    - SV-260642r991581_rule
+    - V-260642
+    - NIST800-53R4_AU-12
+    - auditd
+  ansible.builtin.set_fact:
+    update_audit_template: true
+
+- name: MEDIUM | UBTU-22-654205 | Ubuntu 22.04 LTS must generate audit records for the /var/run/utmp file.
+  when: ubtu22stig_654205
+  tags:
+    - UBTU-22-654205
+    - CAT2
+    - CCI-000172
+    - SRG-OS-000472-GPOS-00217
+    - SV-260643r991581_rule
+    - V-260643
+    - NIST800-53R4_AU-12
+    - auditd
+  ansible.builtin.set_fact:
+    update_audit_template: true
+
+- name: MEDIUM | UBTU-22-654210 | Ubuntu 22.04 LTS must generate audit records for the use and modification of faillog file.
+  when: ubtu22stig_654210
+  tags:
+    - UBTU-22-654210
+    - CAT2
+    - CCI-000172
+    - SRG-OS-000064-GPOS-00033
+    - SV-260644r958446_rule
+    - V-260644
+    - NIST800-53R4_AU-12
+    - auditd
+  ansible.builtin.set_fact:
+    update_audit_template: true
+
+- name: MEDIUM | UBTU-22-654215 | Ubuntu 22.04 LTS must generate audit records for the use and modification of the lastlog file.
+  when: ubtu22stig_654215
+  tags:
+    - UBTU-22-654215
+    - CAT2
+    - CCI-000172
+    - SRG-OS-000064-GPOS-00033
+    - SRG-OS-000470-GPOS-00214
+    - SRG-OS-000473-GPOS-00218
+    - SV-260645r958446_rule
+    - V-260645
+    - NIST800-53R4_AU-12
+    - auditd
+  ansible.builtin.set_fact:
+    update_audit_template: true
+
+- name: MEDIUM | UBTU-22-654220 | Ubuntu 22.04 LTS must generate audit records when successful/unsuccessful attempts to modify the /etc/sudoers file occur.
+  when: ubtu22stig_654220
+  tags:
+    - UBTU-22-654220
+    - CAT2
+    - CCI-000172
+    - SRG-OS-000466-GPOS-00210
+    - SV-260646r991575_rule
+    - V-260646
+    - NIST800-53R4_AU-12
+    - auditd
+  ansible.builtin.set_fact:
+    update_audit_template: true
+
+- name: MEDIUM | UBTU-22-654225 | Ubuntu 22.04 LTS must generate audit records when successful/unsuccessful attempts to modify the /etc/sudoers.d directory occur.
+  when: ubtu22stig_654225
+  tags:
+    - UBTU-22-654225
+    - CAT2
+    - CCI-000172
+    - SRG-OS-000466-GPOS-00210
+    - SV-260647r991575_rule
+    - V-260647
+    - NIST800-53R4_AU-12
+    - auditd
+  ansible.builtin.set_fact:
+    update_audit_template: true
+
+- name: MEDIUM | UBTU-22-654230 | Ubuntu 22.04 LTS must generate audit records when successful/unsuccessful attempts to modify the /etc/sudoers.d directory occur.
+  when: ubtu22stig_654230
+  tags:
+    - UBTU-22-654230
+    - CAT2
+    - CCI-002233
+    - CCI-002234
+    - SRG-OS-000326-GPOS-00126
+    - SRG-OS-000327-GPOS-00127
+    - SV-260648r958730_rule
+    - V-260648
+    - NIST800-53R4_AC-6
+    - auditd
+  ansible.builtin.set_fact:
+    update_audit_template: true
+
+- name: MEDIUM | UBTU-22-654235 | Ubuntu 22.04 LTS must generate audit records for privileged activities, nonlocal maintenance, diagnostic sessions and other system-level access.
+  when: ubtu22stig_654235
+  tags:
+    - UBTU-22-654235
+    - CAT2
+    - CCI-000172
+    - CCI-002884
+    - SRG-OS-000392-GPOS-00172
+    - SRG-OS-000471-GPOS-00215
+    - SV-260649r986298_rule
+    - V-260649
+    - NIST800-53R4_AU-12
+    - NIST800-53R4_MA-4
+    - auditd
+  ansible.builtin.set_fact:
+    update_audit_template: true

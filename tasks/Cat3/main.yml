@@ -2,36 +2,36 @@
 
 - name: Run Cat 3 STIG 213xxx kernel tasks
   ansible.builtin.import_tasks:
-    file: UBTU22-213xxx.yml
+    file: UBTU-22-213xxx.yml
 
 - name: Run Cat 3 STIG 214xxx apt tasks
   ansible.builtin.import_tasks:
-    file: UBTU22-214xxx.yml
+    file: UBTU-22-214xxx.yml
 
 - name: Run Cat 3 STIG 215xxx package tasks
   ansible.builtin.import_tasks:
-    file: UBTU22-215xxx.yml
+    file: UBTU-22-215xxx.yml
 
 - name: Run Cat 3 STIG 252xxx service tasks
   ansible.builtin.import_tasks:
-    file: UBTU22-252xxx.yml
+    file: UBTU-22-252xxx.yml
 
 - name: Run Cat 3 STIG 411xxx Account tasks
   ansible.builtin.import_tasks:
-    file: UBTU22-411xxx.yml
+    file: UBTU-22-411xxx.yml
 
 - name: Run Cat 3 STIG 412xxx Session tasks
   ansible.builtin.import_tasks:
-    file: UBTU22-412xxx.yml
+    file: UBTU-22-412xxx.yml
 
 - name: Run Cat 3 STIG 631xxx Authorization tasks
   ansible.builtin.import_tasks:
-    file: UBTU22-631xxx.yml
+    file: UBTU-22-631xxx.yml
 
 - name: Run Cat 3 STIG 651xxx Aide tasks
   ansible.builtin.import_tasks:
-    file: UBTU22-651xxx.yml
+    file: UBTU-22-651xxx.yml
 
 - name: Run Cat 3 STIG 653xxx Auditd tasks
   ansible.builtin.import_tasks:
-    file: UBTU22-653xxx.yml
+    file: UBTU-22-653xxx.yml

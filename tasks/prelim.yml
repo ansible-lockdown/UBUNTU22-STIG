@@ -26,6 +26,11 @@
         max_int_uid: "{{ uid_max_id.stdout }}"
         min_int_gid: "{{ gid_min_id.stdout }}"
 
+- name: "PRELIM | PATCH | Run apt update"
+  tags: always
+  ansible.builtin.package:
+    cache_valid_time: 7200
+
 - name: "PRELIM | Include audit specific variables"
   when:
     - run_audit or audit_only
@@ -67,7 +72,7 @@
   register: ubtu22stig_interactive_users_home
 
 - name: "PRELIM | Gather accounts with empty password fields"
-  when: ubtu_22_611065
+  when: ubtu22stig_611065
   tags: passwords
   ansible.builtin.shell: "cat /etc/shadow | awk -F: '($2 == \"\" ) {j++;print $1; } END {exit j}'"
   changed_when: false
@@ -125,7 +130,7 @@
 - name: "PRELIM | Configure syslog (rsyslog)"
   when:
     - '"rsyslog" not in ansible_facts.packages'
-    - ubtu_22_652010
+    - ubtu22stig_652010
   tags: always
   ansible.builtin.package:
     name: rsyslog
@@ -158,7 +163,7 @@
 
 - name: "PRELIM | AUDIT | Wireless adapter pre-requisites"
   when:
-    - ubtu_22_291010
+    - ubtu22stig_291010
     - not system_is_container
   tags: always
   block:

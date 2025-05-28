@@ -1,0 +1,42 @@
+---
+
+- name: MEDIUM | UBTU-22-431010 | PATCH | Ubuntu 22.04 LTS must have the "apparmor" package installed.
+  when: ubtu22stig_431010
+  tags:
+    - UBTU-22-431010
+    - CAT2
+    - CCI-001764
+    - CCI-001774
+    - CCI-002165
+    - SRG-OS-000312-GPOS-00124
+    - SRG-OS-000368-GPOS-00154
+    - SRG-OS-000370-GPOS-00155
+    - SV-260556r958702_rule
+    - V-260556
+    - NIST800-53R4_AC-3
+    - NIST800-53R4_CM-7
+    - apparmor
+  ansible.builtin.package:
+    name: apparmor
+    state: present
+
+- name: MEDIUM | UBTU-22-431015 | PATCH | Ubuntu 22.04 LTS must be configured to use AppArmor.
+  when: ubtu22stig_431015
+  tags:
+    - UBTU-22-431015
+    - CAT2
+    - CCI-001764
+    - CCI-001774
+    - CCI-002165
+    - SRG-OS-000312-GPOS-00124
+    - SRG-OS-000368-GPOS-00154
+    - SRG-OS-000370-GPOS-00155
+    - SV-260557r958804_rule
+    - V-260557
+    - NIST800-53R4_AC-3
+    - NIST800-53R4_CM-7
+    - apparmor
+  ansible.builtin.systemd_service:
+    name: apparmor
+    state: started
+    enabled: true

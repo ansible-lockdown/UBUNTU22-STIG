@@ -1,0 +1,47 @@
+---
+
+- name: MEDIUM | UBTU-22-231010 | PATCH | Ubuntu 22.04 LTS must implement cryptographic mechanisms to prevent unauthorized disclosure and modification of all information that requires protection at rest.
+  when: ubtu22stig_231010
+  tags:
+    - UBTU-22-231010
+    - CAT2
+    - CCI-001199
+    - CCI-002475
+    - CCI-002476
+    - SRG-OS-000185-GPOS-00079
+    - SRG-OS-000404-GPOS-00183
+    - SRG-OS-000405-GPOS-00184
+    - SV-260484r958552_rule
+    - V-260484
+    - NIST800-53R4_SC-28
+    - filesystems
+  vars:
+    warn_control_id: 'UBTU-22-231010'
+  block:
+    - name: MEDIUM | UBTU-22-231010 | AUDIT | Ubuntu 22.04 LTS must implement cryptographic mechanisms to prevent unauthorized disclosure and modification of all information that requires protection at rest. | Get encrypted partitions
+      ansible.builtin.shell: more /etc/crypttab | sed 1d
+      changed_when: false
+      failed_when: false
+      register: discovered_crypttab_status
+
+    - name: MEDIUM | UBTU-22-231010 | AUDIT | Ubuntu 22.04 LTS must implement cryptographic mechanisms to prevent unauthorized disclosure and modification of all information that requires protection at rest. | Alert no partitions are encrypted
+      when: discovered_crypttab_status.stdout | length == 0
+      ansible.builtin.debug:
+        msg: "Warning!! There are no encrypted partitions. Please make sure all permanent partitions are encrypted"
+
+    - name: MEDIUM | UBTU-22-231010 | AUDIT | Ubuntu 22.04 LTS must implement cryptographic mechanisms to prevent unauthorized disclosure and modification of all information that requires protection at rest. | Set warning count
+      when: discovered_crypttab_status.stdout | length == 0
+      ansible.builtin.import_tasks:
+        file: warning_facts.yml
+
+    - name: MEDIUM | UBTU-22-231010 | AUDIT | Ubuntu 22.04 LTS must implement cryptographic mechanisms to prevent unauthorized disclosure and modification of all information that requires protection at rest. | Alert no partitions are encrypted
+      when: discovered_crypttab_status.stdout | length > 0
+      ansible.builtin.debug:
+        msg:
+          - "Warning!! Please review that no permanent partitions are missing. All permanent partitions need to be encrypted"
+          - "{{ discovered_crypttab_status.stdout_lines }}"
+
+    - name: MEDIUM | UBTU-22-231010 | AUDIT | Ubuntu 22.04 LTS must implement cryptographic mechanisms to prevent unauthorized disclosure and modification of all information that requires protection at rest. | Set warning count
+      when: discovered_crypttab_status.stdout | length > 0
+      ansible.builtin.import_tasks:
+        file: warning_facts.yml
