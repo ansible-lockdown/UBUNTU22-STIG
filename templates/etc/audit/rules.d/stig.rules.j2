@@ -28,6 +28,11 @@
 # UBUNTU22-STIG rule 654040
 -a always,exit -F path=/usr/bin/crontab -F perm=x -F auid>=1000 -F auid!=unset -k privileged-crontab
 {% endif %}
+{% if ubtu22stig_654041 %}
+# UBUNTU22-STIG rule 654041
+-w /etc/cron.d/ -p wa -k cronjobs
+-w /var/spool/cron/ -p wa -k cronjobs
+{% endif %}
 {% if ubtu22stig_654045 %}
 # UBUNTU22-STIG rule 654045
 -w /usr/sbin/fdisk -p x -k fdisk

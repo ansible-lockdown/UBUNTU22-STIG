@@ -131,12 +131,12 @@
   when: ubtu22stig_611055
   tags:
     - UBTU-22-611055
-    - CCI-000000
+    - CCI-000196
     - CAT2
     - SRG-OS-000073-GPOS-00041
-    - SV-260569r986291_rule
+    - SV-260569r1101736_rule
     - V-260569
-    - NIST800-53R4_NA
+    - NIST800-53R4_IA-5
     - password
   block:
     - name: MEDIUM | UBTU-22-611055 | AUDIT | Ubuntu 22.04 LTS must store only encrypted representations of passwords. | get current setting
@@ -147,7 +147,7 @@
 
     - name: MEDIUM | UBTU-22-611055 | AUDIT | Ubuntu 22.04 LTS must store only encrypted representations of passwords. | replace current setting if incorrect
       when:
-        - discovered_common_pwd_sha512 | length > 0
+        - discovered_common_pwd_sha512.stdout | length > 0
         - "ubtu22stig_passwd_hash_algo not in discovered_common_pwd_sha512.stdout"
       ansible.builtin.lineinfile:
         path: /etc/pam.d/common-password
@@ -155,9 +155,19 @@
         regexp: ^(password\s*\[success=1 default=ignore\]\s*pam_unix.so.*)(yescrypt|md5|bigcrypt|sha256|sha512|blowfish)(.*)
         line: \1{{ ubtu22stig_passwd_hash_algo }}\3
 
+    - name: MEDIUM | UBTU-22-611055 | AUDIT | Ubuntu 22.04 LTS must store only encrypted representations of passwords. | add rounds if missing
+      when:
+        - discovered_common_pwd_sha512.stdout | length > 0
+        - "'rounds=100000' not in discovered_common_pwd_sha512.stdout"
+      ansible.builtin.lineinfile:
+        path: /etc/pam.d/common-password
+        backrefs: true
+        regexp: ^(password\s*\[success=1 default=ignore\]\s*pam_unix.so.*)
+        line: \1 rounds=100000
+
     - name: MEDIUM | UBTU-22-611055 | PATCH | Ubuntu 22.04 LTS must store only encrypted representations of passwords.
       when:
-        - discovered_common_pwd_sha512 | length > 0
+        - discovered_common_pwd_sha512.stdout | length > 0
       community.general.pamd:
         name: common-password
         type: password
@@ -180,4 +190,4 @@
   ansible.builtin.lineinfile:
     path: /etc/login.defs
     regexp: (?i)^(#|)ENCRYPT_METHOD
-    line: ENCRYPT_METHOD "{{ ubtu22stig_passwd_hash_algo }}"
+    line: "ENCRYPT_METHOD {{ ubtu22stig_passwd_hash_algo | upper }}"

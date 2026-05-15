@@ -3,11 +3,9 @@
 ## metadata for Audit benchmark
 benchmark_version: {{ benchmark_version }}
 
-## Benchmark name used by audting control role
+## Benchmark name used by auditing control role
 # The audit variable found at the base
 benchmark: UBUNTU22-STIG
-
-
 
 # turn the categories on/off
 ubtu22stig_cat1: {{ ubtu22stig_cat1 }}
@@ -21,6 +19,7 @@ ubtu22stig_gui: {{ ubtu22stig_gui }}
 # Some tests may need to scan every filesystem or have an impact on a system
 # these may need be scheduled to minimise impact
 run_heavy_tests: {{ audit_run_heavy_tests }}
+
 # Time out of commands
 timeout_ms: {{ audit_cmd_timeout }}
 
@@ -35,6 +34,7 @@ ubtu22stig_allow_aide_check: {{ ubtu22stig_allow_aide_check }}
 
 # Cat 1 rules
 #### CAT 1
+ubtu22stig_211000: {{ ubtu22stig_211000 }}
 ubtu22stig_211015: {{ ubtu22stig_211015 }}
 ubtu22stig_212010: {{ ubtu22stig_212010 }}
 ubtu22stig_215030: {{ ubtu22stig_215030 }}
@@ -95,6 +95,10 @@ ubtu22stig_251020: {{ ubtu22stig_251020 }}
 ubtu22stig_251025: {{ ubtu22stig_251025 }}
 ubtu22stig_251030: {{ ubtu22stig_251030 }}
 ubtu22stig_253010: {{ ubtu22stig_253010 }}
+ubtu22stig_254010: {{ ubtu22stig_254010 }}
+ubtu22stig_254015: {{ ubtu22stig_254015 }}
+ubtu22stig_254020: {{ ubtu22stig_254020 }}
+ubtu22stig_254030: {{ ubtu22stig_254030 }}
 ubtu22stig_255020: {{ ubtu22stig_255020 }}
 ubtu22stig_255030: {{ ubtu22stig_255030 }}
 ubtu22stig_255035: {{ ubtu22stig_255035 }}
@@ -122,6 +126,7 @@ ubtu22stig_412035: {{ ubtu22stig_412035 }}
 ubtu22stig_431010: {{ ubtu22stig_431010 }}
 ubtu22stig_431015: {{ ubtu22stig_431015 }}
 ubtu22stig_432010: {{ ubtu22stig_432010 }}
+ubtu22stig_432011: {{ ubtu22stig_432011 }}
 ## 6xx - Authentication, Authorization and Accounting
 ubtu22stig_611010: {{ ubtu22stig_611010 }}
 ubtu22stig_611015: {{ ubtu22stig_611015 }}
@@ -164,6 +169,7 @@ ubtu22stig_654025: {{ ubtu22stig_654025 }}
 ubtu22stig_654030: {{ ubtu22stig_654030 }}
 ubtu22stig_654035: {{ ubtu22stig_654035 }}
 ubtu22stig_654040: {{ ubtu22stig_654040 }}
+ubtu22stig_654041: {{ ubtu22stig_654041 }}
 ubtu22stig_654045: {{ ubtu22stig_654045 }}
 ubtu22stig_654050: {{ ubtu22stig_654050 }}
 ubtu22stig_654055: {{ ubtu22stig_654055 }}
@@ -200,6 +206,7 @@ ubtu22stig_654205: {{ ubtu22stig_654205 }}
 ubtu22stig_654210: {{ ubtu22stig_654210 }}
 ubtu22stig_654215: {{ ubtu22stig_654215 }}
 ubtu22stig_654220: {{ ubtu22stig_654220 }}
+ubtu22stig_654224: {{ ubtu22stig_654224 }}
 ubtu22stig_654225: {{ ubtu22stig_654225 }}
 ubtu22stig_654230: {{ ubtu22stig_654230 }}
 ubtu22stig_654235: {{ ubtu22stig_654235 }}
@@ -213,9 +220,9 @@ ubtu22stig_215025: {{ ubtu22stig_215025 }}
 ubtu22stig_252010: {{ ubtu22stig_252010 }}
 ubtu22stig_252015: {{ ubtu22stig_252015 }}
 ubtu22stig_252020: {{ ubtu22stig_252020 }}
+ubtu22stig_254025: {{ ubtu22stig_254025 }}
 ubtu22stig_411045: {{ ubtu22stig_411045 }}
 ubtu22stig_412010: {{ ubtu22stig_412010 }}
-ubtu22stig_412015: {{ ubtu22stig_412015 }}
 ubtu22stig_412020: {{ ubtu22stig_412020 }}
 ubtu22stig_631015: {{ ubtu22stig_631015 }}
 ubtu22stig_651035: {{ ubtu22stig_651035 }}

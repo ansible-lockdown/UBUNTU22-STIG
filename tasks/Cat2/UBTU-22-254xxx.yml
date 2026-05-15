@@ -1,0 +1,80 @@
+---
+
+- name: MEDIUM | UBTU-22-254010 | PATCH | Ubuntu 22.04 LTS must have the "SSSD" package installed.
+  when: ubtu22stig_254010
+  tags:
+    - UBTU-22-254010
+    - CAT2
+    - CCI-000765
+    - CCI-000766
+    - SRG-OS-000396-GPOS-00176
+    - SV-274864r1107268_rule
+    - V-274864
+    - NIST800-53R4_IA-2
+  ansible.builtin.package:
+    name:
+      - sssd
+      - libpam-sss
+      - libnss-sss
+
+- name: MEDIUM | UBTU-22-254015 | PATCH | Ubuntu 22.04 LTS must use the "SSSD" package for multifactor authentication services.
+  when: ubtu22stig_254015
+  tags:
+    - UBTU-22-254015
+    - CAT2
+    - CCI-000765
+    - CCI-000766
+    - SRG-OS-000396-GPOS-00176
+    - SV-274866r1101739_rule
+    - V-274866
+    - NIST800-53R4_IA-2
+  ansible.builtin.service:
+    name: sssd
+    state: started
+    enabled: true
+
+- name: MEDIUM | UBTU-22-254020 | AUDIT | Ubuntu 22.04 LTS must ensure SSSD performs certificate path validation, including revocation checking, against a trusted anchor for PKI-based authentication.
+  when: ubtu22stig_254020
+  tags:
+    - UBTU-22-254020
+    - CAT2
+    - CCI-000185
+    - SRG-OS-000396-GPOS-00176
+    - SV-274867r1107270_rule
+    - V-274867
+    - NIST800-53R4_IA-5
+    - manual
+    - sssd
+  vars:
+    warn_control_id: "MEDIUM | UBTU-22-254020"
+  block:
+    - name: MEDIUM | UBTU-22-254020 | AUDIT | Ubuntu 22.04 LTS must ensure SSSD performs certificate path validation, including revocation checking, against a trusted anchor for PKI-based authentication.
+      ansible.builtin.debug:
+        msg: "Warning! Please check that your sssd settings for your site match the STIG requirements. Modifications to sssd.conf are not supported in this role"
+
+    - name: MEDIUM | UBTU-22-254020 | AUDIT | Ubuntu 22.04 LTS must ensure SSSD performs certificate path validation, including revocation checking, against a trusted anchor for PKI-based authentication.
+      ansible.builtin.import_tasks:
+        file: warning_facts.yml
+
+- name: MEDIUM | UBTU-22-254030 | AUDIT | Ubuntu 22.04 LTS must map the authenticated identity to the user or group account for PKI-based authentication.
+  when: ubtu22stig_254030
+  tags:
+    - UBTU-22-254030
+    - CAT2
+    - CCI-000187
+    - SRG-OS-000396-GPOS-00176
+    - SV-274865r1101731_rule
+    - V-274865
+    - NIST800-53R4_IA-5
+    - manual
+    - sssd
+  vars:
+    warn_control_id: "MEDIUM | UBTU-22-254030"
+  block:
+    - name: MEDIUM | UBTU-22-254030 | AUDIT | Ubuntu 22.04 LTS must map the authenticated identity to the user or group account for PKI-based authentication.
+      ansible.builtin.debug:
+        msg: "Warning! Please check that your sssd settings for your site match the STIG requirements. Modifications to sssd.conf are not supported in this role"
+
+    - name: MEDIUM | UBTU-22-254030 | AUDIT | Ubuntu 22.04 LTS must map the authenticated identity to the user or group account for PKI-based authentication.
+      ansible.builtin.import_tasks:
+        file: warning_facts.yml

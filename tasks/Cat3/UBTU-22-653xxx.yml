@@ -7,7 +7,7 @@
     - CAT3
     - CCI-001851
     - SRG-OS-000342-GPOS-00133
-    - SV-260592r958754_rule
+    - SV-260592r1101709_rule
     - V-260592
     - NIST800-53R4_AU-4
     - auditd
@@ -55,7 +55,7 @@
 - name: "LOW | UBTU-22-653035 | PATCH | Ubuntu 22.04 LTS must allocate audit record storage capacity to store at least one weeks' worth of audit records, when audit records are not immediately sent to a central audit record storage facility."
   when:
     - ubtu22stig_653035
-    - ansible_facts['mounts']| selectattr('mount', '==', ubtu22stig_audit_log_filesystem)
+    - "ubtu22stig_audit_log_filesystem in ansible_facts['mounts'] | map(attribute='mount') | list"
   tags:
     - UBTU-22-653035
     - CAT3

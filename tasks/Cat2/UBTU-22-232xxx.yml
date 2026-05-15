@@ -95,7 +95,7 @@
     - CAT2
     - CCI-001499
     - SRG-OS-000259-GPOS-00100
-    - SV-260487r991560_rule
+    - SV-260487r1107262_rule
     - V-260487
     - NIST800-53R4_CM-5
     - permissions
@@ -103,7 +103,7 @@
     warn_control_id: 'MEDIUM | UBTU-22-232020'
   block:
     - name: MEDIUM | UBTU-22-232020 | AUDIT | Ubuntu 22.04 LTS library files must have mode "755" or less permissive. | Discover
-      ansible.builtin.shell: find /lib /lib64 /usr/lib -perm /022 -type f -exec stat -c "%n" '{}' \;
+      ansible.builtin.shell: find /lib /lib64 /usr/lib /usr/lib64 -perm /022 -type f -exec stat -c "%n" '{}' \;
       changed_when: false
       failed_when: discovered_system_lib_files_perms.rc not in [ 0, 1 ]
       register: discovered_system_lib_files_perms
@@ -157,7 +157,7 @@
     - CAT2
     - CCI-001312
     - SRG-OS-000205-GPOS-00083
-    - SV-260489r958564_rule
+    - SV-260489r1134796_rule
     - V-260489
     - NIST800-53R4_SI-11
     - permissions
@@ -165,7 +165,7 @@
     warn_control_id: 'MEDIUM | UBTU-22-232026'
   block:
     - name: MEDIUM | UBTU-22-232026 | AUDIT | Ubuntu 22.04 LTS must generate error messages that provide information necessary for corrective actions without revealing information that could be exploited by adversaries. | find files
-      ansible.builtin.shell: find /var/log -perm /137 ! -name '*[bw]tmp' ! -name '*lastlog' {% if ubtu22stig_232026 %}! -name '*syslog' {% endif %}-type f -exec stat -c "%n" {} \;
+      ansible.builtin.shell: find /var/log -perm /137 ! -name '*[bw]tmp' ! -name '*lastlog' ! -name '*syslog' -type f -exec stat -c "%n" {} \;
       changed_when: false
       failed_when: discovered_var_log_logfiles.rc not in [ 0, 1 ]
       register: discovered_var_log_logfiles
@@ -176,7 +176,7 @@
         - ubtu22stig_disruption_high
       ansible.builtin.file:
         path: "{{ item }}"
-        mode: 'u-w,g-wx,o-rwx'
+        mode: 'u-wx,g-wx,o-rwx'
       loop: "{{ discovered_var_log_logfiles.stdout_lines }}"
 
     - name: MEDIUM | UBTU-22-232026 | WARN | Ubuntu 22.04 LTS must generate error messages that provide information necessary for corrective actions without revealing information that could be exploited by adversaries. | Warning
@@ -222,11 +222,11 @@
         regexp: "{{ item.regexp }}"
         line: "{{ item.line }}"
       loop:
-        - {regexp: '^z \/run\/log\/journal (\d{4,}) (\b.*\b) (\b.*\b) - -', line: 'z /run/log/journal 2750 \2 \3 - -' }
-        - {regexp: '^Z \/run\/log\/journal\/%m (~\d{4,}) (\b.*\b) (\b.*\b) - -', line: 'Z /run/log/journal/%m ~2750 \2 \3 - -' }
-        - {regexp: '^z \/var\/log\/journal (\d{4,}) (\b.*\b) (\b.*\b) - -', line: 'z /var/log/journal 2750 \2 \3 - -' }
-        - {regexp: '^z \/var\/log\/journal\/%m (\d{4,}) (\b.*\b) (\b.*\b) - -', line: 'z /var/log/journal/%m 2750 \2 \3 - -' }
-        - {regexp: '^z \/var\/log\/journal\/%m/system.journal (\d{4,}) (\b.*\b) (\b.*\b) - -', line: 'z /var/log/journal/%m/system.journal 0750 \2 \3 - -' }
+        - {regexp: '^z \/run\/log\/journal (\d{4,}) (\b.*\b) (\b.*\b) - -', line: 'z /run/log/journal 2640 \2 \3 - -' }
+        - {regexp: '^Z \/run\/log\/journal\/%m (~\d{4,}) (\b.*\b) (\b.*\b) - -', line: 'Z /run/log/journal/%m ~2640 \2 \3 - -' }
+        - {regexp: '^z \/var\/log\/journal (\d{4,}) (\b.*\b) (\b.*\b) - -', line: 'z /var/log/journal 2640 \2 \3 - -' }
+        - {regexp: '^z \/var\/log\/journal\/%m (\d{4,}) (\b.*\b) (\b.*\b) - -', line: 'z /var/log/journal/%m 2640 \2 \3 - -' }
+        - {regexp: '^z \/var\/log\/journal\/%m/system.journal (\d{4,}) (\b.*\b) (\b.*\b) - -', line: 'z /var/log/journal/%m/system.journal 0640 \2 \3 - -' }
       notify: Change_requires_reboot
 
     - name: MEDIUM | UBTU-22-232027 | WARN | Ubuntu 22.04 LTS must generate system journal entries without revealing information that could be exploited by adversaries. | Warning
@@ -472,7 +472,7 @@
     - CAT2
     - CCI-001499
     - SRG-OS-000259-GPOS-00100
-    - SV-260497r991560_rulee
+    - SV-260497r991560_rule
     - V-260497
     - NIST800-53R4_CM-5
     - permissions
@@ -560,7 +560,7 @@
     - CAT2
     - CCI-001499
     - SRG-OS-000259-GPOS-00100
-    - SV-260499r991560_rulee
+    - SV-260499r1107264_rule
     - V-260499
     - NIST800-53R4_CM-5
     - permissions
@@ -568,7 +568,7 @@
     warn_control_id: 'MEDIUM | UBTU-22-232070'
   block:
     - name: MEDIUM | UBTU-22-232070 | AUDIT | Ubuntu 22.04 LTS library files must be owned by "root". | Discover
-      ansible.builtin.shell: find /lib /usr/lib /lib64 ! -user root -type f -exec stat -c "%n" '{}' \;
+      ansible.builtin.shell: find /lib /lib64 /usr/lib /usr/lib64 ! -user root -type f -exec stat -c "%n" '{}' \;
       changed_when: false
       failed_when: discovered_system_lib_files_owner.rc not in [ 0, 1 ]
       register: discovered_system_lib_files_owner
@@ -604,7 +604,7 @@
     - CAT2
     - CCI-001499
     - SRG-OS-000259-GPOS-00100
-    - SV-260500r991560_rulee
+    - SV-260500r1107266_rule
     - V-260500
     - NIST800-53R4_CM-5
     - permissions
@@ -612,7 +612,7 @@
     warn_control_id: 'MEDIUM | UBTU-22-232075'
   block:
     - name: MEDIUM | UBTU-22-232075 | AUDIT | Ubuntu 22.04 LTS library files must be group-owned by "root". | Discover
-      ansible.builtin.shell: find /lib /usr/lib /lib64 ! -group root -type f -exec stat -c "%n" '{}' \;
+      ansible.builtin.shell: find /lib /usr/lib /lib64 /usr/lib64 ! -group root -type f -exec stat -c "%n" '{}' \;
       changed_when: false
       failed_when: discovered_system_lib_files_group.rc not in [ 0, 1 ]
       register: discovered_system_lib_files_group
@@ -736,9 +736,9 @@
         regexp: "{{ item.regexp }}"
         line: "{{ item.line }}"
       loop:
-        - {regexp: '^Z \/run\/log\/journal\/%m (~\d{4,}) (\b.*\b) (\b.*\b) - -', line: 'Z /run/log/journal/%m \1 root \3 - -' }
-        - {regexp: '^z \/var\/log\/journal\/%m (\d{4,}) (\b.*\b) (\b.*\b) - -', line: 'z /var/log/journal/%m \1 root \3 - -' }
-        - {regexp: '^z \/var\/log\/journal\/%m\/system.journal (\d{4,}) (\b.*\b) (\b.*\b) - -', line: 'z /var/log/journal/%m/system.journal \1 root \3 - -' }
+        - {regexp: '^Z \/run\/log\/journal\/%m (~\d{4,}) (\b.*\b) (\b.*\b) - -', line: 'Z /run/log/journal/%m ~2640 root \3 - -' }
+        - {regexp: '^z \/var\/log\/journal\/%m (\d{4,}) (\b.*\b) (\b.*\b) - -', line: 'z /var/log/journal/%m 2640 root \3 - -' }
+        - {regexp: '^z \/var\/log\/journal\/%m\/system.journal (\d{4,}) (\b.*\b) (\b.*\b) - -', line: 'z /var/log/journal/%m/system.journal 0640 root \3 - -' }
       notify: Change_requires_reboot
 
 - name: MEDIUM | UBTU-22-232095 | PATCH | Ubuntu 22.04 LTS must configure the files used by the system journal to be group-owned by "systemd-journal"
@@ -822,7 +822,7 @@
     - CCI-001493
     - CCI-001494
     - SRG-OS-000256-GPOS-00097
-    - SV-260507r991557_rule
+    - SV-260507r1101725_rule
     - V-260507
     - NIST800-53R4_AU-9
     - auditd
@@ -934,7 +934,7 @@
   ansible.builtin.file:
     path: /usr/bin/journalctl
     state: file
-    mode: 'go-w'
+    mode: 'g-wx,o-rwx'
 
 - name: MEDIUM | UBTU-22-232145 | PATCH | Ubuntu 22.04 LTS must set a sticky bit on all public directories to prevent unauthorized and unintended information transferred via shared system resources.
   when:

@@ -13,16 +13,23 @@
     - apt
   block:
     - name: LOW | UBTU-22-214010 | AUDIT | Ubuntu 22.04 LTS must be configured so that the Advance Package Tool (APT) prevents the installation of patches, service packs, device drivers, or operating system components without verification they have been digitally signed using a certificate that is recognized and approved by the organization.
+      ansible.builtin.find:
+        path: /etc/apt
+        patterns: '*.conf'
+        file_type: file
+        recurse: true
+      register: discovered_apt_conf
+
+    - name: LOW | UBTU-22-214010 | AUDIT | Ubuntu 22.04 LTS must be configured so that the Advance Package Tool (APT) prevents the installation of patches, service packs, device drivers, or operating system components without verification they have been digitally signed using a certificate that is recognized and approved by the organization.
       when: "'/etc/apt/apt.conf.d/01-vendor-ubuntu' in item"
       ansible.builtin.replace:
-        path: "{{ item }}"
+        path: "{{ item.path }}"
         regexp: ^(APT::Get::AllowUnauthenticated "true";)
         replace: '#\1'
-      with_fileglob:
-        - /etc/apt/*
+      loop: "{{ discovered_apt_conf.files }}"
 
     - name: LOW | UBTU-22-214010 | AUDIT | Ubuntu 22.04 LTS must be configured so that the Advance Package Tool (APT) prevents the installation of patches, service packs, device drivers, or operating system components without verification they have been digitally signed using a certificate that is recognized and approved by the organization.
       ansible.builtin.lineinfile:
         path: /etc/apt/apt.conf.d/01-vendor-ubuntu
-        regexp: APT::Get::AllowUnauthenticated
-        line: APT::Get::AllowUnauthenticated "true";
+        regexp: ^APT::Get::AllowUnauthenticated "true";
+        line: APT::Get::AllowUnauthenticated "false";

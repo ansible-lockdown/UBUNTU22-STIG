@@ -1,5 +1,22 @@
 ---
 
+- name: HIGH | UBTU-22-211000 | AUDIT | Ubuntu 22.04 LTS must be a vendor-supported release.
+  when:
+    - ubtu22stig_211000
+    - ansible_distribution_version == "22.04"
+  tags:
+    - UBTU-22-211000
+    - CAT1
+    - CCI-000366
+    - SRG-OS-000480-GPOS-00227
+    - SV-278951r1135403_rule
+    - V-278951
+    - NIST800-53R4_CM-6
+  ansible.builtin.assert:
+    that: ansible_distribution_version == "22.04"
+    fail_msg: "The system is not running expected OS Ubuntu22.04 LTS"
+    success_msg: " The system is running the expected support OS Ubuntu 22.04 LTS"
+
 - name: HIGH | UBTU-22-211015 | PATCH | Ubuntu 22.04 LTS must disable the x86 Ctrl-Alt-Delete key sequence.
   when: ubtu22stig_211015
   tags:
@@ -35,6 +52,7 @@
         path: /etc/grub.d/40_custom
         regex: "{{ item.regex }}"
         line: "{{ item.line }}"
+      no_log: true
       loop:
         - { regex: '^set superusers=', line: 'set superusers="root"' }
         - { regex: '^password_pbkdf2 root', line: 'password_pbkdf2 root {{ ubtu22stig_bootloader_password_hash }}' }

@@ -116,7 +116,7 @@
     - CAT2
     - CCI-000140
     - SRG-OS-000047-GPOS-00023
-    - SV-260594r958426_rule
+    - SV-260594r1038966_rule
     - V-260594
     - NIST800-53R4_AU-5
     - auditd
@@ -241,6 +241,8 @@
         path: "{{ item.path }}"
         mode: 'go-wx'
       loop: "{{ discovered_audit_files.files }}"
+      loop_control:
+        label: "{{ item.path }}"
 
 - name: MEDIUM | UBTU-22-653070 | PATCH | Ubuntu 22.04 LTS must be configured so that audit configuration files are not write-accessible by unauthorized users.
   when: ubtu22stig_653070
@@ -266,6 +268,8 @@
         path: "{{ item.path }}"
         owner: root
       loop: "{{ discovered_audit_files.files }}"
+      loop_control:
+        label: "{{ item.path }}"
 
 - name: MEDIUM | UBTU-22-653075 | PATCH | Ubuntu 22.04 LTS must permit only authorized groups to own the audit configuration files.
   when: ubtu22stig_653075
@@ -291,3 +295,5 @@
         path: "{{ item.path }}"
         group: root
       loop: "{{ discovered_audit_files.files }}"
+      loop_control:
+        label: "{{ item.path }}"

@@ -5,12 +5,11 @@
   tags:
     - UBTU-22-432010
     - CAT2
-    - CCI-000000
+    - CCI-002038
     - SRG-OS-000373-GPOS-00156
-    - SRG-OS-000373-GPOS-00157
-    - SV-260558r987879_rule
+    - SV-260558r1101733_rule
     - V-260558
-    - NIST800-53R4_NA
+    - NIST800-53R4_IA-11
     - sudo
   block:
     - name: MEDIUM | UBTU-22-432010 | AUDIT | Ubuntu 22.04 LTS must require users to reauthenticate for privilege escalation or when changing roles. | capture config
@@ -28,3 +27,21 @@
         regexp: ((?i)nopasswd|!authenticate)
         replace: ''
       loop: "{{ discovered_sudo_nopasswd.stdout_lines }}"
+
+- name: MEDIUM | UBTU-22-432011 | PATCH | The operating system must require users to provide a password for privilege escalation.
+  when: ubtu22stig_432011
+  tags:
+    - UBTU-22-432011
+    - CAT2
+    - CCI-002038
+    - SRG-OS-000396-GPOS-00176
+    - SV-274860r1107272_rule
+    - V-274860
+    - NIST800-53R4_IA-11
+    - sudo
+  ansible.builtin.replace:
+    path: "{{ item }}"
+    regexp: '^([^#|{% if system_is_ec2 %}ec2-user{% endif %}].*)NOPASSWD(.*)'
+    replace: '\1PASSWD\2'
+    validate: '/usr/sbin/visudo -cf %s'
+  loop: "{{ prelim_sudoers_files.stdout_lines }}"

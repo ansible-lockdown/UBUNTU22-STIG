@@ -44,11 +44,10 @@
     - CAT2
     - CCI-000765
     - CCI-000766
+    - CCI-000767
+    - CCI-00076
     - SRG-OS-000105-GPOS-00052
-    - SRG-OS-000106-GPOS-00053
-    - SRG-OS-000107-GPOS-00054
-    - SRG-OS-000108-GPOS-00055
-    - SV-260575r986293_rule
+    - SV-260575r1044770_rule
     - V-260575
     - NIST800-53R4_IA-2
     - multifactor
@@ -81,11 +80,11 @@
   tags:
     - UBTU-22-612025
     - CAT2
-    - CCI-000185
-    - SRG-OS-000066-GPOS-00034
-    - SV-260577r986294_rule
-    - V-260577
-    - NIST800-53R4_IA-5
+    - CCI-001954
+    - SRG-OS-000377-GPOS-00162
+    - SV-260576r1069114_rule
+    - V-260576
+    - NIST800-53R4_IA-2
     - multifactor
   block:
     - name: MEDIUM | UBTU-22-612025 | AUDIT | Ubuntu 22.04 LTS must electronically verify personal identity verification (PIV) credentials. | find current settings
@@ -110,11 +109,11 @@
   tags:
     - UBTU-22-612030
     - CAT2
-    - CCI-000000
-    - SRG-OS-000384-GPOS-00167
-    - SV-260578r986295_rule
-    - V-260578
-    - NIST800-53R4_NA
+    - CCI-000185
+    - SRG-OS-000066-GPOS-00034
+    - SV-260577r1069112_rule
+    - V-260577
+    - NIST800-53R4_IA-5
     - multifactor
   block:
     - name: MEDIUM | UBTU-22-612030 | AUDIT | Ubuntu 22.04 LTS, for PKI-based authentication, must validate certificates by constructing a certification path (which includes status information) to an accepted trust anchor. | find current settings

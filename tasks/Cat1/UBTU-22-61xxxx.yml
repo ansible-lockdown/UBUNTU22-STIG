@@ -7,17 +7,17 @@
     - CAT1
     - CCI-000366
     - SRG-OS-000480-GPOS-00227
-    - SV-260570r991589_rule
+    - SV-260570r1082233_rule
     - V-260570
     - NIST800-53R4_CM-6
     - password
   ansible.builtin.replace:
-    path: /etc/pam.d/{{ item }}
-    regexp: (.*) nullok(.*)
-    replace: \1\2
+    path: "{{ item }}"
+    regexp: nullok
+    replace: ''
   loop:
-    - common-auth
-    - common-password
+    - /etc/pam.d/common-auth
+    - /etc/pam.d/common-password
 
 - name: HIGH | UBTU-22-611065 | PATCH | Ubuntu 22.04 LTS must not have accounts configured with blank or null passwords.
   when: ubtu22stig_611065

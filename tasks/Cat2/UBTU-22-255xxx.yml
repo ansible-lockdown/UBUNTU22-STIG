@@ -109,7 +109,7 @@
   ansible.builtin.lineinfile:
     path: /etc/ssh/sshd_config
     regexp: ^Ciphers
-    line: "Ciphers {{ ubtu22stig_sshd_config_ciphers | join(',') }}"
+    line: "Ciphers {{ ubtu22stig_sshd_config_ciphers }}"
     validate: sshd -t -f %s
   notify: Change_requires_reboot
 
@@ -133,7 +133,7 @@
   ansible.builtin.lineinfile:
     path: /etc/ssh/sshd_config
     regexp: ^MACs
-    line: "MACs {{ ubtu22stig_sshd_config_macs | join(',') }}"
+    line: "MACs {{ ubtu22stig_sshd_config_macs }}"
     validate: sshd -t -f %s
   notify: Restart_ssh
 
@@ -157,7 +157,7 @@
   ansible.builtin.lineinfile:
     path: /etc/ssh/sshd_config
     regexp: ^MACs
-    line: "MACs {{ ubtu22stig_sshd_config_macs | join(',') }}"
+    line: "MACs {{ ubtu22stig_sshd_config_macs }}"
     validate: sshd -t -f %s
   notify: Change_requires_reboot
 
@@ -175,7 +175,7 @@
   ansible.builtin.lineinfile:
     path: /etc/ssh/sshd_config
     regexp: ^KexAlgorithms
-    line: "KexAlgorithms {{ ubtu22stig_sshd_config_kex | join(',') }}"
+    line: "KexAlgorithms {{ ubtu22stig_sshd_config_kex }}"
     validate: sshd -t -f %s
   notify: Restart_ssh
 

@@ -5,11 +5,11 @@
   tags:
     - UBTU-22-252010
     - CAT3
-    - CCI-000366
+    - CCI-001891
     - SRG-OS-000355-GPOS-00143
-    - SV-260519r986273_rule
+    - SV-260519r1038944_rule
     - V-260519
-    - NIST800-53R4_CM-6
+    - NIST800-53R4_AU-8
     - service
     - time
   block:
@@ -36,17 +36,17 @@
   tags:
     - UBTU-22-252015
     - CAT3
-    - CCI-000000
+    - CCI-002046
     - SRG-OS-000356-GPOS-00144
-    - SV-260520r986274_rule
+    - SV-260520r1044776_rule
     - V-260520
-    - NIST800-53R4_NA
+    - NIST800-53R4_AU-8
     - service
     - time
   ansible.builtin.lineinfile:
     path: /etc/chrony/chrony.conf
     regexp: ^(#|)makestep
-    line: makestep 1 1
+    line: makestep 1 -1
   notify: Restart_chrony
 
 - name: LOW | UBTU-22-252020 | PATCH |Ubuntu 22.04 LTS must record time stamps for audit records that can be mapped to Coordinated Universal Time (UTC).

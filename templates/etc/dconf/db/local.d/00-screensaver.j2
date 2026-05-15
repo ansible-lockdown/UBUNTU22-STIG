@@ -1,0 +1,18 @@
+# Added as part of STIG requirements
+{% if ubtu22stig_271020 or ubtu22stig_271025 %}
+[org/gnome/desktop/screensaver]
+lock-enabled=true
+{% endif %}
+{% if ubtu22stig_271025 %}
+lock-delay=0
+{% endif %}
+
+{% if ubtu22stig_271025 %}
+[org/gnome/desktop/session]
+idle-delay=600
+{% endif %}
+
+{% if ubtu22stig_271030 %}
+[org/gnome/settings-daemon/plugins/media-keys]
+logout=""
+{% endif %}

@@ -1,0 +1,22 @@
+---
+
+- name: MEDIUM | UBTU-22-254025 | AUDIT | Ubuntu 22.04 LTS must be configured such that Pluggable Authentication Module (PAM) prohibits the use of cached authentications after one day.
+  when: ubtu22stig_254025
+  tags:
+    - UBTU-22-254025
+    - CAT3
+    - CCI-002007
+    - SRG-OS-000396-GPOS-00176
+    - SV-274863r1107271_rule
+    - V-274863
+    - NIST800-53R4_IA-5
+  vars:
+    warn_control_id: "MEDIUM | UBTU-22-254025"
+  block:
+    - name: MEDIUM | UBTU-22-254025 | AUDIT | Ubuntu 22.04 LTS must be configured such that Pluggable Authentication Module (PAM) prohibits the use of cached authentications after one day.
+      ansible.builtin.debug:
+        msg: "Warning! Please check that your sssd settings for your site match the STIG requirements. Modifications to sssd.conf are not supported in this role"
+
+    - name: MEDIUM | UBTU-22-254025 | AUDIT | Ubuntu 22.04 LTS must be configured such that Pluggable Authentication Module (PAM) prohibits the use of cached authentications after one day.
+      ansible.builtin.import_tasks:
+        file: warning_facts.yml

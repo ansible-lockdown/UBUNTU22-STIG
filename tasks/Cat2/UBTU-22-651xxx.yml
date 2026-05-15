@@ -25,7 +25,7 @@
     - CAT2
     - CCI-002696
     - SRG-OS-000445-GPOS-00199
-    - SV-260583r958944_rule
+    - SV-260583r1134798_rule
     - V-260583
     - NIST800-53R4_SI-6
     - aide
@@ -105,7 +105,7 @@
     - CAT2
     - CCI-001496
     - SRG-OS-000278-GPOS-00108
-    - SV-260586r991567_rule
+    - SV-260586r1069107_rule
     - V-260586
     - NIST800-53R4_AU-9
     - aide
@@ -119,5 +119,4 @@
     - { regexp: '/sbin/ausearch', line: 'p+i+n+u+g+s+b+acl+xattrs+sha512' }
     - { regexp: '/sbin/aureport', line: 'p+i+n+u+g+s+b+acl+xattrs+sha512' }
     - { regexp: '/sbin/autrace', line: 'p+i+n+u+g+s+b+acl+xattrs+sha512' }
-    - { regexp: '/sbin/audispd', line: 'p+i+n+u+g+s+b+acl+xattrs+sha512' }
     - { regexp: '/sbin/augenrules', line: 'p+i+n+u+g+s+b+acl+xattrs+sha512' }

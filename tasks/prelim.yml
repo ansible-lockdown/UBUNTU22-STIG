@@ -188,3 +188,12 @@
   tags: always
   ansible.builtin.package_facts:
     manager: auto
+
+- name: "PRELIM | AUDIT | Find all sudoers files."
+  when: ubtu22stig_432011
+  tags: UBTU-22-432011
+  ansible.builtin.shell: "find /etc/sudoers /etc/sudoers.d/ -type f ! -name '*~' ! -name '*.*'"
+  changed_when: false
+  failed_when: false
+  check_mode: false
+  register: prelim_sudoers_files

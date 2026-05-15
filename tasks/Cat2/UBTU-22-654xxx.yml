@@ -98,6 +98,19 @@
   ansible.builtin.set_fact:
     update_audit_template: true
 
+- name: MEDIUM | UBTU-22-654041 | PATCH | Ubuntu 22.04 LTS must audit any script or executable called by cron as root or by any privileged user.
+  when: ubtu22stig_654041
+  tags:
+    - UBTU-22-654041
+    - CAT2
+    - CCI-000172
+    - SRG-OS-000396-GPOS-00176
+    - SV-274862r1107273_rule
+    - V-274862
+    - NIST800-53R4_AU-12
+  ansible.builtin.set_fact:
+    update_audit_template: true
+
 - name: MEDIUM | UBTU-22-654045 | Ubuntu 22.04 LTS must generate audit records for successful/unsuccessful attempts to use the fdisk command.
   when: ubtu22stig_654045
   tags:
@@ -674,6 +687,22 @@
     - auditd
   ansible.builtin.set_fact:
     update_audit_template: true
+
+- name: MEDIUM | UBTU-22-654224 | The operating system must restrict privilege elevation to authorized personnel.
+  when: ubtu22stig_654224
+  tags:
+    - UBTU-22-654224
+    - CAT2
+    - CCI-002038
+    - SRG-OS-000396-GPOS-00176
+    - SV-274861r1101704_rule
+    - V-274861
+    - NIST800-53R4_AI-11
+    - sudo
+  ansible.builtin.lineinfile:
+    path: /etc/sudoers
+    regexp: '^(?i)ALL\s+ALL=\(ALL(:ALL)?\)\s+ALL'
+    state: absent
 
 - name: MEDIUM | UBTU-22-654225 | Ubuntu 22.04 LTS must generate audit records when successful/unsuccessful attempts to modify the /etc/sudoers.d directory occur.
   when: ubtu22stig_654225

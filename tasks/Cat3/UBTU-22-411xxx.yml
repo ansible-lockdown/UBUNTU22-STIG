@@ -16,15 +16,6 @@
     - pam
   block:
     - name: LOW | UBTU-22-411045 | AUDIT | Ubuntu 22.04 LTS must automatically lock an account until the locked account is released by an administrator when three unsuccessful logon attempts have been made.
-      ansible.builtin.blockinfile:
-        path: /etc/pam.d/common-auth
-        marker: "# {mark} Faillock config Ubuntu2204 STIG - Ansible-lockdown Sponsored by Mindpoint Group - A Tyto Athene Company / Ansible Lockdown"
-        block: |
-          auth    [default=die]                   pam_faillock.so authfail
-          auth    sufficient                      pam_faillock.so authsucc
-        insertafter: auth.*pam_unix.so nullok
-
-    - name: LOW | UBTU-22-411045 | AUDIT | Ubuntu 22.04 LTS must automatically lock an account until the locked account is released by an administrator when three unsuccessful logon attempts have been made.
       ansible.builtin.lineinfile:
         path: /etc/security/faillock.conf
         regexp: "{{ item.regexp }}"
@@ -35,3 +26,22 @@
         - { regexp: '^(#|)\s*deny', line: 'deny = {{ ubtu22stig_faillock_deny }}' }
         - { regexp: '^(#|)\s*fail_interval', line: 'fail_interval = {{ ubtu22stig_faillock_fail_interval }}' }
         - { regexp: '^(#|)\s*unlock_time', line: 'unlock_time = {{ ubtu22stig_faillock_unlock_time }}' }
+
+    - name: LOW | UBTU-22-411045 | AUDIT | Ubuntu 22.04 LTS must automatically lock an account until the locked account is released by an administrator when three unsuccessful logon attempts have been made.
+      ansible.builtin.lineinfile:
+        path: /etc/pam.d/common-account
+        regexp: "{{ item.regexp }}"
+        line: "{{ item.regexp }}"
+        insertafter: "{{ item.after |default(omit) }}"
+        insertbefore: "{{ item.before |default(omit) }}"
+      loop:
+        - { regexp: 'account required                        pam_faillock.so', before: 'account.*pam_unix.so'}
+
+    - name: LOW | UBTU-22-411045 | AUDIT | Ubuntu 22.04 LTS must automatically lock an account until the locked account is released by an administrator when three unsuccessful logon attempts have been made.
+      ansible.builtin.blockinfile:
+        path: /etc/pam.d/common-auth
+        marker: "# {mark} Faillock config Ubuntu2204 STIG - Ansible-lockdown Sponsored by Mindpoint Group - A Tyto Athene Company / Ansible Lockdown"
+        block: |
+          auth    [default=die]                   pam_faillock.so authfail
+          auth    sufficient                      pam_faillock.so authsucc
+        insertafter: auth.*pam_unix.so

@@ -56,6 +56,18 @@
       vars:
         sudo_password_rule: UBTU-22-010380  # pragma: allowlist secret
 
+- name: "Check ubtu22stig_bootloader_password_hash variable has been changed"
+  tags: grub
+  when:
+    - not system_is_ec2
+    - not system_is_container
+    - ubtu22stig_212010
+    - ubtu22stig_set_bootloader_password
+    - not audit_only
+  ansible.builtin.assert:
+    that: ubtu22stig_bootloader_password_hash != 'grub.pbkdf2.sha512.changethispassword'  # pragma: allowlist secret
+    msg: "This role will not be able to run single user password commands as ubtu22stig_bootloader_password_hash variable has not been set"  # pragma: allowlist secret
+
 - name: "Discover if system is Pro subscription (needed for FIPS)"
   tags: always
   block:

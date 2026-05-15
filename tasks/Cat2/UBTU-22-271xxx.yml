@@ -55,12 +55,17 @@
     - CAT2
     - CCI-000056
     - SRG-OS-000028-GPOS-00009
-    - SV-260537r958400_rule
+    - SV-260537r1069101_rule
     - V-260537
     - NIST800-53R4_AC-11
     - gnome
-  ansible.builtin.command: gsettings set org.gnome.desktop.screensaver lock-enabled true
-  changed_when: true
+  community.general.ini_file:
+    path: /etc/dconf/db/local.d/00-screensaver
+    section: org/gnome/desktop/screensaver
+    option: lock-enabled
+    value: true
+    mode: 'u-x,go-wx'
+  notify: Update_dconf
 
 - name: MEDIUM | UBTU-22-271025 | PATCH | Ubuntu 22.04 LTS must initiate a graphical session lock after 15 minutes of inactivity.
   when:
@@ -69,42 +74,20 @@
   tags:
     - UBTU-22-271025
     - CAT2
-    - CCI-000056
+    - CCI-000057
     - SRG-OS-000029-GPOS-00010
-    - SV-260538r958402_rule
+    - SV-260538r1069119_rule
     - V-260538
     - NIST800-53R4_AC-11
     - gnome
-  block:
-    - name: MEDIUM | UBTU-22-271025 | PATCH | Ubuntu 22.04 LTS must initiate a graphical session lock after 15 minutes of inactivity. | get lock-enabled
-      ansible.builtin.command: gsettings get org.gnome.desktop.screensaver lock-enabled
-      changed_when: false
-      failed_when: discovered_gnome_screensaver_lock_enabled.rc not in [ 0, 1 ]
-      register: discovered_gnome_screensaver_lock_enabled
-
-    - name: MEDIUM | UBTU-22-271025 | PATCH | Ubuntu 22.04 LTS must initiate a graphical session lock after 15 minutes of inactivity. | set lock-enabled
-      when: "'true' not in discovered_gnome_screensaver_lock_enabled.stdout"
-      ansible.builtin.command: gsettings set org.gnome.desktop.screensaver lock-enabled true
-      changed_when: true
-
-    - name: MEDIUM | UBTU-22-271025 | PATCH | Ubuntu 22.04 LTS must initiate a graphical session lock after 15 minutes of inactivity. | get lock-delay
-      ansible.builtin.command: gsettings get org.gnome.desktop.screensaver lock-delay
-      changed_when: false
-      failed_when: discovered_gnome_screensaver_lock_delay.rc not in [ 0, 1 ]
-      register: discovered_gnome_screensaver_lock_delay
-
-    - name: MEDIUM | UBTU-22-271025 | PATCH | Ubuntu 22.04 LTS must initiate a graphical session lock after 15 minutes of inactivity. | set lock-delay
-      when: "'uint32' not in discovered_gnome_screensaver_lock_delay.stdout"
-      ansible.builtin.command: gsettings set org.gnome.desktop.screensaver lock-delay 0
-      changed_when: true
-
-    - name: MEDIUM | UBTU-22-271025 | PATCH | Ubuntu 22.04 LTS must initiate a graphical session lock after 15 minutes of inactivity. | get idle-delay
-      ansible.builtin.command: gsettings get org.gnome.desktop.session idle-delay
-      changed_when: false
-      failed_when: discovered_gnome_session_idle_delay.rc not in [ 0, 1 ]
-      register: discovered_gnome_session_idle_delay
-
-    - name: MEDIUM | UBTU-22-271025 | PATCH | Ubuntu 22.04 LTS must initiate a graphical session lock after 15 minutes of inactivity. | set idle-delay
-      when: "'uint32 900' not in discovered_gnome_session_idle_delay.stdout"
-      ansible.builtin.command: gsettings set org.gnome.desktop.session idle-delay 900
-      changed_when: true
+  community.general.ini_file:
+    path: /etc/dconf/db/local.d/00-screensaver
+    section: "{{ item.section }}"
+    option: "{{ item.option }}"
+    value: "{{ item.value }}"
+    mode: 'u-x,go-wx'
+  notify: Update_dconf
+  loop:
+    - { section: org/gnome/desktop/screensaver, option: lock-enabled, value: true }
+    - { section: org/gnome/desktop/screensaver, option: lock-delay, value: 0 }
+    - { section: org/gnome/desktop/session, option: idle-delay, value: "{{ ubtu22stig_screen_lock_delay }}" }
