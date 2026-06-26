@@ -1,0 +1,15 @@
+{{ file_managed_by_ansible }}
+# Baseline file for STIG V-260579 (UBTU-22-612040). Created when
+# /etc/pam_pkcs11/pam_pkcs11.conf is absent; pam-pkcs11 package may or
+# may not be installed. Adjust pkcs11_module path for the host arch
+# if pam-pkcs11 is later installed and used.
+pam_pkcs11 {
+  use_mappers = pwent;
+  use_pkcs11_module = opensc;
+  pkcs11_module opensc {
+    module = /usr/lib/x86_64-linux-gnu/opensc-pkcs11.so;
+  }
+  mapper pwent {
+    module = internal;
+  }
+}

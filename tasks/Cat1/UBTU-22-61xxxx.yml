@@ -55,7 +55,7 @@
       ansible.builtin.import_tasks:
         file: warning_facts.yml
 
-- name: HIGH | UBTU-22-612040 | PATCH | Ensure /etc/pam_pkcs11/ directory exists for STIG scanner compliance (V-260579)
+- name: HIGH | UBTU-22-612040 | PATCH | Ubuntu 22.04 LTS must map the authenticated identity to the user or group account for PKI-based authentication | Baseline pam_pkcs11.conf
   when:
     - ubtu22stig_612040
     - ubtu22stig_disruption_high
@@ -68,48 +68,23 @@
     - V-260579
     - NIST800-53R4_IA-5
     - multifactor
-  ansible.builtin.file:
-    path: /etc/pam_pkcs11
-    state: directory
-    owner: root
-    group: root
-    mode: 'go-w'
+  block:
+    - name: HIGH | UBTU-22-612040 | PATCH | Ubuntu 22.04 LTS must map the authenticated identity to the user or group account for PKI-based authentication | Create directory
+      ansible.builtin.file:
+        path: /etc/pam_pkcs11
+        state: directory
+        owner: root
+        group: root
+        mode: 'go-w'
 
-- name: HIGH | UBTU-22-612040 | PATCH | Create baseline /etc/pam_pkcs11/pam_pkcs11.conf if absent for STIG scanner compliance (V-260579)
-  when:
-    - ubtu22stig_612040
-    - ubtu22stig_disruption_high
-  tags:
-    - UBTU-22-612040
-    - CAT1
-    - CCI-000187
-    - SRG-OS-000068-GPOS-00036
-    - SV-260579r958452_rule
-    - V-260579
-    - NIST800-53R4_IA-5
-    - multifactor
-  ansible.builtin.copy:
-    dest: /etc/pam_pkcs11/pam_pkcs11.conf
-    force: false
-    owner: root
-    group: root
-    mode: 'go-w'
-    content: |
-      {{ file_managed_by_ansible }}
-      # Baseline file for STIG V-260579 (UBTU-22-612040). Created when
-      # /etc/pam_pkcs11/pam_pkcs11.conf is absent; pam-pkcs11 package may or
-      # may not be installed. Adjust pkcs11_module path for the host arch
-      # if pam-pkcs11 is later installed and used.
-      pam_pkcs11 {
-        use_mappers = pwent;
-        use_pkcs11_module = opensc;
-        pkcs11_module opensc {
-          module = /usr/lib/x86_64-linux-gnu/opensc-pkcs11.so;
-        }
-        mapper pwent {
-          module = internal;
-        }
-      }
+    - name: HIGH | UBTU-22-612040 | PATCH | Ubuntu 22.04 LTS must map the authenticated identity to the user or group account for PKI-based authentication | Deploy baseline config when absent
+      ansible.builtin.template:
+        src: etc/pam_pkcs11/pam_pkcs11.conf.j2
+        dest: /etc/pam_pkcs11/pam_pkcs11.conf
+        owner: root
+        group: root
+        mode: 'go-w'
+        force: false
 
 - name: HIGH | UBTU-22-612040 | PATCH | Ubuntu 22.04 LTS must map the authenticated identity to the user or group account for PKI-based authentication.
   when:
