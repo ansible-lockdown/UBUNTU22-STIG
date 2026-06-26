@@ -230,6 +230,7 @@ uses:
 - This is an automated test that occurs on pull requests into devel
 - self-hosted runners using OpenTofu
 
+For running the molecule `default` scenario locally (converge, idempotency, and goss audit), see [molecule/README_Molecule_QuickStart.md](molecule/README_Molecule_QuickStart.md).
 
 ## Credits and Thanks 🙏
 
