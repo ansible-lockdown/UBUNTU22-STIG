@@ -1,7 +1,146 @@
 ---
 
-# File to skip controls if container
-# Based on standard image no changes
-# it expected all pkgs required for the container are already installed
+# vars/is_container.yml
+# Disables rules that cannot meaningfully run inside a container.
+# Loaded by tasks/main.yml when ansible_connection is a docker variant
+# (system_is_container=true).
+#
+# Scope: kernel-level / hardware-level / boot-time / netfilter / mount-table /
+# service-management rules. SSH cipher / PAM / SSSD / sudo config rules are
+# container-safe even when their titles mention FIPS/audit and are NOT
+# disabled here. Package-absence checks (rsh-server, telnet, nfs-kernel-server,
+# ntp, systemd-timesyncd not installed) are also container-safe.
 
-## controls
+# ==============================================================================
+# auditd service + audit subsystem (61 rules)
+# ==============================================================================
+# 653xxx - auditd service config + start (kernel audit subsystem unavailable)
+ubtu22stig_653010: false
+ubtu22stig_653015: false
+ubtu22stig_653020: false
+ubtu22stig_653025: false
+ubtu22stig_653030: false
+ubtu22stig_653035: false
+ubtu22stig_653040: false
+ubtu22stig_653045: false
+ubtu22stig_653050: false
+ubtu22stig_653055: false
+ubtu22stig_653060: false
+ubtu22stig_653065: false
+ubtu22stig_653070: false
+ubtu22stig_653075: false
+# 654xxx - auditd rules (all depend on the auditd service being live)
+ubtu22stig_654010: false
+ubtu22stig_654015: false
+ubtu22stig_654020: false
+ubtu22stig_654025: false
+ubtu22stig_654030: false
+ubtu22stig_654035: false
+ubtu22stig_654040: false
+ubtu22stig_654041: false
+ubtu22stig_654045: false
+ubtu22stig_654050: false
+ubtu22stig_654055: false
+ubtu22stig_654060: false
+ubtu22stig_654065: false
+ubtu22stig_654070: false
+ubtu22stig_654075: false
+ubtu22stig_654080: false
+ubtu22stig_654085: false
+ubtu22stig_654090: false
+ubtu22stig_654095: false
+ubtu22stig_654100: false
+ubtu22stig_654105: false
+ubtu22stig_654110: false
+ubtu22stig_654115: false
+ubtu22stig_654120: false
+ubtu22stig_654125: false
+ubtu22stig_654130: false
+ubtu22stig_654135: false
+ubtu22stig_654140: false
+ubtu22stig_654145: false
+ubtu22stig_654150: false
+ubtu22stig_654155: false
+ubtu22stig_654160: false
+ubtu22stig_654165: false
+ubtu22stig_654170: false
+ubtu22stig_654175: false
+ubtu22stig_654180: false
+ubtu22stig_654185: false
+ubtu22stig_654190: false
+ubtu22stig_654195: false
+ubtu22stig_654200: false
+ubtu22stig_654205: false
+ubtu22stig_654210: false
+ubtu22stig_654215: false
+ubtu22stig_654220: false
+ubtu22stig_654224: false
+ubtu22stig_654225: false
+ubtu22stig_654230: false
+ubtu22stig_654235: false
+
+# ==============================================================================
+# AIDE file integrity (6 rules) - writes /var/lib/aide DB + cron entries that
+# can't run meaningfully in an ephemeral container
+# ==============================================================================
+ubtu22stig_651010: false
+ubtu22stig_651015: false
+ubtu22stig_651020: false
+ubtu22stig_651025: false
+ubtu22stig_651030: false
+ubtu22stig_651035: false
+
+# ==============================================================================
+# GRUB bootloader (2 rules) - no GRUB inside a container
+# ==============================================================================
+ubtu22stig_212010: false
+ubtu22stig_212015: false
+
+# ==============================================================================
+# kernel sysctl / hardware features (4 rules) - kernel.dmesg_restrict, core
+# dumps, ASLR, NX/DEP - all kernel-level and read-only from inside a container
+# ==============================================================================
+ubtu22stig_213010: false
+ubtu22stig_213015: false
+ubtu22stig_213020: false
+ubtu22stig_213025: false
+
+# ==============================================================================
+# firewall - ufw (5 rules) - netfilter unavailable / restricted in containers
+# ==============================================================================
+ubtu22stig_251010: false
+ubtu22stig_251015: false
+ubtu22stig_251020: false
+ubtu22stig_251025: false
+ubtu22stig_251030: false
+
+# ==============================================================================
+# AppArmor (2 rules) - kernel LSM, not container-accessible
+# ==============================================================================
+ubtu22stig_431010: false
+ubtu22stig_431015: false
+
+# ==============================================================================
+# time sync - chrony service + config (4 rules) - chrony can't drive system
+# clock from inside a container (control delegated to host)
+# ==============================================================================
+ubtu22stig_215015: false
+ubtu22stig_252010: false
+ubtu22stig_252015: false
+ubtu22stig_252020: false
+
+# ==============================================================================
+# FIPS kernel mode (1 rule) - configuration-only FIPS rules (SSH ciphers etc.)
+# are container-safe and NOT disabled
+# ==============================================================================
+ubtu22stig_671010: false
+
+# ==============================================================================
+# Migrated from molecule/default/converge.yml test-scaffolding (2 rules):
+# these are container-incompatible regardless of testing context.
+# ==============================================================================
+# 211000 - Ubuntu Pro subscription assertion (no graceful container path)
+ubtu22stig_211000: false
+# 291015 - wireless modprobe.d, depends on prelim_wireless_modules.stdout_lines
+# which only gets set when wireless adapters are detected (never in containers)
+ubtu22stig_291015: false

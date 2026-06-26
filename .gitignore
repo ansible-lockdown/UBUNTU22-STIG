@@ -9,6 +9,15 @@ tests/Dockerfile
 packer_cache
 delete*
 ignore*
+test_inv
+#
+*xccdf.xml
+*.pdf
+*history.md
+*plan.md
+
+# temp remove doc while this is built up
+doc/
 # VSCode
 .vscode
 vagrant

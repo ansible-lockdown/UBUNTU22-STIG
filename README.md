@@ -2,7 +2,7 @@
 
 ## Configure a UBUNTU22 based system to be complaint with DISA STIG
 
-This role is based on UBUNTU 22 DISA STIG: [Version 2, Rel 6 released on 01 October, 2025](https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_CAN_Ubuntu_22-04_LTS_V2R6_STIG.zip).
+This role is based on UBUNTU 22 DISA STIG: [Version 2, Rel 7](https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_CAN_Ubuntu_22-04_LTS_V2R7_STIG.zip).
 
 ---
 
@@ -12,7 +12,7 @@ This role is based on UBUNTU 22 DISA STIG: [Version 2, Rel 6 released on 01 Octo
 ![Stars](https://img.shields.io/github/stars/ansible-lockdown/UBTU22-STIG?label=Repo%20Stars&style=social)
 ![Forks](https://img.shields.io/github/forks/ansible-lockdown/UBTU22-STIG?style=social)
 ![Followers](https://img.shields.io/github/followers/ansible-lockdown?style=social)
-[![Twitter URL](https://img.shields.io/twitter/url/https/twitter.com/AnsibleLockdown.svg?style=social&label=Follow%20%40AnsibleLockdown)](https://twitter.com/AnsibleLockdown)
+[![X URL](https://img.shields.io/twitter/url/https/twitter.com/AnsibleLockdown.svg?style=social&label=Follow%20%40AnsibleLockdown)](https://x.com/AnsibleLockdown)
 ![Discord Badge](https://img.shields.io/discord/925818806838919229?logo=discord)
 
 ![License](https://img.shields.io/github/license/ansible-lockdown/UBTU22-STIG?label=License)
@@ -87,13 +87,13 @@ This role **will make changes to the system** which may have unintended conseque
 STIG release always contains changes, it is highly recommended to review the new references and available variables. This have changed significantly since ansible-lockdown initial release.
 This is now compatible with python3 if it is found to be the default interpreter. This does come with pre-requisites which it configures the system accordingly.
 
-Further details can be seen in the [Changelog](./ChangeLog.md)
+Further details can be seen in the [Changelog](./CHANGELOG.md)
 
 ---
 
 ## Matching a security Level for STIG
 
-It is possible to to only run category 1, 2 or 3 controls for STIG.
+It is possible to only run category 1, 2 or 3 controls for STIG.
 This is managed using tags:
 
 - CAT1
@@ -127,9 +127,8 @@ Ubuntu22
 - Access to download or add the goss binary and content to the system if using auditing
 (other options are available on how to get the content to the system.)
 - Python3.8
-- Ansible 2.12+
-- python-def
-- libselinux-python
+- Ansible 2.16+
+- python-apt
 
 ---
 

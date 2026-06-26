@@ -7,7 +7,7 @@
     - CAT2
     - CCI-000000
     - SRG-OS-000109-GPOS-00056
-    - SV-260542r986277_rule
+    - SV-260542r1015006_rule
     - V-260542
     - NIST800-53R4_NA
     - account
@@ -55,7 +55,7 @@
     - CAT2
     - CCI-000000
     - SRG-OS-000075-GPOS-00043
-    - SV-260545r986280_rule
+    - SV-260545r1015007_rule
     - V-260545
     - NIST800-53R4_NA
     - account
@@ -71,7 +71,7 @@
     - CAT2
     - CCI-000000
     - SRG-OS-000076-GPOS-00044
-    - SV-260546r986281_rule
+    - SV-260546r1038967_rule
     - V-260546
     - NIST800-53R4_NA
     - account
@@ -87,14 +87,14 @@
     - CAT2
     - CCI-000000
     - SRG-OS-000118-GPOS-00060
-    - SV-260547r986282_rule
+    - SV-260547r1015009_rule
     - V-260547
     - NIST800-53R4_NA
     - account
   ansible.builtin.lineinfile:
     path: /etc/default/useradd
     regexp: ^(#|)(?i)INACTIVE\s*=\s*\d*
-    line: "INACTIVE {{ ubtu22stig_user_inactive_days }}"
+    line: "INACTIVE={{ ubtu22stig_user_inactive_days }}"
 
 - name: MEDIUM | UBTU-22-411040 | WARN | Ubuntu 22.04 LTS must automatically expire temporary accounts within 72 hours.
   when: ubtu22stig_411040

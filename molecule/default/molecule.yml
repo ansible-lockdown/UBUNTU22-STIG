@@ -1,0 +1,45 @@
+---
+# Molecule configuration for UBUNTU22-STIG (V2R7)
+# https://molecule.readthedocs.io/en/latest/
+
+driver:
+  name: docker
+
+platforms:
+  - name: ubuntu2204
+    image: geerlingguy/docker-ubuntu2204-ansible:latest
+    # geerlingguy/docker-ubuntu2204-ansible is multi-arch (amd64+arm64) - leave
+    # platform unspecified so Docker picks native (arm64 on Apple Silicon, amd64
+    # elsewhere). Pin to linux/amd64 ONLY when reproducing CI runner behaviour
+    # is required - that path needs Rosetta and is slower.
+    pre_build_image: true
+    volumes:
+      - /sys/fs/cgroup:/sys/fs/cgroup:rw
+    privileged: true
+    command: "/lib/systemd/systemd"
+    cgroupns_mode: host
+    tmpfs:
+      - /run
+      - /tmp
+    capabilities:
+      - SYS_ADMIN
+
+provisioner:
+  name: ansible
+  config_options:
+    defaults:
+      interpreter_python: auto_silent
+      callbacks_enabled: profile_tasks, timer
+      # Resolve the role itself by name (basename of MOLECULE_PROJECT_DIRECTORY).
+      # Ansible's default search path doesn't include the role's parent dir, so
+      # include_role: name: UBUNTU22-STIG fails without this hint.
+      roles_path: "${MOLECULE_PROJECT_DIRECTORY}/..:${MOLECULE_PROJECT_DIRECTORY}/molecule/default/roles"
+  inventory:
+    host_vars:
+      ubuntu2204:
+        ansible_become: false
+        setup_audit: true
+        run_audit: true
+
+verifier:
+  name: ansible

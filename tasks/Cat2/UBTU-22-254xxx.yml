@@ -8,7 +8,7 @@
     - CCI-000765
     - CCI-000766
     - SRG-OS-000396-GPOS-00176
-    - SV-274864r1107268_rule
+    - SV-274864r1155209_rule
     - V-274864
     - NIST800-53R4_IA-2
   ansible.builtin.package:
