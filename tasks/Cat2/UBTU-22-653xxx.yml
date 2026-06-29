@@ -43,7 +43,7 @@
     - SRG-OS-000354-GPOS-00142
     - SRG-OS-000365-GPOS-00152
     - SRG-OS-000475-GPOS-00220
-    - SV-260590r986296_rule
+    - SV-260590r1015022_rule
     - V-260590
     - NIST800-53R4_AU-3
     - NIST800-53R4_AU-6
@@ -97,7 +97,7 @@
     - SRG-OS-000354-GPOS-00142
     - SRG-OS-000365-GPOS-00152
     - SRG-OS-000475-GPOS-00220
-    - SV-260591r986297_rule
+    - SV-260591r1015023_rule
     - V-260591
     - NIST800-53R4_AU-3
     - NIST800-53R4_AU-6
@@ -142,11 +142,11 @@
     - name: MEDIUM | UBTU-22-653045 | PATCH | Ubuntu 22.04 LTS must be configured so that audit log files are not read- or write-accessible by unauthorized users. | discover file
       ansible.builtin.shell: grep ^log_file /etc/audit/auditd.conf | awk '{ print $NF }'
       changed_when: false
-      register: discovered_auditd_logfile
+      register: discovered_auditd_logfile_other
 
     - name: MEDIUM | UBTU-22-653045 | PATCH | Ubuntu 22.04 LTS must be configured so that audit log files are not read- or write-accessible by unauthorized users.
       ansible.builtin.file:
-        path: "{{ discovered_auditd_logfile.stdout }}"
+        path: "{{ discovered_auditd_logfile_other.stdout }}"
         mode: 'go-rwx'
 
 - name: MEDIUM | UBTU-22-653050 | PATCH | Ubuntu 22.04 LTS must be configured to permit only authorized users ownership of the audit log files.
@@ -166,13 +166,13 @@
     - auditd
   block:
     - name: MEDIUM | UBTU-22-653050 | PATCH | Ubuntu 22.04 LTS must be configured to permit only authorized users ownership of the audit log files. | discover file
-      ansible.builtin.shell: grep ^log_file /etc/audit/auditd.conf | awk '{ print $NF }'
+      ansible.builtin.shell: grep ^log_file /etc/audit/auditd.conf | awk '{ print $NF }' | grep -v ^log_file
       changed_when: false
-      register: discovered_auditd_logfile
+      register: discovered_auditd_logfile_owner
 
     - name: MEDIUM | UBTU-22-653050 | PATCH |Ubuntu 22.04 LTS must be configured to permit only authorized users ownership of the audit log files.
       ansible.builtin.file:
-        path: "{{ discovered_auditd_logfile.stdout }}"
+        path: "{{ discovered_auditd_logfile_owner.stdout }}"
         owner: root
 
 - name: MEDIUM | UBTU-22-653055 | PATCH | Ubuntu 22.04 LTS must permit only authorized groups ownership of the audit log files.
@@ -210,11 +210,11 @@
     - name: MEDIUM | UBTU-22-653060 | AUDIT | Ubuntu 22.04 LTS must be configured so that the audit log directory is not write-accessible by unauthorized users. | discover file
       ansible.builtin.shell: grep ^log_file /etc/audit/auditd.conf | awk '{ print $NF }'
       changed_when: false
-      register: discovered_auditd_logfile
+      register: discovered_auditd_logfile_dir
 
     - name: MEDIUM | UBTU-22-653060 | AUDIT | Ubuntu 22.04 LTS must be configured so that the audit log directory is not write-accessible by unauthorized users.
       ansible.builtin.file:
-        path: "{{ discovered_auditd_logfile.stdout | dirname }}"
+        path: "{{ discovered_auditd_logfile_dir.stdout | dirname }}"
         state: directory
         mode: 'go-w'
 
@@ -234,13 +234,13 @@
         paths: /etc/audit
         file_type: file
         recurse: true
-      register: discovered_audit_files
+      register: discovered_audit_files_other
 
     - name: MEDIUM | UBTU-22-653065 | PATCH | Ubuntu 22.04 LTS must be configured so that audit configuration files are not write-accessible by unauthorized users.
       ansible.builtin.file:
         path: "{{ item.path }}"
         mode: 'go-wx'
-      loop: "{{ discovered_audit_files.files }}"
+      loop: "{{ discovered_audit_files_other.files }}"
       loop_control:
         label: "{{ item.path }}"
 
@@ -261,13 +261,13 @@
         paths: /etc/audit
         file_type: file
         recurse: true
-      register: discovered_audit_files
+      register: discovered_audit_files_owner
 
     - name: MEDIUM | UBTU-22-653070 | PATCH | Ubuntu 22.04 LTS must permit only authorized accounts to own the audit configuration files.
       ansible.builtin.file:
         path: "{{ item.path }}"
         owner: root
-      loop: "{{ discovered_audit_files.files }}"
+      loop: "{{ discovered_audit_files_owner.files }}"
       loop_control:
         label: "{{ item.path }}"
 
@@ -288,12 +288,12 @@
         paths: /etc/audit
         file_type: file
         recurse: true
-      register: discovered_audit_files
+      register: discovered_audit_files_group
 
     - name: MEDIUM | UBTU-22-653075 | PATCH | Ubuntu 22.04 LTS must permit only authorized groups to own the audit configuration files.
       ansible.builtin.file:
         path: "{{ item.path }}"
         group: root
-      loop: "{{ discovered_audit_files.files }}"
+      loop: "{{ discovered_audit_files_group.files }}"
       loop_control:
         label: "{{ item.path }}"

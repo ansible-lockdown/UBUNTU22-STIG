@@ -62,7 +62,7 @@
     - { regex: '^\s*(#|)PermitUserEnvironment', line: 'PermitUserEnvironment no'}
   notify: Restart_ssh
 
-- name: HIGH | UBTU-22-255040 | PATCH |  Ubuntu 22.04 LTS must be configured so that remote X connections are disabled, unless to fulfill documented and validated mission requirements.
+- name: HIGH | UBTU-22-255040 | PATCH | Ubuntu 22.04 LTS must be configured so that remote X connections are disabled, unless to fulfill documented and validated mission requirements.
   when: ubtu22stig_255040
   tags:
     - UBTU-22-255040

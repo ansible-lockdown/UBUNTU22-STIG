@@ -7,7 +7,7 @@
     - CAT2
     - CCI-000000
     - SRG-OS-000069-GPOS-00037
-    - SV-260560r986285_rule
+    - SV-260560r1015012_rule
     - V-260560
     - NIST800-53R4_NA
     - password
@@ -23,7 +23,7 @@
     - CAT2
     - CCI-000000
     - SRG-OS-000070-GPOS-00038
-    - SV-260561r986286_rule
+    - SV-260561r1015013_rule
     - V-260561
     - NIST800-53R4_NA
     - password
@@ -39,7 +39,7 @@
     - CAT2
     - CCI-000000
     - SRG-OS-000071-GPOS-00039
-    - SV-260562r986287_rule
+    - SV-260562r1015014_rule
     - V-260562
     - NIST800-53R4_NA
     - password
@@ -55,7 +55,7 @@
     - CAT2
     - CCI-000000
     - SRG-OS-000266-GPOS-00101
-    - SV-260563r991561_rule
+    - SV-260563r1015015_rule
     - V-260563
     - NIST800-53R4_NA
     - password
@@ -86,7 +86,7 @@
     - UBTU-22-611035
     - CCI-000000
     - SRG-OS-000078-GPOS-00046
-    - SV-260565r986289_rule
+    - SV-260565r1015016_rule
     - V-260565
     - NIST800-53R4_NA
     - password
@@ -102,7 +102,7 @@
     - CAT2
     - NA
     - SRG-OS-000072-GPOS-00040
-    - SV-260566r986290_rule
+    - SV-260566r1015017_rule
     - V-260566
     - NIST800-53R4_NA
     - password

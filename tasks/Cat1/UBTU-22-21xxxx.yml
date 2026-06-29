@@ -9,13 +9,22 @@
     - CAT1
     - CCI-000366
     - SRG-OS-000480-GPOS-00227
-    - SV-278951r1135403_rule
+    - SV-278951r1155215_rule
     - V-278951
     - NIST800-53R4_CM-6
-  ansible.builtin.assert:
-    that: ansible_distribution_version == "22.04"
-    fail_msg: "The system is not running expected OS Ubuntu22.04 LTS"
-    success_msg: " The system is running the expected support OS Ubuntu 22.04 LTS"
+  block:
+    - name: HIGH | UBTU-22-211000 | AUDIT | Ubuntu 22.04 LTS must be a vendor-supported release. | OS Version
+      ansible.builtin.assert:
+        that: ansible_distribution_version == "22.04"
+        fail_msg: "The system is not running  OS Ubuntu22.04 LTS"
+        success_msg: "The system is running the expected OS Ubuntu 22.04 LTS"
+
+    - name: HIGH | UBTU-22-211000 | AUDIT | Ubuntu 22.04 LTS must be a vendor-supported release. | Pro Subscription
+      when: not skip_pro_subscription_check
+      ansible.builtin.assert:
+        that: ubtu22stig_subscribed
+        fail_msg: "The system is not subscribed for Support Pro plan"
+        success_msg: " The system is subscribed for Support Pro plan"
 
 - name: HIGH | UBTU-22-211015 | PATCH | Ubuntu 22.04 LTS must disable the x86 Ctrl-Alt-Delete key sequence.
   when: ubtu22stig_211015
@@ -42,7 +51,7 @@
     - CAT1
     - CCI-000366
     - SRG-OS-000080-GPOS-00048
-    - SV-260470r958472_rule
+    - SV-260470r1137691_rule
     - V-260470
     - NIST800-53R4_AC-3
     - bootloader
@@ -96,5 +105,23 @@
     - packages
   ansible.builtin.package:
     name: telnet
+    state: absent
+    purge: "{{ ubtu22stig_purge_apt }}"
+
+- name: HIGH | UBTU-22-215040 | PATCH | Ubuntu 22.04 LTS must not have the nfs-kernel-server package installed.
+  when: ubtu22stig_215040
+  tags:
+    - UBTU-22-215040
+    - CAT1
+    - CCI-000381
+    - SRG-OS-000095-GPOS-00049
+    - SV-279937r1156364_rule
+    - V-279937
+    - NIST800-53R4_CM-7
+    - packages
+  ansible.builtin.package:
+    name:
+      - nfs-common
+      - nfs-kernel-server
     state: absent
     purge: "{{ ubtu22stig_purge_apt }}"

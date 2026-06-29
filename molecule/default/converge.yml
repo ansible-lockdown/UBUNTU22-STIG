@@ -1,0 +1,70 @@
+---
+
+# Molecule converge playbook for UB22-STIG V2R7.
+# Container-incompatible rules are handled by vars/is_container.yml (loaded
+# automatically by tasks/main.yml when the docker connection is detected and
+# system_is_container=true). Anything here is purely test-scaffolding the role
+# needs to bootstrap inside a container.
+
+- name: Converge
+  hosts: all
+  gather_facts: true
+
+  vars:
+    # `role_name` is reserved in Ansible - use underscore-prefixed local name.
+    _molecule_role_name: "{{ lookup('env', 'MOLECULE_PROJECT_DIRECTORY') | basename }}"
+    ansible_user: root
+    system_is_container: true
+
+    # Test-scaffolding: pretend we already gathered the prerequisites
+    ubtu22stig_skip_for_test: true
+    setup_audit: true
+    run_audit: true
+
+    # Pro subscription is unavailable in test containers; pretend we have it
+    # so the FIPS/Pro-gated rules don't assert-fail on UBTU-22-211000.
+    ubtu22stig_subscribed: true
+
+    # Container-incompatible rules are now centralized in vars/is_container.yml
+    # (loaded automatically when system_is_container=true). The previous
+    # ubtu22stig_211000 / ubtu22stig_291015 overrides here were migrated there.
+
+    # The role's bootloader assertion runs only on non-container hosts, but
+    # set both anyway so any stray check passes.
+    ubtu22stig_set_bootloader_password: false
+    ubtu22stig_bootloader_password_hash: "grub.pbkdf2.sha512.10000.DEADBEEF.DEADBEEF"  # pragma: allowlist secret
+
+    # Reboot is meaningless inside a container.
+    change_requires_reboot: false
+
+  pre_tasks:
+    - name: Set a real root password (some STIG rules verify /etc/shadow state)
+      ansible.builtin.shell:
+        cmd: |
+          set -e
+          current=$(awk -F: 'BEGIN{p=""} $1=="root"{p=$2} END{print p}' /etc/shadow)
+          if [ -z "$current" ] || [ "$current" = "!" ] || [ "$current" = "!!" ] || [ "$current" = "*" ]; then
+            echo 'root:MoleculeTest123!' | chpasswd
+            echo "SET"
+          else
+            echo "SKIP"
+          fi
+        executable: /bin/bash
+      register: _root_pw_setup
+      changed_when: '"SET" in _root_pw_setup.stdout'
+
+    - name: Create /etc/default/grub stub for container
+      ansible.builtin.copy:
+        dest: /etc/default/grub
+        content: |
+          # Stub grub config for molecule container testing
+          GRUB_DEFAULT=0
+          GRUB_TIMEOUT=5
+          GRUB_CMDLINE_LINUX_DEFAULT=""
+          GRUB_CMDLINE_LINUX=""
+        mode: '0644'
+
+  tasks:
+    - name: "Include role"
+      ansible.builtin.include_role:
+        name: "{{ _molecule_role_name }}"

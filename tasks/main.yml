@@ -16,7 +16,7 @@
     success_msg: "This role is running a supported version of ansible {{ ansible_version.full }} >= {{ min_ansible_version }}"
 
 - name: "Setup rules if container"
-  when: ansible_connection == 'docker' or ansible_virtualization_type in ["docker", "lxc", "openvz", "podman", "container"]
+  when: ansible_connection in ['docker', 'community.docker.docker'] or ansible_virtualization_type in ["docker", "lxc", "openvz", "podman", "container"]
   tags:
     - container_discovery
     - always
@@ -134,6 +134,7 @@
 
 - name: "Flush handlers"
   when: not audit_only
+  tags: always
   ansible.builtin.meta: flush_handlers
 
 - name: "Reboot system"
@@ -171,7 +172,7 @@
         state: directory
         owner: root
         group: root
-        mode: 'u=rwx,go=rx'
+        mode: 'go-w'
 
     - name: Create ansible facts file
       ansible.builtin.template:

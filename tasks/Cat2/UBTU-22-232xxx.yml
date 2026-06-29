@@ -165,7 +165,7 @@
     warn_control_id: 'MEDIUM | UBTU-22-232026'
   block:
     - name: MEDIUM | UBTU-22-232026 | AUDIT | Ubuntu 22.04 LTS must generate error messages that provide information necessary for corrective actions without revealing information that could be exploited by adversaries. | find files
-      ansible.builtin.shell: find /var/log -perm /137 ! -name '*[bw]tmp' ! -name '*lastlog' ! -name '*syslog' -type f -exec stat -c "%n" {} \;
+      ansible.builtin.shell: find /var/log -perm /137 ! -name '*[bw]tmp' ! -name '*lastlog' ! -name '*syslog' ! -name 'history.log' -type f -exec stat -c "%n" {} \;
       changed_when: false
       failed_when: discovered_var_log_logfiles.rc not in [ 0, 1 ]
       register: discovered_var_log_logfiles
@@ -200,7 +200,7 @@
     - CAT2
     - CCI-001312
     - SRG-OS-000205-GPOS-00083
-    - SV-260490r1014781_rule
+    - SV-260490r1069105_rule
     - V-260490
     - NIST800-53R4_SI-11
     - permissions
@@ -260,8 +260,8 @@
     path: /var/log/syslog
     state: file
     mode: 'g-wx,o-rwx'
-  failed_when: discovered_var_log_syslog.state not in '[ file, absent ]'
-  register: discovered_var_log_syslog
+  failed_when: discovered_var_log_syslog_mode.state not in '[ file, absent ]'
+  register: discovered_var_log_syslog_mode
 
 - name: MEDIUM | UBTU-22-232035 | PATCH | Ubuntu 22.04 LTS must configure audit tools with a mode of "755" or less permissive.
   when:
@@ -282,8 +282,8 @@
     path: "{{ item }}"
     state: file
     mode: 'go-w'
-  failed_when: discovered_audit_tools.state not in '[ file, absent ]'
-  register: discovered_audit_tools
+  failed_when: discovered_audit_tools_mode.state not in '[ file, absent ]'
+  register: discovered_audit_tools_mode
   loop: "{{ ubtu22stig_audit_tools }}"
 
 - name: MEDIUM | UBTU-22-232040 | PATCH | Ubuntu 22.04 LTS must have directories that contain system commands owned by "root".
@@ -438,25 +438,25 @@
     - name: MEDIUM | UBTU-22-232055 | AUDIT | Ubuntu 22.04 LTS must have system commands group-owned by "root" or a system account. | Discover
       ansible.builtin.shell: find /bin /sbin /usr/bin /usr/sbin /usr/local/bin /usr/local/sbin ! -user root -type f -exec stat -c "%n" '{}' \;
       changed_when: false
-      failed_when: discovered_system_bin_files_owner.rc not in [ 0, 1 ]
-      register: discovered_system_bin_files_owner
+      failed_when: discovered_system_bin_files_group.rc not in [ 0, 1 ]
+      register: discovered_system_bin_files_group
 
     - name: MEDIUM | UBTU-22-232055 | PATCH | Ubuntu 22.04 LTS must have system commands group-owned by "root" or a system account. | Fix
       when:
         - ubtu22stig_disruption_high
-        - discovered_system_bin_files_owner.stdout_lines is defined
+        - discovered_system_bin_files_group.stdout_lines is defined
       ansible.builtin.file:
         path: "{{ item }}"
         state: file
         owner: root
-      loop: "{{ discovered_system_bin_files_owner.stdout_lines }}"
+      loop: "{{ discovered_system_bin_files_group.stdout_lines }}"
 
     - name: MEDIUM | UBTU-22-232055 | AUDIT | Ubuntu 22.04 LTS must have system commands group-owned by "root" or a system account. | Warning
       when:
         - not ubtu22stig_disruption_high
-        - discovered_system_bin_files_owner.stdout_lines is defined
+        - discovered_system_bin_files_group.stdout_lines is defined
       ansible.builtin.debug:
-        msg: "Warning!! The following files are not owned by root please investigate {{ discovered_system_bin_files_owner.stdout_lines }}"
+        msg: "Warning!! The following files are not owned by root please investigate {{ discovered_system_bin_files_group.stdout_lines }}"
 
     - name: MEDIUM | UBTU-22-232055 | AUDIT | Ubuntu 22.04 LTS must have system commands group-owned by "root" or a system account. | Warn fact
       when:
@@ -612,7 +612,7 @@
     warn_control_id: 'MEDIUM | UBTU-22-232075'
   block:
     - name: MEDIUM | UBTU-22-232075 | AUDIT | Ubuntu 22.04 LTS library files must be group-owned by "root". | Discover
-      ansible.builtin.shell: find /lib /usr/lib /lib64 /usr/lib64 ! -group root -type f -exec stat -c "%n" '{}' \;
+      ansible.builtin.shell: find /lib /usr/lib /lib64 /usr/lib64 -name '*.so' ! -group root -type f -exec stat -c "%n" '{}' \;
       changed_when: false
       failed_when: discovered_system_lib_files_group.rc not in [ 0, 1 ]
       register: discovered_system_lib_files_group
@@ -831,8 +831,8 @@
     path: "{{ item }}"
     state: file
     owner: root
-  failed_when: discovered_audit_tools.state not in '[ file, absent ]'
-  register: discovered_audit_tools
+  failed_when: discovered_audit_tools_owned.state not in '[ file, absent ]'
+  register: discovered_audit_tools_owned
   loop: "{{ ubtu22stig_audit_tools }}"
 
 - name: MEDIUM | UBTU-22-232120 | PATCH | Ubuntu 22.04 LTS must configure the "/var/log" directory to be owned by "root".
@@ -893,8 +893,8 @@
     path: /var/log/syslog
     state: file
     owner: syslog
-  failed_when: discovered_var_log_syslog.state not in '[ file, absent ]'
-  register: discovered_var_log_syslog
+  failed_when: discovered_var_log_syslog_owner.state not in '[ file, absent ]'
+  register: discovered_var_log_syslog_owner
 
 - name: MEDIUM | UBTU-22-232135 | PATCH | Ubuntu 22.04 LTS must configure "/var/log/syslog" file to be group-owned by "adm".
   when:
@@ -914,8 +914,8 @@
     path: /var/log/syslog
     state: file
     group: adm
-  failed_when: discovered_var_log_syslog.state not in '[ file, absent ]'
-  register: discovered_var_log_syslog
+  failed_when: discovered_var_log_syslog_group.state not in '[ file, absent ]'
+  register: discovered_var_log_syslog_group
 
 - name: MEDIUM | UBTU-22-232140 | PATCH | Ubuntu 22.04 LTS must be configured so that the "journalctl" command is not accessible by unauthorized users.
   when:
@@ -945,7 +945,7 @@
     - CAT2
     - CCI-001090
     - SRG-OS-000138-GPOS-00069
-    - SV-260513r958524_rule
+    - SV-260513r1137695_rule
     - V-260513
     - NIST800-53R4_SC-4
     - permissions

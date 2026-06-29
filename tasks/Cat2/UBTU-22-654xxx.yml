@@ -105,7 +105,7 @@
     - CAT2
     - CCI-000172
     - SRG-OS-000396-GPOS-00176
-    - SV-274862r1107273_rule
+    - SV-274862r1155211_rule
     - V-274862
     - NIST800-53R4_AU-12
   ansible.builtin.set_fact:
@@ -118,7 +118,7 @@
     - CAT2
     - CCI-000172
     - SRG-OS-000064-GPOS-00033
-    - SV-260611r958446_rule
+    - SV-260611r991586_rule
     - V-260611
     - NIST800-53R4_AU-12
     - auditd
@@ -146,7 +146,7 @@
     - CAT2
     - CCI-000172
     - SRG-OS-000064-GPOS-00033
-    - SV-260613r958446_rule
+    - SV-260613r991586_rule
     - V-260613
     - NIST800-53R4_AU-12
     - auditd
@@ -160,7 +160,7 @@
     - CAT2
     - CCI-000172
     - SRG-OS-000477-GPOS-00222
-    - SV-260614r958446_rule
+    - SV-260614r991586_rule
     - V-260614
     - NIST800-53R4_AU-12
     - auditd

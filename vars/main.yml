@@ -1,10 +1,7 @@
 ---
 # vars file for UBUNTU22-STIG
 
-min_ansible_version: 2.12.1
-
-# Set dynamically if discovered to be non UEFI boot
-ubtu22stig_legacy_boot: false
+min_ansible_version: 2.16.1
 
 # tweak role to run in a non-privileged container (default value)- dynamically discovered in tasks/main.yml
 system_is_container: false
@@ -17,7 +14,7 @@ warn_control_list: ""
 warn_count: 0
 
 # Allow automated discovery of uids
-discover_int_uid: true
+ubtu22stig_discover_int_uid: true
 
 # Default for facts
 reboot_required: false
@@ -27,7 +24,6 @@ update_audit_template: false
 ubtu22stig_dod_ciphers:
   - aes256-ctr
   - aes256-gcm@openssh.com
-  - aes192-ctr
   - aes128-ctr
   - aes128-gcm@openssh.com
 ubtu22stig_dod_macs:
@@ -48,3 +44,10 @@ ubtu22stig_audit_tools:
   - /sbin/auditd
   - /sbin/audispd-zos-remote
   - /sbin/augenrules
+
+company_title: 'MindPoint Group - A Tyto Athene Company'
+
+file_managed_by_ansible: |-
+  # File managed by ansible as part of {{ benchmark }} benchmark
+  # As part of Ansible-lockdown
+  # Provided by {{ company_title }}

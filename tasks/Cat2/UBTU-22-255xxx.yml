@@ -100,7 +100,7 @@
     - SRG-OS-000033-GPOS-00014
     - SRG-OS-000394-GPOS-00174
     - SRG-OS-000424-GPOS-00188
-    - SV-260531r958408_rule
+    - SV-260531r1155212_rule
     - V-260531
     - NIST800-53R4_AC-17
     - NIST800-53R4_SC-8
@@ -179,7 +179,7 @@
     validate: sshd -t -f %s
   notify: Restart_ssh
 
-- name: MEDIUM | UBTU-22-255065 | PATCH |  Ubuntu 22.04 LTS must use strong authenticators in establishing nonlocal maintenance and diagnostic sessions
+- name: MEDIUM | UBTU-22-255065 | PATCH | Ubuntu 22.04 LTS must use strong authenticators in establishing nonlocal maintenance and diagnostic sessions
   when: ubtu22stig_255065
   tags:
     - UBTU-22-255065

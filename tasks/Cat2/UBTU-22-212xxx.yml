@@ -7,19 +7,19 @@
     - CAT2
     - CCI-001464
     - SRG-OS-000254-GPOS-00095
-    - SV-260471r1134800_rule
+    - SV-260471r1155214_rule
     - V-260471
     - NIST800-53R4_AU-14
     - bootloader
   block:
-    - name: MEDIUM | UBTU-22-212015 | PATCH | Ubuntu 22.04 LTS must initiate session audits at system startup. | Get GRUB_CMDLINE_LINUX
+    - name: MEDIUM | UBTU-22-212015 | AUDIT | Ubuntu 22.04 LTS must initiate session audits at system startup. | Get GRUB_CMDLINE_LINUX
       ansible.builtin.shell: grep "GRUB_CMDLINE_LINUX=" /etc/default/grub | cut -f2 -d'"'
       changed_when: false
       failed_when: false
       check_mode: false
       register: discovered_audit_enabled_cmdline_settings
 
-    - name: MEDIUM | UBTU-22-212015 | PATCH | Ubuntu 22.04 LTS must initiate session audits at system startup. | Add setting if doesn't exist
+    - name: MEDIUM | UBTU-22-212015 | PATCH | Ubuntu 22.04 LTS must initiate session audits at system startup. | Add audit=1 to GRUB_CMDLINE_LINUX if missing
       when: "'audit=' not in discovered_audit_enabled_cmdline_settings.stdout"
       ansible.builtin.lineinfile:
         path: /etc/default/grub
@@ -27,10 +27,33 @@
         line: 'GRUB_CMDLINE_LINUX="audit=1 {{ discovered_audit_enabled_cmdline_settings.stdout }}"'
       notify: Update_grub
 
-    - name: MEDIUM | UBTU-22-212015 | PATCH | Ubuntu 22.04 LTS must initiate session audits at system startup. | Update setting if exists
-      when: "'audit=' in discovered_audit_enabled_cmdline_settings.stdout"
+    - name: MEDIUM | UBTU-22-212015 | PATCH | Ubuntu 22.04 LTS must initiate session audits at system startup. | Update audit=1 in GRUB_CMDLINE_LINUX if wrong value
+      when: "'audit=' in discovered_audit_enabled_cmdline_settings.stdout and 'audit=1' not in discovered_audit_enabled_cmdline_settings.stdout"
       ansible.builtin.replace:
         dest: /etc/default/grub
-        regexp: 'audit=(0|[2-9]$|[1-9]\d+)'
-        replace: 'audit=1'
+        regexp: '^GRUB_CMDLINE_LINUX="(.*)audit=(0|[2-9]|[1-9][0-9]+)(.*)"'
+        replace: 'GRUB_CMDLINE_LINUX="\1audit=1\3"'
+      notify: Update_grub
+
+    - name: MEDIUM | UBTU-22-212015 | AUDIT | Ubuntu 22.04 LTS must initiate session audits at system startup. | Get GRUB_CMDLINE_LINUX_DEFAULT
+      ansible.builtin.shell: grep "GRUB_CMDLINE_LINUX_DEFAULT=" /etc/default/grub | cut -f2 -d'"'
+      changed_when: false
+      failed_when: false
+      check_mode: false
+      register: discovered_audit_enabled_cmdline_default_settings
+
+    - name: MEDIUM | UBTU-22-212015 | PATCH | Ubuntu 22.04 LTS must initiate session audits at system startup. | Add audit=1 to GRUB_CMDLINE_LINUX_DEFAULT if missing
+      when: "'audit=' not in discovered_audit_enabled_cmdline_default_settings.stdout"
+      ansible.builtin.lineinfile:
+        path: /etc/default/grub
+        regexp: '^GRUB_CMDLINE_LINUX_DEFAULT='
+        line: 'GRUB_CMDLINE_LINUX_DEFAULT="audit=1 {{ discovered_audit_enabled_cmdline_default_settings.stdout }}"'
+      notify: Update_grub
+
+    - name: MEDIUM | UBTU-22-212015 | PATCH | Ubuntu 22.04 LTS must initiate session audits at system startup. | Update audit=1 in GRUB_CMDLINE_LINUX_DEFAULT if wrong value
+      when: "'audit=' in discovered_audit_enabled_cmdline_default_settings.stdout and 'audit=1' not in discovered_audit_enabled_cmdline_default_settings.stdout"
+      ansible.builtin.replace:
+        dest: /etc/default/grub
+        regexp: '^GRUB_CMDLINE_LINUX_DEFAULT="(.*)audit=(0|[2-9]|[1-9][0-9]+)(.*)"'
+        replace: 'GRUB_CMDLINE_LINUX_DEFAULT="\1audit=1\3"'
       notify: Update_grub
