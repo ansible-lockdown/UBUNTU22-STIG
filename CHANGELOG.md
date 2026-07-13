@@ -1,5 +1,9 @@
 # Ubuntu22STIG
 
+## Hotfix - UBTU-22-612040 pam_pkcs11.conf baseline (addresses #30)
+
+- UBTU-22-612040: create a baseline /etc/pam_pkcs11/pam_pkcs11.conf when absent under disruption_high, and drop backrefs from the use_mappers lineinfile so the STIG scanner check for V-260579 no longer fails on systems without the pam-pkcs11 package (addresses #30). Note: a custom use_mappers value is replaced with pwent.
+
 ## V2R7 - QA cycle (no benchmark version change)
 
 Repo hygiene and pattern fixes (no rule additions, removals, or content changes):

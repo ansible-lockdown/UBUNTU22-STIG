@@ -55,6 +55,37 @@
       ansible.builtin.import_tasks:
         file: warning_facts.yml
 
+- name: HIGH | UBTU-22-612040 | PATCH | Ubuntu 22.04 LTS must map the authenticated identity to the user or group account for PKI-based authentication | Baseline pam_pkcs11.conf
+  when:
+    - ubtu22stig_612040
+    - ubtu22stig_disruption_high
+  tags:
+    - UBTU-22-612040
+    - CAT1
+    - CCI-000187
+    - SRG-OS-000068-GPOS-00036
+    - SV-260579r958452_rule
+    - V-260579
+    - NIST800-53R4_IA-5
+    - multifactor
+  block:
+    - name: HIGH | UBTU-22-612040 | PATCH | Ubuntu 22.04 LTS must map the authenticated identity to the user or group account for PKI-based authentication | Create directory
+      ansible.builtin.file:
+        path: /etc/pam_pkcs11
+        state: directory
+        owner: root
+        group: root
+        mode: 'go-w'
+
+    - name: HIGH | UBTU-22-612040 | PATCH | Ubuntu 22.04 LTS must map the authenticated identity to the user or group account for PKI-based authentication | Deploy baseline config when absent
+      ansible.builtin.template:
+        src: etc/pam_pkcs11/pam_pkcs11.conf.j2
+        dest: /etc/pam_pkcs11/pam_pkcs11.conf
+        owner: root
+        group: root
+        mode: 'go-w'
+        force: false
+
 - name: HIGH | UBTU-22-612040 | PATCH | Ubuntu 22.04 LTS must map the authenticated identity to the user or group account for PKI-based authentication.
   when:
     - ubtu22stig_612040
@@ -70,6 +101,5 @@
     - multifactor
   ansible.builtin.lineinfile:
     path: /etc/pam_pkcs11/pam_pkcs11.conf
-    backrefs: true
-    regexp: ^(|#)use_mappers\s*=(.*(?!pwent))
-    line: use_mappers = \1,pwent
+    regexp: '^[#\s]*use_mappers\s*='
+    line: 'use_mappers = pwent'
