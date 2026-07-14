@@ -3,13 +3,13 @@
 - name: MEDIUM | UBTU-22-412025 | PATCH | Ubuntu 22.04 LTS must allow users to directly initiate a session lock for all connection types.
   when: ubtu22stig_412025
   tags:
-    - UBTU-22-4412025
+    - UBTU-22-412025
     - CAT2
     - CCI-000057
     - CCI-000060
     - SRG-OS-000030-GPOS-00011
     - SRG-OS-000031-GPOS-00012
-    - SV-260553r986283_rule
+    - SV-260553r1015010_rule
     - V-260553
     - NIST800-53R4_AC-11
     - session

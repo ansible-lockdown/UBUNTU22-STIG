@@ -17,7 +17,7 @@
         paths: [ '/etc/sysctl.d', '/run/sysctl.d', '/usr/local/lib/sysctl.d', '/usr/lib/sysctl.d', '/lib/sysctl.d' ]
         pattern: '*.conf'
         contains: kernel.dmesg_restrict
-      register: discovered_sysctl_conf_files
+      register: discovered_sysctl_msg_buffer_conf_files
 
     - name: LOW | UBTU-22-213010 | PATCH | Ubuntu 22.04 LTS must restrict access to the kernel message buffer. | remove existing
       when: "ubtu22stig_sysctl_kernel_conf not in item"
@@ -26,7 +26,7 @@
         regexp: ^\s*kernel.dmesg_restrict\s*=\s*[ 0, 1 ]
         replace: ''
       with_items:
-        - "{{ discovered_sysctl_conf_files.files | map(attribute='path') }}"
+        - "{{ discovered_sysctl_msg_buffer_conf_files.files | map(attribute='path') }}"
         - /etc/sysctl.conf
 
     - name: LOW | UBTU-22-213010 | PATCH | Ubuntu 22.04 LTS must restrict access to the kernel message buffer. | add file specific settings

@@ -30,8 +30,6 @@
     - V-260541
     - NIST800-53R4_SC-8
     - hardware
-  vars:
-    warn_control_id: 'MEDIUM | UBTU-22-291015 '
   block:
     - name: MEDIUM | UBTU-22-291015 | PATCH | Ensure wireless interfaces are disabled | Create modprobe.d file
       ansible.builtin.lineinfile:
@@ -42,7 +40,7 @@
         mode: 'go-wx'
       loop: "{{ prelim_wireless_modules.stdout_lines }}"
 
-    - name: MEDIUM | UBTU-22-291015 | PATCH |  Ensure wireless interfaces are disabled | blacklist
+    - name: MEDIUM | UBTU-22-291015 | PATCH | Ensure wireless interfaces are disabled | blacklist
       ansible.builtin.lineinfile:
         path: /etc/modprobe.d/blacklist.conf
         regexp: "^(#)?blacklist {{ item }}(\\s|$)"

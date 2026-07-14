@@ -18,7 +18,7 @@
         file_type: file
         pattern: '*.conf'
         contains: net.ipv4.tcp_syncookies
-      register: discovered_sysctl_conf_files
+      register: discovered_sysctl_syncookies_conf_files
 
     - name: MEDIUM | UBTU-22-253010 | PATCH | Ubuntu 22.04 LTS must be configured to use TCP syncookies. | remove current settings
       when: "ubtu22stig_sysctl_network_conf not in item.path"
@@ -26,7 +26,7 @@
         path: "{{ item.path }}"
         regexp: net.ipv4.tcp_syncookies\s*=\s*[ 0, 2 ]
         replace: ''
-      loop: "{{ discovered_sysctl_conf_files.files }}"
+      loop: "{{ discovered_sysctl_syncookies_conf_files.files }}"
 
     - name: MEDIUM | UBTU-22-253010 | PATCH | Ubuntu 22.04 LTS must be configured to use TCP syncookies. | ensure setting on correct file
       ansible.posix.sysctl:

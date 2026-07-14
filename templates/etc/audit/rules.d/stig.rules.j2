@@ -1,5 +1,5 @@
-## Auditd Configured by ansible-lockdown UBUNTU22-STIG
-# Sponsored by Mindpoint Group - A Tyto Athene Company / Ansible Lockdown
+{{ file_managed_by_ansible }}
+
 {% if ubtu22stig_654010 %}
 # UBUNTU22-STIG rule 654010
 -a always,exit -F path=/sbin/apparmor_parser -F perm=x -F auid>=1000 -F auid!=unset -k perm_chng

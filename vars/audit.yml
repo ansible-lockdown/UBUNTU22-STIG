@@ -8,39 +8,27 @@ audit_cmd_timeout: 120000
 # if get_audit_binary_method == download change accordingly
 audit_bin_url: "https://github.com/goss-org/goss/releases/download/{{ audit_bin_version.release }}/goss-linux-"
 
-## if get_audit_binary_method - copy the following needs to be updated for your environment
-## it is expected that it will be copied from somewhere accessible to the control node
-## e.g copy from ansible control node to remote host
-audit_bin_copy_location: /some/accessible/path
-
 ### Goss Audit Benchmark file ###
 ## managed by the control audit_content
 # git
 audit_file_git: "https://github.com/ansible-lockdown/{{ benchmark }}-Audit.git"
 audit_git_version: "benchmark_{{ benchmark_version }}"
 
-# archive or copy:
-audit_conf_copy: "some path to copy from"
-
-# get_url:
-audit_files_url: "some url maybe s3?"
-
 ## Goss configuration information
-# Where the goss configs and outputs are stored
-audit_out_dir: '/opt'
-# Where the goss audit configuration will be stored
-audit_conf_dir: "{{ audit_out_dir }}/{{ benchmark }}-Audit"
+# Where the goss audit configuration will be stored - NOTE benchmark-audit is expected
+audit_conf_dir: "{{ audit_conf_dest | default('/opt') }}/{{ benchmark }}-Audit"
 
 # If changed these can affect other products
-pre_audit_outfile: "{{ audit_out_dir }}/{{ ansible_facts.hostname }}-{{ benchmark }}-{{ benchmark_version }}_pre_scan_{{ ansible_facts.date_time.epoch }}.{{ audit_format }}"
-post_audit_outfile: "{{ audit_out_dir }}/{{ ansible_facts.hostname }}-{{ benchmark }}-{{ benchmark_version }}_post_scan_{{ ansible_facts.date_time.epoch }}.{{ audit_format }}"
+pre_audit_outfile: "{{ audit_log_dir }}/{{ ansible_facts.hostname }}-{{ benchmark }}-{{ benchmark_version }}_pre_scan_{{ ansible_facts.date_time.epoch }}.{{ audit_format }}"
+post_audit_outfile: "{{ audit_log_dir }}/{{ ansible_facts.hostname }}-{{ benchmark }}-{{ benchmark_version }}_post_scan_{{ ansible_facts.date_time.epoch }}.{{ audit_format }}"
 
 ## The following should not need changing
 
 ### Audit binary settings ###
 audit_bin_version:
-  release: v0.4.4
-  AMD64_checksum: 'sha256:1c4f54b22fde9d4d5687939abc2606b0660a5d14a98afcd09b04b793d69acdc5'
+  release: v0.4.8
+  AMD64_checksum: 'sha256:85d00b7bba5f175bec95de7dfe1f71f8f25204914aad4c6f03c8457868eb6e2f'
+  ARM64_checksum: 'sha256:bca8c898bfd35b94c51455ece6193c95e2cd7b2b183ac2047b2d76291e73e47d'
 audit_bin_path: /usr/local/bin/
 audit_bin: "{{ audit_bin_path }}goss"
 audit_format: json

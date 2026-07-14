@@ -12,7 +12,7 @@
     - SRG-OS-000106-GPOS-00053
     - SRG-OS-000107-GPOS-00054
     - SRG-OS-000108-GPOS-00055
-    - SV-260573r986292_rule
+    - SV-260573r1015019_rule
     - V-260573
     - NIST800-53R4_IA-2
     - multifactor
@@ -140,7 +140,7 @@
     - CAT2
     - CCI-000000
     - SRG-OS-000384-GPOS-00167
-    - SV-260578r986295_rule
+    - SV-260578r1015021_rule
     - V-260578
     - NIST800-53R4_NA
     - multifactor
@@ -157,7 +157,6 @@
         path: /etc/pam_pkcs11/pam_pkcs11.conf
         regexp: crl_offline
         replace: "crl_auto"
-      register: discovered_pkcs_crl_change
 
     - name: MEDIUM | UBTU-22-612035 | PATCH | Ubuntu 22.04 LTS, for PKI-based authentication, must validate certificates by constructing a certification path (which includes status information) to an accepted trust anchor. | change where needed
       when:

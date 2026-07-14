@@ -3,28 +3,29 @@
 # List users in order to look files inside each home directory
 
 - name: "PRELIM | Discover Interactive UID MIN and MIN from logins.def"
+  when: ubtu22stig_discover_int_uid
   tags: always
   block:
     - name: "PRELIM | Capture UID_MIN information from logins.def"
       ansible.builtin.shell: grep -w "^UID_MIN" /etc/login.defs | awk '{print $NF}'
       changed_when: false
-      register: uid_min_id
+      register: prelim_uid_min_id
 
     - name: "PRELIM | Capture UID_MAX information from logins.def"
       ansible.builtin.shell: grep -w "^UID_MAX" /etc/login.defs | awk '{print $NF}'
       changed_when: false
-      register: uid_max_id
+      register: prelim_uid_max_id
 
     - name: "PRELIM | Capture GID_MIN information from logins.def"
       ansible.builtin.shell: grep -w "^GID_MIN" /etc/login.defs | awk '{print $NF}'
       changed_when: false
-      register: gid_min_id
+      register: prelim_gid_min_id
 
     - name: "PRELIM | Set_facts for interactive uid/gid"
       ansible.builtin.set_fact:
-        min_int_uid: "{{ uid_min_id.stdout }}"
-        max_int_uid: "{{ uid_max_id.stdout }}"
-        min_int_gid: "{{ gid_min_id.stdout }}"
+        min_int_uid: "{{ prelim_uid_min_id.stdout }}"
+        max_int_uid: "{{ prelim_uid_max_id.stdout }}"
+        min_int_gid: "{{ prelim_gid_min_id.stdout }}"
 
 - name: "PRELIM | PATCH | Run apt update"
   tags: always
@@ -59,18 +60,6 @@
   ansible.builtin.include_tasks:
     file: parse_etc_password.yml
 
-- name: "PRELIM | Interactive Users"
-  tags: always
-  ansible.builtin.shell: "grep -Ev 'nologin|/sbin' /etc/passwd | awk -F: '$3 >= {{ min_int_uid }} {print $1}'"
-  changed_when: false
-  register: ubtu22stig_interactive_users
-
-- name: "PRELIM | Interactive User account home"
-  tags: always
-  ansible.builtin.shell: 'cat /etc/passwd | grep -Ev "nologin|/sbin" | cut -d: -f6'
-  changed_when: false
-  register: ubtu22stig_interactive_users_home
-
 - name: "PRELIM | Gather accounts with empty password fields"
   when: ubtu22stig_611065
   tags: passwords
@@ -78,16 +67,6 @@
   changed_when: false
   failed_when: prelim_ubtu22stig_empty_password_accounts.rc not in [ 0, 1 ]
   register: prelim_ubtu22stig_empty_password_accounts
-
-- name: "PRELIM | Gather UID 0 accounts other than root"
-  tags:
-    - level1-server
-    - level1-workstation
-    - users
-  ansible.builtin.shell: "cat /etc/passwd | awk -F: '($3 == 0 && $1 != \"root\") {i++;print $1 } END {exit i}'"
-  changed_when: false
-  check_mode: false
-  register: ubtu22stig_uid_zero_accounts_except_root
 
 - name: "PRELIM | Create list of mount points"
   tags: always
@@ -149,18 +128,6 @@
     mode: 'go-rwx'
     state: touch
 
-- name: "PRELIM | Interactive User accounts"
-  tags: always
-  ansible.builtin.shell: 'cat /etc/passwd | grep -Ev "nologin|/sbin" | cut -d: -f6'
-  changed_when: false
-  register: ubtu22stig_interactive_users_home
-
-- name: "PRELIM | Discover Gnome Desktop Environment"
-  tags: always
-  ansible.builtin.stat:
-    path: /usr/share/gnome/gnome-version.xml
-  register: ubtu22stig_gnome_present
-
 - name: "PRELIM | AUDIT | Wireless adapter pre-requisites"
   when:
     - ubtu22stig_291010
@@ -169,9 +136,9 @@
   block:
     - name: "PRELIM | AUDIT | Discover is wireless adapter on system"
       ansible.builtin.shell: find /sys/class/net/*/ -type d -name wireless
-      register: prelim_wireless_adapters
       changed_when: false
       failed_when: prelim_wireless_adapters.rc not in [ 0, 1 ]
+      register: prelim_wireless_adapters
 
     - name: "PRELIM | AUDIT | If wireless adapter present capture module"
       when:

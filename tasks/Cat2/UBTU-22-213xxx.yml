@@ -7,19 +7,13 @@
     - CAT2
     - CCI-001190
     - SRG-OS-000184-GPOS-00078
-    - SV-260473r1044782_rule
+    - SV-260473r1155207_rule
     - V-260473
     - NIST800-53R4_SC-24
   block:
-    - name: MEDIUM | UBTU-22-213015 | PATCH | Ubuntu 22.04 LTS must disable kernel core dumps so that it can fail to a secure state if system initialization fails, shutdown fails or aborts fail. | stop if installed
-      when: "'linux-crashdump' in ansible_facts.packages"
+    - name: MEDIUM | UBTU-22-213015 | PATCH | Ubuntu 22.04 LTS must disable kernel core dumps so that it can fail to a secure state if system initialization fails, shutdown fails or aborts fail. | mask kdump-tools
       ansible.builtin.systemd:
-        name: kdump
-        state: stopped
-
-    - name: MEDIUM | UBTU-22-213015 | PATCH | Ubuntu 22.04 LTS must disable kernel core dumps so that it can fail to a secure state if system initialization fails, shutdown fails or aborts fail. | mask
-      ansible.builtin.systemd:
-        name: kdump
+        name: kdump.service
         masked: true
 
 - name: MEDIUM | UBTU-22-213020 | PATCH | Ubuntu 22.04 LTS must implement address space layout randomization to protect its memory from unauthorized code execution.
@@ -38,7 +32,7 @@
         paths: [ '/etc/sysctl.d', '/run/sysctl.d', '/usr/local/lib/sysctl.d', '/usr/lib/sysctl.d', '/lib/sysctl.d' ]
         pattern: '*.conf'
         contains: kernel.randomize_va_space
-      register: discovered_sysctl_conf_files
+      register: discovered_sysctl_kernel_conf_files
 
     - name: MEDIUM | UBTU-22-213020 | PATCH | Ubuntu 22.04 LTS must implement address space layout randomization to protect its memory from unauthorized code execution | remove existing bad settings
       ansible.builtin.replace:
@@ -46,7 +40,7 @@
         regexp: ^\s*kernel.randomize_va_space\s*=\s*[ 0, 1 ]
         replace: ''
       with_items:
-        - "{{ discovered_sysctl_conf_files.files | map(attribute='path') }}"
+        - "{{ discovered_sysctl_kernel_conf_files.files | map(attribute='path') }}"
         - /etc/sysctl.conf
 
     - name: MEDIUM | UBTU-22-213020 | PATCH | Ubuntu 22.04 LTS must implement address space layout randomization to protect its memory from unauthorized code execution | add file specific settings

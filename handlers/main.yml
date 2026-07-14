@@ -48,20 +48,21 @@
   changed_when: true
   failed_when: false
 
-- name: Firewalld_reload
-  ansible.builtin.command: firewall-cmd --reload
-  changed_when: true
-  failed_when: false
-
 - name: Restart_NetworkManager
   ansible.builtin.systemd:
     name: NetworkManager
     state: restarted
 
+- name: Validate sshd config
+  ansible.builtin.command: sshd -t
+  changed_when: false
+  listen: Restart_ssh
+
 - name: Restart_ssh
   ansible.builtin.systemd:
     name: sshd
     state: restarted
+  listen: Restart_ssh
 
 - name: Restart_chrony
   ansible.builtin.systemd:
@@ -114,7 +115,7 @@
     msg: "Reboot required for auditd to apply new rules as immutable set"
   changed_when: false
   failed_when: false
-  notify: change_requires_reboot
+  notify: Change_requires_reboot
 
 - name: Restart_auditd
   ansible.builtin.command: service auditd restart  # noqa: command-instead-of-module
