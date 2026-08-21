@@ -13,7 +13,7 @@
     - CCI-001388
     - SRG-OS-000023-GPOS-00006
     - SRG-OS-000228-GPOS-00088
-    - SV-260525r958390_rule
+    - SV-260525r1184064_rule
     - V-260525
     - NIST800-53R4_AC-8
   block:
@@ -40,7 +40,7 @@
     - CCI-001133
     - SRG-OS-000126-GPOS-00066
     - SV-260527r986275_rule
-    - SV-260527
+    - V-260527
     - NIST800-53R4_SC-10
     - ssh
   ansible.builtin.lineinfile:
@@ -59,7 +59,7 @@
     - CCI-001133
     - SRG-OS-000163-GPOS-00072
     - SV-260528r970703_rule
-    - SV-260528
+    - V-260528
     - NIST800-53R4_SC-10
     - ssh
   ansible.builtin.lineinfile:
@@ -78,7 +78,7 @@
     - CCI-000366
     - SRG-OS-000163-GPOS-00072
     - SV-260530r991589_rule
-    - SV-260530
+    - V-260530
     - NIST800-53R4_CM-6
     - ssh
   ansible.builtin.lineinfile:

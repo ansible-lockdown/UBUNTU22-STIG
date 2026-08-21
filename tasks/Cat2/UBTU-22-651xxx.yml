@@ -31,7 +31,11 @@
     - aide
   block:
     - name: MEDIUM | UBTU-22-651015 | AUDIT | Ubuntu 22.04 LTS must configure AIDE to perform file integrity checking on the file system. | Get DB file
-      ansible.builtin.shell: grep -E ^database_in /etc/aide/aide.conf | cut -d ':' -f2
+      ansible.builtin.shell: |
+        set -o pipefail
+        grep -E ^database_in /etc/aide/aide.conf | cut -d ':' -f2
+      args:
+        executable: "{{ ubtu22stig_shell_executable }}"
       changed_when: false
       failed_when: discovered_aide_db_file.rc not in [ 0, 1 ]
       register: discovered_aide_db_file
@@ -85,7 +89,11 @@
     - aide
   block:
     - name: MEDIUM | UBTU-22-651025 | AUDIT | Ubuntu 22.04 LTS must be configured so that the script that runs each 30 days or less to check file integrity is the default. | capture sha1sum
-      ansible.builtin.shell: sha1sum /etc/cron.daily/aide /etc/cron.monthly/aide 2>/dev/null
+      ansible.builtin.shell: |
+        set -o pipefail
+        sha1sum /etc/cron.daily/aide /etc/cron.monthly/aide 2>/dev/null
+      args:
+        executable: "{{ ubtu22stig_shell_executable }}"
       changed_when: false
       failed_when: discovered_cron_script_sha1.rc not in [ 0, 1 ]
       register: discovered_cron_script_sha1
@@ -93,9 +101,11 @@
     - name: MEDIUM | UBTU-22-651025 | PATCH | Ubuntu 22.04 LTS must be configured so that the script that runs each 30 days or less to check file integrity is the default. | replace if needed
       when: "'b71bb2cafaedf15ec3ac2f566f209d3260a37af0  /etc/cron' not in discovered_cron_script_sha1.stdout"
       ansible.builtin.shell: |
+        set -o pipefail
         apt download aide-common; dpkg-deb --fsys-tarfile /tmp/aide-common_*.deb | sudo tar -x ./usr/share/aide/config/cron.daily/aide -C /; cp -f /usr/share/aide/config/cron.daily/aide /etc/cron.daily/aide
       changed_when: true
       args:
+        executable: "{{ ubtu22stig_shell_executable }}"
         chdir: /tmp
 
 - name: MEDIUM | UBTU-22-651030 | PATCH | Ubuntu 22.04 LTS must use cryptographic mechanisms to protect the integrity of audit tools.

@@ -33,6 +33,10 @@
   ansible.builtin.import_tasks:
     file: UBTU-22-253xxx.yml
 
+- name: Cat 2 STIG 254xxx sssd tasks
+  ansible.builtin.import_tasks:
+    file: UBTU-22-254xxx.yml
+
 - name: Cat 2 STIG 255xxx ssh tasks
   ansible.builtin.import_tasks:
     file: UBTU-22-255xxx.yml
@@ -64,10 +68,6 @@
     file: UBTU-22-432xxx.yml
 
 ## 6XX – Authentication, Authorization, and Accounting
-
-- name: Cat 2 STIG 611xxx Password tasks
-  ansible.builtin.import_tasks:
-    file: UBTU-22-611xxx.yml
 
 - name: Cat 2 STIG 611xxx Password tasks
   ansible.builtin.import_tasks:

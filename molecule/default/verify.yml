@@ -10,7 +10,7 @@
 
   vars:
     benchmark: UBUNTU22-STIG
-    benchmark_version: v2.7.0
+    benchmark_version: v2.8.0
     audit_log_dir: /opt
     audit_format: json
 
@@ -71,3 +71,54 @@
         that: verify_post_failed_count.stdout | int <= verify_pre_failed_count.stdout | int
         fail_msg: "Post-remediation has MORE failures ({{ verify_post_failed_count.stdout }}) than pre-remediation ({{ verify_pre_failed_count.stdout }})"
         success_msg: "Remediation improved audit score: {{ verify_pre_failed_count.stdout }} -> {{ verify_post_failed_count.stdout }} failures"
+
+    # PAM durability. UBTU-22-611060 (CAT I) and UBTU-22-611055 are set in the
+    # pam-auth-update profile source rather than the generated /etc/pam.d/common-* files,
+    # specifically so they survive a regeneration. Asserting only the generated files
+    # would pass even if the source still carried nullok, which is the bug this guards.
+    - name: Verify | Regenerate the PAM stack from profile source
+      ansible.builtin.command: pam-auth-update --package --force
+      changed_when: false
+      environment:
+        DEBIAN_FRONTEND: noninteractive
+
+    - name: Verify | Re-read common-auth after regeneration
+      ansible.builtin.slurp:
+        src: /etc/pam.d/common-auth
+      register: verify_common_auth_after
+
+    - name: Verify | Re-read common-password after regeneration
+      ansible.builtin.slurp:
+        src: /etc/pam.d/common-password
+      register: verify_common_password_after
+
+    - name: Verify | UBTU-22-611060 survives a pam-auth-update regeneration
+      ansible.builtin.assert:
+        that:
+          - "'nullok' not in (verify_common_auth_after.content | b64decode)"
+          - "'nullok' not in (verify_common_password_after.content | b64decode)"
+        fail_msg: "nullok returned after pam-auth-update - the profile source is not the authority"
+        success_msg: "UBTU-22-611060 survives regeneration"
+
+    - name: Verify | UBTU-22-611055 survives a pam-auth-update regeneration
+      ansible.builtin.assert:
+        that:
+          # Literal expectations on purpose: reading them from the role's own defaults
+          # would make the test pass whenever the code and the default agree, including
+          # when both are wrong. UBTU-22-611055 requires sha512 and rounds=100000.
+          - (verify_common_password_after.content | b64decode) is search('pam_unix.so.*sha512')
+          - (verify_common_password_after.content | b64decode) is search('pam_unix.so.*rounds=100000')
+        fail_msg: "The hashing algorithm or rounds count did not survive pam-auth-update"
+        success_msg: "UBTU-22-611055 survives regeneration"
+
+    - name: Verify | The profile source itself is clean
+      ansible.builtin.slurp:
+        src: /usr/share/pam-configs/unix
+      register: verify_pam_profile
+
+    - name: Verify | The unix profile carries no nullok
+      ansible.builtin.assert:
+        that:
+          - "'nullok' not in (verify_pam_profile.content | b64decode)"
+        fail_msg: "The unix pam-config profile still contains nullok"
+        success_msg: "The unix pam-config profile is clean"

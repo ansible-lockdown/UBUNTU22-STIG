@@ -160,13 +160,13 @@ If you're QA'ing a feature branch on `UBUNTU22-STIG-Audit` that hasn't been merg
 molecule converge -- --extra-vars 'audit_git_version=<your-qa-branch>'
 ```
 
-`include_vars` has higher precedence than play/host vars in Ansible, so `--extra-vars` is the only way to change the audit branch from a Lockdown-internal `vars/audit.yml` pin.
+`audit_git_version` is an ordinary role default in `defaults/main/audit.yml`, so inventory, group and play vars override it too - `--extra-vars` is simply the most direct option from the molecule command line.
 
-**Branch naming reminder:** The remediation repo uses DISA-style `benchmark_v2rN` (no dots), but the audit repo uses semver `benchmark_v2.N.0`. Always pass the full audit branch name to `audit_git_version` (e.g. `benchmark_v2.7.0`, not `benchmark_v2r7`).
+**Branch naming reminder:** The remediation repo uses DISA-style `benchmark_v2rN` (no dots), but the audit repo uses semver `benchmark_v2.N.0`. Always pass the full audit branch name to `audit_git_version` (e.g. `benchmark_v2.8.0`, not `benchmark_v2r8`).
 
 ## Where to ask for help
 
 - This role's open issues: `github.com/ansible-lockdown/UBUNTU22-STIG/issues`
 - Ansible Lockdown Discord (linked from the role README badge)
 - Molecule docs: `molecule.readthedocs.io`
-- Goss output format: `github.com/goss-org/goss`
+- Goss output format: `github.com/krameff/goss`

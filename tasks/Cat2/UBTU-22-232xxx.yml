@@ -11,11 +11,13 @@
     - V-260485
     - NIST800-53R4_AU-9
     - permissions
-  vars:
-    warn_control_id: 'MEDIUM | UBTU-22-232010'
   block:
     - name: MEDIUM | UBTU-22-232010 | AUDIT | Ubuntu 22.04 LTS must have directories that contain system commands set to a mode of "755" or less permissive. | Discover
-      ansible.builtin.shell: find /bin /sbin /usr/bin /usr/sbin /usr/local/bin /usr/local/sbin -perm /022 -type d -exec stat -c "%n" '{}' \;
+      ansible.builtin.shell: |
+        set -o pipefail
+        find /bin /sbin /usr/bin /usr/sbin /usr/local/bin /usr/local/sbin -perm /022 -type d -exec stat -c "%n" '{}' \;
+      args:
+        executable: "{{ ubtu22stig_shell_executable }}"
       changed_when: false
       failed_when: discovered_system_bin_dirs_perms.rc not in [ 0, 1 ]
       register: discovered_system_bin_dirs_perms
@@ -41,6 +43,8 @@
       when:
         - discovered_system_bin_dirs_perms.stdout_lines is defined
         - not ubtu22stig_disruption_high
+      vars:
+        warn_control_id: 'MEDIUM | UBTU-22-232010'
       ansible.builtin.import_tasks:
         file: warning_facts.yml
 
@@ -55,11 +59,13 @@
     - V-260486
     - NIST800-53R4_CM-5
     - permissions
-  vars:
-    warn_control_id: 'MEDIUM | UBTU-22-232015'
   block:
     - name: MEDIUM | UBTU-22-232015 | AUDIT | Ubuntu 22.04 LTS must have system commands set to a mode of "755" or less permissive. | Discover
-      ansible.builtin.shell: find /bin /sbin /usr/bin /usr/sbin /usr/local/bin /usr/local/sbin -perm /022 -type f -exec stat -c "%n" '{}' \;
+      ansible.builtin.shell: |
+        set -o pipefail
+        find /bin /sbin /usr/bin /usr/sbin /usr/local/bin /usr/local/sbin -perm /022 -type f -exec stat -c "%n" '{}' \;
+      args:
+        executable: "{{ ubtu22stig_shell_executable }}"
       changed_when: false
       failed_when: discovered_system_bin_files_perms.rc not in [ 0, 1 ]
       register: discovered_system_bin_files_perms
@@ -85,6 +91,8 @@
       when:
         - not ubtu22stig_disruption_high
         - discovered_system_bin_files_perms.stdout_lines is defined
+      vars:
+        warn_control_id: 'MEDIUM | UBTU-22-232015'
       ansible.builtin.import_tasks:
         file: warning_facts.yml
 
@@ -99,11 +107,13 @@
     - V-260487
     - NIST800-53R4_CM-5
     - permissions
-  vars:
-    warn_control_id: 'MEDIUM | UBTU-22-232020'
   block:
     - name: MEDIUM | UBTU-22-232020 | AUDIT | Ubuntu 22.04 LTS library files must have mode "755" or less permissive. | Discover
-      ansible.builtin.shell: find /lib /lib64 /usr/lib /usr/lib64 -perm /022 -type f -exec stat -c "%n" '{}' \;
+      ansible.builtin.shell: |
+        set -o pipefail
+        find /lib /lib64 /usr/lib /usr/lib64 -perm /022 -type f -exec stat -c "%n" '{}' \;
+      args:
+        executable: "{{ ubtu22stig_shell_executable }}"
       changed_when: false
       failed_when: discovered_system_lib_files_perms.rc not in [ 0, 1 ]
       register: discovered_system_lib_files_perms
@@ -129,6 +139,8 @@
       when:
         - discovered_system_lib_files_perms.stdout_lines is defined
         - not ubtu22stig_disruption_high
+      vars:
+        warn_control_id: 'MEDIUM | UBTU-22-232020'
       ansible.builtin.import_tasks:
         file: warning_facts.yml
 
@@ -161,11 +173,13 @@
     - V-260489
     - NIST800-53R4_SI-11
     - permissions
-  vars:
-    warn_control_id: 'MEDIUM | UBTU-22-232026'
   block:
     - name: MEDIUM | UBTU-22-232026 | AUDIT | Ubuntu 22.04 LTS must generate error messages that provide information necessary for corrective actions without revealing information that could be exploited by adversaries. | find files
-      ansible.builtin.shell: find /var/log -perm /137 ! -name '*[bw]tmp' ! -name '*lastlog' ! -name '*syslog' ! -name 'history.log' -type f -exec stat -c "%n" {} \;
+      ansible.builtin.shell: |
+        set -o pipefail
+        find /var/log -perm /137 ! -name '*[bw]tmp' ! -name '*lastlog' ! -name '*syslog' ! -name 'history.log' -type f -exec stat -c "%n" {} \;
+      args:
+        executable: "{{ ubtu22stig_shell_executable }}"
       changed_when: false
       failed_when: discovered_var_log_logfiles.rc not in [ 0, 1 ]
       register: discovered_var_log_logfiles
@@ -190,6 +204,8 @@
       when:
         - discovered_var_log_logfiles.stdout_lines is defined
         - not ubtu22stig_disruption_high
+      vars:
+        warn_control_id: 'MEDIUM | UBTU-22-232026'
       ansible.builtin.import_tasks:
         file: warning_facts.yml
 
@@ -205,11 +221,13 @@
     - NIST800-53R4_SI-11
     - permissions
     - journald
-  vars:
-    warn_control_id: 'MEDIUM | UBTU-22-232027'
   block:
     - name: MEDIUM | UBTU-22-232027 | AUDIT | Ubuntu 22.04 LTS must generate system journal entries without revealing information that could be exploited by adversaries. | find files
-      ansible.builtin.shell: find /run/log/journal /var/log/journal -type d -perm -640 -exec stat -c "%n %a" {} \;
+      ansible.builtin.shell: |
+        set -o pipefail
+        find /run/log/journal /var/log/journal -type d -perm -640 -exec stat -c "%n %a" {} \;
+      args:
+        executable: "{{ ubtu22stig_shell_executable }}"
       changed_when: false
       failed_when: discovered_journal_logfiles_files.rc not in [ 0, 1 ]
       register: discovered_journal_logfiles_files
@@ -240,6 +258,8 @@
       when:
         - discovered_journal_logfiles_files.stdout_lines is defined
         - not ubtu22stig_disruption_high
+      vars:
+        warn_control_id: 'MEDIUM | UBTU-22-232027'
       ansible.builtin.import_tasks:
         file: warning_facts.yml
 
@@ -297,11 +317,13 @@
     - V-260493
     - NIST800-53R4_AU-9
     - permissions
-  vars:
-    warn_control_id: 'MEDIUM | UBTU-22-232040'
   block:
     - name: MEDIUM | UBTU-22-232040 | AUDIT | Ubuntu 22.04 LTS must have directories that contain system commands owned by "root". | Discover
-      ansible.builtin.shell: find /bin /sbin /usr/bin /usr/sbin /usr/local/bin /usr/local/sbin ! -user root -type d -exec stat -c "%n" '{}' \;
+      ansible.builtin.shell: |
+        set -o pipefail
+        find /bin /sbin /usr/bin /usr/sbin /usr/local/bin /usr/local/sbin ! -user root -type d -exec stat -c "%n" '{}' \;
+      args:
+        executable: "{{ ubtu22stig_shell_executable }}"
       changed_when: false
       failed_when: discovered_system_bin_dirs_owner.rc not in [ 0, 1 ]
       register: discovered_system_bin_dirs_owner
@@ -328,6 +350,8 @@
       when:
         - discovered_system_bin_dirs_owner.stdout_lines is defined
         - not ubtu22stig_disruption_high
+      vars:
+        warn_control_id: 'MEDIUM | UBTU-22-232040'
       ansible.builtin.import_tasks:
         file: warning_facts.yml
 
@@ -343,11 +367,13 @@
     - V-260494
     - NIST800-53R4_AU-9
     - permissions
-  vars:
-    warn_control_id: 'MEDIUM | UBTU-22-232045'
   block:
     - name: MEDIUM | UBTU-22-232045 | AUDIT | Ubuntu 22.04 LTS must have directories that contain system commands group-owned by "root". | Discover
-      ansible.builtin.shell: find /bin /sbin /usr/bin /usr/sbin /usr/local/bin /usr/local/sbin ! -group root -type d -exec stat -c "%n" '{}' \;
+      ansible.builtin.shell: |
+        set -o pipefail
+        find /bin /sbin /usr/bin /usr/sbin /usr/local/bin /usr/local/sbin ! -group root -type d -exec stat -c "%n" '{}' \;
+      args:
+        executable: "{{ ubtu22stig_shell_executable }}"
       changed_when: false
       failed_when: discovered_system_bin_dirs_group.rc not in [ 0, 1 ]
       register: discovered_system_bin_dirs_group
@@ -374,6 +400,8 @@
       when:
         - discovered_system_bin_dirs_group.stdout_lines is defined
         - not ubtu22stig_disruption_high
+      vars:
+        warn_control_id: 'MEDIUM | UBTU-22-232045'
       ansible.builtin.import_tasks:
         file: warning_facts.yml
 
@@ -388,11 +416,13 @@
     - V-260495
     - NIST800-53R4_CM-5
     - permissions
-  vars:
-    warn_control_id: 'MEDIUM | UBTU-22-232050'
   block:
     - name: MEDIUM | UBTU-22-232050 | AUDIT | Ubuntu 22.04 LTS must have system commands owned by "root" or a system account. | Discover
-      ansible.builtin.shell: find /bin /sbin /usr/bin /usr/sbin /usr/local/bin /usr/local/sbin ! -user root -type f -exec stat -c "%n" '{}' \;
+      ansible.builtin.shell: |
+        set -o pipefail
+        find /bin /sbin /usr/bin /usr/sbin /usr/local/bin /usr/local/sbin ! -user root -type f -exec stat -c "%n" '{}' \;
+      args:
+        executable: "{{ ubtu22stig_shell_executable }}"
       changed_when: false
       failed_when: discovered_system_bin_files_owner.rc not in [ 0, 1 ]
       register: discovered_system_bin_files_owner
@@ -418,6 +448,8 @@
       when:
         - not ubtu22stig_disruption_high
         - discovered_system_bin_files_owner.stdout_lines is defined
+      vars:
+        warn_control_id: 'MEDIUM | UBTU-22-232050'
       ansible.builtin.import_tasks:
         file: warning_facts.yml
 
@@ -432,11 +464,13 @@
     - V-260496
     - NIST800-53R4_CM-5
     - permissions
-  vars:
-    warn_control_id: 'MEDIUM | UBTU-22-232055'
   block:
     - name: MEDIUM | UBTU-22-232055 | AUDIT | Ubuntu 22.04 LTS must have system commands group-owned by "root" or a system account. | Discover
-      ansible.builtin.shell: find /bin /sbin /usr/bin /usr/sbin /usr/local/bin /usr/local/sbin ! -user root -type f -exec stat -c "%n" '{}' \;
+      ansible.builtin.shell: |
+        set -o pipefail
+        find /bin /sbin /usr/bin /usr/sbin /usr/local/bin /usr/local/sbin ! -user root -type f -exec stat -c "%n" '{}' \;
+      args:
+        executable: "{{ ubtu22stig_shell_executable }}"
       changed_when: false
       failed_when: discovered_system_bin_files_group.rc not in [ 0, 1 ]
       register: discovered_system_bin_files_group
@@ -462,6 +496,8 @@
       when:
         - not ubtu22stig_disruption_high
         - discovered_system_bin_files_owner.stdout_lines is defined
+      vars:
+        warn_control_id: 'MEDIUM | UBTU-22-232055'
       ansible.builtin.import_tasks:
         file: warning_facts.yml
 
@@ -476,11 +512,13 @@
     - V-260497
     - NIST800-53R4_CM-5
     - permissions
-  vars:
-    warn_control_id: 'MEDIUM | UBTU-22-232060'
   block:
     - name: MEDIUM | UBTU-22-232060 | AUDIT | Ubuntu 22.04 LTS library directories must be owned by "root". | Discover
-      ansible.builtin.shell: find /lib /usr/lib /lib64 ! -user root -type d -exec stat -c "%n" '{}' \;
+      ansible.builtin.shell: |
+        set -o pipefail
+        find /lib /usr/lib /lib64 ! -user root -type d -exec stat -c "%n" '{}' \;
+      args:
+        executable: "{{ ubtu22stig_shell_executable }}"
       changed_when: false
       failed_when: discovered_system_lib_dirs_owner.rc not in [ 0, 1 ]
       register: discovered_system_lib_dirs_owner
@@ -506,6 +544,8 @@
       when:
         - discovered_system_lib_dirs_owner.stdout_lines is defined
         - not ubtu22stig_disruption_high
+      vars:
+        warn_control_id: 'MEDIUM | UBTU-22-232060'
       ansible.builtin.import_tasks:
         file: warning_facts.yml
 
@@ -516,15 +556,17 @@
     - CAT2
     - CCI-001499
     - SRG-OS-000259-GPOS-00100
-    - SV-260498r991560_rulee
+    - SV-260498r991560_rule
     - V-260498
     - NIST800-53R4_CM-5
     - permissions
-  vars:
-    warn_control_id: 'MEDIUM | UBTU-22-232065'
   block:
     - name: MEDIUM | UBTU-22-232065 | AUDIT | Ubuntu 22.04 LTS library directories must be group-owned by "root". | Discover
-      ansible.builtin.shell: find /lib /usr/lib /lib64 ! -group root -type d -exec stat -c "%n" '{}' \;
+      ansible.builtin.shell: |
+        set -o pipefail
+        find /lib /usr/lib /lib64 ! -group root -type d -exec stat -c "%n" '{}' \;
+      args:
+        executable: "{{ ubtu22stig_shell_executable }}"
       changed_when: false
       failed_when: discovered_system_lib_dirs_group.rc not in [ 0, 1 ]
       register: discovered_system_lib_dirs_group
@@ -550,6 +592,8 @@
       when:
         - discovered_system_lib_dirs_group.stdout_lines is defined
         - not ubtu22stig_disruption_high
+      vars:
+        warn_control_id: 'MEDIUM | UBTU-22-232065'
       ansible.builtin.import_tasks:
         file: warning_facts.yml
 
@@ -564,11 +608,13 @@
     - V-260499
     - NIST800-53R4_CM-5
     - permissions
-  vars:
-    warn_control_id: 'MEDIUM | UBTU-22-232070'
   block:
     - name: MEDIUM | UBTU-22-232070 | AUDIT | Ubuntu 22.04 LTS library files must be owned by "root". | Discover
-      ansible.builtin.shell: find /lib /lib64 /usr/lib /usr/lib64 ! -user root -type f -exec stat -c "%n" '{}' \;
+      ansible.builtin.shell: |
+        set -o pipefail
+        find /lib /lib64 /usr/lib /usr/lib64 ! -user root -type f -exec stat -c "%n" '{}' \;
+      args:
+        executable: "{{ ubtu22stig_shell_executable }}"
       changed_when: false
       failed_when: discovered_system_lib_files_owner.rc not in [ 0, 1 ]
       register: discovered_system_lib_files_owner
@@ -594,6 +640,8 @@
       when:
         - discovered_system_lib_files_owner.stdout_lines is defined
         - not ubtu22stig_disruption_high
+      vars:
+        warn_control_id: 'MEDIUM | UBTU-22-232070'
       ansible.builtin.import_tasks:
         file: warning_facts.yml
 
@@ -608,11 +656,13 @@
     - V-260500
     - NIST800-53R4_CM-5
     - permissions
-  vars:
-    warn_control_id: 'MEDIUM | UBTU-22-232075'
   block:
     - name: MEDIUM | UBTU-22-232075 | AUDIT | Ubuntu 22.04 LTS library files must be group-owned by "root". | Discover
-      ansible.builtin.shell: find /lib /usr/lib /lib64 /usr/lib64 -name '*.so' ! -group root -type f -exec stat -c "%n" '{}' \;
+      ansible.builtin.shell: |
+        set -o pipefail
+        find /lib /usr/lib /lib64 /usr/lib64 -name '*.so' ! -group root -type f -exec stat -c "%n" '{}' \;
+      args:
+        executable: "{{ ubtu22stig_shell_executable }}"
       changed_when: false
       failed_when: discovered_system_lib_files_group.rc not in [ 0, 1 ]
       register: discovered_system_lib_files_group
@@ -638,6 +688,8 @@
       when:
         - discovered_system_lib_files_group.stdout_lines is defined
         - not ubtu22stig_disruption_high
+      vars:
+        warn_control_id: 'MEDIUM | UBTU-22-232075'
       ansible.builtin.import_tasks:
         file: warning_facts.yml
 
@@ -650,14 +702,18 @@
     - CAT2
     - CCI-001312
     - SRG-OS-000206-GPOS-00084
-    - SV-260501r958566_rule
+    - SV-260501r1184052_rule
     - V-260501
     - NIST800-53R4_SI-11
     - journald
     - permissions
   block:
     - name: MEDIUM | UBTU-22-232080 | AUDIT | Ubuntu 22.04 LTS must configure the directories used by the system journal to be owned by root. | find files
-      ansible.builtin.shell: find /run/log/journal /var/log/journal -type d ! -user root -exec stat -c "%n" {} \;
+      ansible.builtin.shell: |
+        set -o pipefail
+        find /run/log/journal /var/log/journal -type d ! -user root -exec stat -c "%n" {} \;
+      args:
+        executable: "{{ ubtu22stig_shell_executable }}"
       changed_when: false
       failed_when: discovered_journal_logdir_owner.rc not in [ 0, 1 ]
       register: discovered_journal_logdir_owner
@@ -683,14 +739,18 @@
     - CAT2
     - CCI-001312
     - SRG-OS-000206-GPOS-00084
-    - SV-260502r958566_rule
+    - SV-260502r1184054_rule
     - V-260502
     - NIST800-53R4_SI-11
     - journald
     - permissions
   block:
     - name: MEDIUM | UBTU-22-232085 | AUDIT | Ubuntu 22.04 LTS must configure the directories used by the system journal to be group-owned by "systemd-journal". | find files
-      ansible.builtin.shell: find /run/log/journal /var/log/journal -type d ! -group systemd-journal -exec stat -c "%n" {} \;
+      ansible.builtin.shell: |
+        set -o pipefail
+        find /run/log/journal /var/log/journal -type d ! -group systemd-journal -exec stat -c "%n" {} \;
+      args:
+        executable: "{{ ubtu22stig_shell_executable }}"
       changed_when: false
       failed_when: discovered_journal_logdir_group.rc not in [ 0, 1 ]
       register: discovered_journal_logdir_group
@@ -716,14 +776,18 @@
     - CAT2
     - CCI-001312
     - SRG-OS-000206-GPOS-00084
-    - SV-260503r958566_rule
+    - SV-260503r1184056_rule
     - V-260503
     - NIST800-53R4_SI-11
     - journald
     - permissions
   block:
     - name: MEDIUM | UBTU-22-232090 | AUDIT | Ubuntu 22.04 LTS must configure the files used by the system journal to be owned by "root". | find files
-      ansible.builtin.shell: find /run/log/journal /var/log/journal -type f ! -user root -exec stat -c "%n" {} \;
+      ansible.builtin.shell: |
+        set -o pipefail
+        find /run/log/journal /var/log/journal -type f ! -user root -exec stat -c "%n" {} \;
+      args:
+        executable: "{{ ubtu22stig_shell_executable }}"
       changed_when: false
       failed_when: discovered_journal_logfiles_owner.rc not in [ 0, 1 ]
       register: discovered_journal_logfiles_owner
@@ -750,14 +814,18 @@
     - CAT2
     - CCI-001312
     - SRG-OS-000206-GPOS-00084
-    - SV-260504r958566_rule
+    - SV-260504r1184058_rule
     - V-260504
     - NIST800-53R4_SI-11
     - journald
     - permissions
   block:
     - name: MEDIUM | UBTU-22-232095 | AUDIT | Ubuntu 22.04 LTS must configure the files used by the system journal to be group-owned by "systemd-journal" | find files
-      ansible.builtin.shell: find /run/log/journal /var/log/journal -type f ! -group systemd-journal -exec stat -c "%n" {} \;
+      ansible.builtin.shell: |
+        set -o pipefail
+        find /run/log/journal /var/log/journal -type f ! -group systemd-journal -exec stat -c "%n" {} \;
+      args:
+        executable: "{{ ubtu22stig_shell_executable }}"
       changed_when: false
       failed_when: discovered_journal_logfile_group.rc not in [ 0, 1 ]
       register: discovered_journal_logfile_group
@@ -949,11 +1017,13 @@
     - V-260513
     - NIST800-53R4_SC-4
     - permissions
-  vars:
-    warn_control_id: "MEDIUM | UBTU-22-232145"
   block:
     - name: MEDIUM | UBTU-22-232145 | AUDIT | Ubuntu 22.04 LTS must set a sticky bit on all public directories to prevent unauthorized and unintended information transferred via shared system resources.
-      ansible.builtin.shell: df --local -P | awk {'if (NR!=1) print $6'} | xargs -I '{}' find '{}' -xdev -type d -perm -0002 -a ! -perm -1000 2>/dev/null
+      ansible.builtin.shell: |
+        set -o pipefail
+        df --local -P | awk {'if (NR!=1) print $6'} | xargs -I '{}' find '{}' -xdev -type d -perm -0002 -a ! -perm -1000 2>/dev/null
+      args:
+        executable: "{{ ubtu22stig_shell_executable }}"
       changed_when: false
       failed_when: discovered_public_dirs_stickybit.rc not in [ 0, 1 ]
       register: discovered_public_dirs_stickybit
@@ -980,5 +1050,7 @@
       when:
         - not ubtu22stig_disruption_high
         - discovered_public_dirs_stickybit.stdout | length > 0
+      vars:
+        warn_control_id: "MEDIUM | UBTU-22-232145"
       ansible.builtin.import_tasks:
         file: warning_facts.yml

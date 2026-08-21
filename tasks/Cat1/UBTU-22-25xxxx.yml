@@ -3,7 +3,7 @@
 - name: HIGH | UBTU-22-255010 | PATCH | Ubuntu 22.04 LTS must have SSH installed.
   when:
     - ubtu22stig_255010
-    - "'openssh-server' not in ansible_facts.packages"
+    - "'openssh-server' not in ansible_facts['packages']"
   tags:
     - UBTU-22-255010
     - CAT1

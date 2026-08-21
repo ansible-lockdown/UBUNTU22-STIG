@@ -140,7 +140,11 @@
     - auditd
   block:
     - name: MEDIUM | UBTU-22-653045 | PATCH | Ubuntu 22.04 LTS must be configured so that audit log files are not read- or write-accessible by unauthorized users. | discover file
-      ansible.builtin.shell: grep ^log_file /etc/audit/auditd.conf | awk '{ print $NF }'
+      ansible.builtin.shell: |
+        set -o pipefail
+        grep ^log_file /etc/audit/auditd.conf | awk '{ print $NF }'
+      args:
+        executable: "{{ ubtu22stig_shell_executable }}"
       changed_when: false
       register: discovered_auditd_logfile_other
 
@@ -166,7 +170,11 @@
     - auditd
   block:
     - name: MEDIUM | UBTU-22-653050 | PATCH | Ubuntu 22.04 LTS must be configured to permit only authorized users ownership of the audit log files. | discover file
-      ansible.builtin.shell: grep ^log_file /etc/audit/auditd.conf | awk '{ print $NF }' | grep -v ^log_file
+      ansible.builtin.shell: |
+        set -o pipefail
+        grep ^log_file /etc/audit/auditd.conf | awk '{ print $NF }' | grep -v ^log_file
+      args:
+        executable: "{{ ubtu22stig_shell_executable }}"
       changed_when: false
       register: discovered_auditd_logfile_owner
 
@@ -208,7 +216,11 @@
     - auditd
   block:
     - name: MEDIUM | UBTU-22-653060 | AUDIT | Ubuntu 22.04 LTS must be configured so that the audit log directory is not write-accessible by unauthorized users. | discover file
-      ansible.builtin.shell: grep ^log_file /etc/audit/auditd.conf | awk '{ print $NF }'
+      ansible.builtin.shell: |
+        set -o pipefail
+        grep ^log_file /etc/audit/auditd.conf | awk '{ print $NF }'
+      args:
+        executable: "{{ ubtu22stig_shell_executable }}"
       changed_when: false
       register: discovered_auditd_logfile_dir
 
@@ -222,6 +234,7 @@
   when: ubtu22stig_653065
   tags:
     - UBTU-22-653065
+    - CAT2
     - CCI-000171
     - SRG-OS-000063-GPOS-00032
     - SV-260601r958444_rule

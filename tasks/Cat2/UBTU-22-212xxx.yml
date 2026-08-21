@@ -13,7 +13,11 @@
     - bootloader
   block:
     - name: MEDIUM | UBTU-22-212015 | AUDIT | Ubuntu 22.04 LTS must initiate session audits at system startup. | Get GRUB_CMDLINE_LINUX
-      ansible.builtin.shell: grep "GRUB_CMDLINE_LINUX=" /etc/default/grub | cut -f2 -d'"'
+      ansible.builtin.shell: |
+        set -o pipefail
+        grep "GRUB_CMDLINE_LINUX=" /etc/default/grub | cut -f2 -d'"'
+      args:
+        executable: "{{ ubtu22stig_shell_executable }}"
       changed_when: false
       failed_when: false
       check_mode: false
@@ -36,7 +40,11 @@
       notify: Update_grub
 
     - name: MEDIUM | UBTU-22-212015 | AUDIT | Ubuntu 22.04 LTS must initiate session audits at system startup. | Get GRUB_CMDLINE_LINUX_DEFAULT
-      ansible.builtin.shell: grep "GRUB_CMDLINE_LINUX_DEFAULT=" /etc/default/grub | cut -f2 -d'"'
+      ansible.builtin.shell: |
+        set -o pipefail
+        grep "GRUB_CMDLINE_LINUX_DEFAULT=" /etc/default/grub | cut -f2 -d'"'
+      args:
+        executable: "{{ ubtu22stig_shell_executable }}"
       changed_when: false
       failed_when: false
       check_mode: false

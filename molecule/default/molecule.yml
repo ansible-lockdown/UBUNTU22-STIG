@@ -1,5 +1,5 @@
 ---
-# Molecule configuration for UBUNTU22-STIG (V2R7)
+# Molecule configuration for UBUNTU22-STIG (V2R8)
 # https://molecule.readthedocs.io/en/latest/
 
 driver:
@@ -40,6 +40,9 @@ provisioner:
         ansible_become: false
         setup_audit: true
         run_audit: true
+        fetch_audit_output: true
+        audit_output_destination: "{{ lookup('env', 'MOLECULE_PROJECT_DIRECTORY') }}/../../_temp_fetched_audits/"
+        ubtu22stig_disruption_high: true
 
 verifier:
   name: ansible

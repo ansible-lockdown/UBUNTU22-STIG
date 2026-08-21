@@ -4,9 +4,9 @@
   when: not skip_os_check
   tags: always
   ansible.builtin.assert:
-    that: ansible_facts.distribution == 'Ubuntu' and ansible_facts.distribution_major_version is version_compare('22','==')
-    fail_msg: "This role can only be run against Ubuntu 22. {{ ansible_facts.distribution }} {{ ansible_facts.distribution_major_version }} is not supported."
-    success_msg: "This role is running against a supported OS {{ ansible_facts.distribution }} {{ ansible_facts.distribution_major_version }}"
+    that: ansible_facts['distribution'] == 'Ubuntu' and ansible_facts['distribution_major_version'] is version_compare('22','==')
+    fail_msg: "This role can only be run against Ubuntu 22. {{ ansible_facts['distribution'] }} {{ ansible_facts['distribution_major_version'] }} is not supported."
+    success_msg: "This role is running against a supported OS {{ ansible_facts['distribution'] }} {{ ansible_facts['distribution_major_version'] }}"
 
 - name: "Check ansible version"
   tags: always
@@ -16,7 +16,7 @@
     success_msg: "This role is running a supported version of ansible {{ ansible_version.full }} >= {{ min_ansible_version }}"
 
 - name: "Setup rules if container"
-  when: ansible_connection in ['docker', 'community.docker.docker'] or ansible_virtualization_type in ["docker", "lxc", "openvz", "podman", "container"]
+  when: ansible_connection in ['docker', 'community.docker.docker'] or ansible_facts['virtualization_type'] in ["docker", "lxc", "openvz", "podman", "container"]
   tags:
     - container_discovery
     - always
@@ -36,25 +36,29 @@
 
 - name: "Check password set for connecting user"
   when:
-    - ansible_env.SUDO_USER is defined
+    - ansible_facts['env']['SUDO_USER'] is defined
     - not system_is_ec2
     - not audit_only
   block:
     - name: "Capture current password state of connecting user"
-      ansible.builtin.shell: "grep {{ ansible_env.SUDO_USER }} /etc/shadow | awk -F: '{print $2}'"
+      ansible.builtin.shell: |
+        set -o pipefail
+        grep {{ ansible_facts['env']['SUDO_USER'] }} /etc/shadow | awk -F: '{print $2}'
+      args:
+        executable: "{{ ubtu22stig_shell_executable }}"
       changed_when: false
       failed_when: false
       check_mode: false
       register: prelim_ansible_user_password_set
 
-    - name: "Check password set for {{ ansible_env.SUDO_USER }} | password state"  # noqa name[template]
+    - name: "Check password set for {{ ansible_facts['env']['SUDO_USER'] }} | password state"  # noqa name[template]
       tags: user_passwd
       ansible.builtin.assert:
         that: prelim_ansible_user_password_set.stdout | length != 0 and prelim_ansible_user_password_set.stdout != "!!"
-        fail_msg: "You have {{ sudo_password_rule }} enabled but the user = {{ ansible_env.SUDO_USER }} has no password set - It can break access"
-        success_msg: "You have a password set for the user {{ ansible_env.SUDO_USER }}"
+        fail_msg: "You have {{ sudo_password_rule }} enabled but the user = {{ ansible_facts['env']['SUDO_USER'] }} has no password set - It can break access"
+        success_msg: "You have a password set for the user {{ ansible_facts['env']['SUDO_USER'] }}"
       vars:
-        sudo_password_rule: UBTU-22-010380  # pragma: allowlist secret
+        sudo_password_rule: UBTU-22-432010  # pragma: allowlist secret
 
 - name: "Check ubtu22stig_bootloader_password_hash variable has been changed"
   tags: grub
@@ -78,7 +82,11 @@
 
     - name: "PRELIM | AUDIT | Discover if system is subscribed for PRO plan (needed for FIPS) | Check status if pkg installed"
       when: prelim_ubuntu_advantage_bin.stat.exists
-      ansible.builtin.shell: pro status --format yaml | grep attached
+      ansible.builtin.shell: |
+        set -o pipefail
+        pro status --format yaml | grep attached
+      args:
+        executable: "{{ ubtu22stig_shell_executable }}"
       failed_when: prelim_pro_subscription.rc not in [ 0, 1 ]
       changed_when: false
       register: prelim_pro_subscription

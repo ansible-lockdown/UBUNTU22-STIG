@@ -11,8 +11,6 @@
     - V-260580
     - NIST800-53R4_SC-23
     - authorization
-  vars:
-    warn_control_id: "MEDIUM | UBTU-22-631010"
   block:
     - name: MEDIUM | UBTU-22-631010 | AUDIT | Ubuntu 22.04 LTS must use DOD PKI-established certificate authorities for verification of the establishment of protected sessions.
       ansible.builtin.find:
@@ -27,5 +25,7 @@
 
     - name: MEDIUM | UBTU-22-631010 | AUDIT | Ubuntu 22.04 LTS must use DOD PKI-established certificate authorities for verification of the establishment of protected sessions. | warn_count
       when: discovered_dod_certs.matched == 0
+      vars:
+        warn_control_id: "MEDIUM | UBTU-22-631010"
       ansible.builtin.import_tasks:
         file: warning_facts.yml

@@ -7,6 +7,8 @@
     - CAT2
     - CCI-000765
     - CCI-000766
+    - CCI-004046
+    - CCI-004047
     - SRG-OS-000396-GPOS-00176
     - SV-274864r1155209_rule
     - V-274864
@@ -24,6 +26,8 @@
     - CAT2
     - CCI-000765
     - CCI-000766
+    - CCI-004046
+    - CCI-004047
     - SRG-OS-000396-GPOS-00176
     - SV-274866r1101739_rule
     - V-274866
@@ -39,20 +43,21 @@
     - UBTU-22-254020
     - CAT2
     - CCI-000185
+    - CCI-004909
     - SRG-OS-000396-GPOS-00176
     - SV-274867r1107270_rule
     - V-274867
     - NIST800-53R4_IA-5
     - manual
     - sssd
-  vars:
-    warn_control_id: "MEDIUM | UBTU-22-254020"
   block:
     - name: MEDIUM | UBTU-22-254020 | AUDIT | Ubuntu 22.04 LTS must ensure SSSD performs certificate path validation, including revocation checking, against a trusted anchor for PKI-based authentication.
       ansible.builtin.debug:
         msg: "Warning! Please check that your sssd settings for your site match the STIG requirements. Modifications to sssd.conf are not supported in this role"
 
     - name: MEDIUM | UBTU-22-254020 | AUDIT | Ubuntu 22.04 LTS must ensure SSSD performs certificate path validation, including revocation checking, against a trusted anchor for PKI-based authentication.
+      vars:
+        warn_control_id: "MEDIUM | UBTU-22-254020"
       ansible.builtin.import_tasks:
         file: warning_facts.yml
 
@@ -68,13 +73,13 @@
     - NIST800-53R4_IA-5
     - manual
     - sssd
-  vars:
-    warn_control_id: "MEDIUM | UBTU-22-254030"
   block:
     - name: MEDIUM | UBTU-22-254030 | AUDIT | Ubuntu 22.04 LTS must map the authenticated identity to the user or group account for PKI-based authentication.
       ansible.builtin.debug:
         msg: "Warning! Please check that your sssd settings for your site match the STIG requirements. Modifications to sssd.conf are not supported in this role"
 
     - name: MEDIUM | UBTU-22-254030 | AUDIT | Ubuntu 22.04 LTS must map the authenticated identity to the user or group account for PKI-based authentication.
+      vars:
+        warn_control_id: "MEDIUM | UBTU-22-254030"
       ansible.builtin.import_tasks:
         file: warning_facts.yml

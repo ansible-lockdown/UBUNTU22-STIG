@@ -3,7 +3,7 @@
 - name: HIGH | UBTU-22-211000 | AUDIT | Ubuntu 22.04 LTS must be a vendor-supported release.
   when:
     - ubtu22stig_211000
-    - ansible_distribution_version == "22.04"
+    - ansible_facts['distribution_version'] == "22.04"
   tags:
     - UBTU-22-211000
     - CAT1
@@ -15,7 +15,7 @@
   block:
     - name: HIGH | UBTU-22-211000 | AUDIT | Ubuntu 22.04 LTS must be a vendor-supported release. | OS Version
       ansible.builtin.assert:
-        that: ansible_distribution_version == "22.04"
+        that: ansible_facts['distribution_version'] == "22.04"
         fail_msg: "The system is not running  OS Ubuntu22.04 LTS"
         success_msg: "The system is running the expected OS Ubuntu 22.04 LTS"
 

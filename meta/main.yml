@@ -3,7 +3,7 @@
 galaxy_info:
   author: "Ansible-Lockdown Team"
   description: "Apply the Ubuntu22 STIG using ansible"
-  company: "MindPoint Group - A Tyto Athene Company"
+  company: "MindPoint Group - A Quantum Sky Company"
   license: MIT
   role_name: ubuntu22_stig
   namespace: mindpointgroup

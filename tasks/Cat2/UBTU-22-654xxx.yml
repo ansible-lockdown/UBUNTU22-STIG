@@ -718,7 +718,7 @@
   ansible.builtin.set_fact:
     update_audit_template: true
 
-- name: MEDIUM | UBTU-22-654230 | Ubuntu 22.04 LTS must generate audit records when successful/unsuccessful attempts to modify the /etc/sudoers.d directory occur.
+- name: MEDIUM | UBTU-22-654230 | Ubuntu 22.04 LTS must prevent all software from executing at higher privilege levels than users executing the software and the audit system must be configured to audit the execution of privileged functions.
   when: ubtu22stig_654230
   tags:
     - UBTU-22-654230

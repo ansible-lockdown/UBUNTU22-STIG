@@ -20,6 +20,9 @@
     ubtu22stig_skip_for_test: true
     setup_audit: true
     run_audit: true
+    fetch_audit_output: true
+    audit_output_destination: "{{ lookup('env', 'MOLECULE_PROJECT_DIRECTORY') }}/../../_temp_fetched_audits/"
+    ubtu22stig_disruption_high: true
 
     # Pro subscription is unavailable in test containers; pretend we have it
     # so the FIPS/Pro-gated rules don't assert-fail on UBTU-22-211000.
