@@ -1,5 +1,14 @@
 # Ubuntu22STIG
 
+## 2026 August - Public repo hygiene
+
+- removed `.github/workflows/export_badges_private.yml`. It fires only on a push to `latest` and
+  needs `secrets.BADGE_PUSH_TOKEN`; this repository uses `devel` and `main` and has no `latest`
+  branch, so the workflow could never run here and a manual dispatch would fail on the missing
+  secret. It also carries no visibility gate, unlike its counterpart
+  `export_badges_public.yml`, which self-gates on `github.repository_visibility == 'public'` and is
+  retained.
+
 ## 2026 August - Contributing guide and README refresh
 
 - replaced `CONTRIBUTING.rst` with `CONTRIBUTING.md`, carrying the current Ansible-Lockdown
