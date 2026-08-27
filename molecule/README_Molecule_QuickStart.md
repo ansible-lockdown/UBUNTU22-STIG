@@ -25,7 +25,7 @@ If steps 3 and 4 both report `failed=0` and step 6 shows the post-audit failure 
 | Python 3.10+ | Ansible / Molecule are Python tools | `python3 --version` |
 | Ansible venv with `ansible-core >= 2.16.1`, `molecule`, `molecule-plugins[docker]`, `docker`, `passlib` | Runtime deps for the test (matches `meta/main.yml` `min_ansible_version`) | `pip list \| grep -E 'ansible\|molecule'` |
 | `git` on the controller | Audit content is cloned from `UBUNTU22-STIG-Audit` | `git --version` |
-| Local clones of **both** `UBUNTU22-STIG` AND `UBUNTU22-STIG-Audit` (or network access so the audit repo can be cloned at runtime) | The role pulls audit goss content from the audit repo during converge | `git -C <path-to>/UBUNTU22-STIG-Audit status` |
+| Local clones of **both** this role AND `UBUNTU22-STIG-Audit` (or network access so the audit repo can be cloned at runtime) | The role pulls audit goss content from the audit repo during converge | `git -C <path-to>/UBUNTU22-STIG-Audit status` |
 
 One-time venv setup (skip if you already have one):
 
@@ -40,7 +40,7 @@ pip install 'ansible-core>=2.16.1' 'molecule>=24' 'molecule-plugins[docker]' doc
 ```bash
 # Every time
 source <path-to-your-ansible-venv>/bin/activate
-cd <path-to>/UBUNTU22-STIG
+cd <path-to-this-role>
 
 # Full gating pair
 molecule destroy && molecule converge && molecule converge && molecule verify

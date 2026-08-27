@@ -1,5 +1,5 @@
 ---
-# Molecule configuration for UBUNTU22-STIG (V2R8)
+# Molecule configuration for the Ubuntu 22.04 LTS STIG role (V2R8)
 # https://molecule.readthedocs.io/en/latest/
 
 driver:
@@ -32,7 +32,7 @@ provisioner:
       callbacks_enabled: profile_tasks, timer
       # Resolve the role itself by name (basename of MOLECULE_PROJECT_DIRECTORY).
       # Ansible's default search path doesn't include the role's parent dir, so
-      # include_role: name: UBUNTU22-STIG fails without this hint.
+      # include_role by the role's own directory name fails without this hint.
       roles_path: "${MOLECULE_PROJECT_DIRECTORY}/..:${MOLECULE_PROJECT_DIRECTORY}/molecule/default/roles"
   inventory:
     host_vars:

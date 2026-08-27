@@ -1,6 +1,6 @@
 ---
 
-# Molecule converge playbook for UB22-STIG V2R7.
+# Molecule converge playbook for UB22-STIG
 # Container-incompatible rules are handled by vars/is_container.yml (loaded
 # automatically by tasks/main.yml when the docker connection is detected and
 # system_is_container=true). Anything here is purely test-scaffolding the role
