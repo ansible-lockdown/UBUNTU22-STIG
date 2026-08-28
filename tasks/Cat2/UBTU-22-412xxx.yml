@@ -31,7 +31,11 @@
     - session
   block:
     - name: MEDIUM | UBTU-22-412030 | AUDIT | Ubuntu 22.04 LTS must automatically exit interactive command shell user sessions after 15 minutes of inactivity. | capture current settings
-      ansible.builtin.shell: grep -E "\bTMOUT=" /etc/bash.bashrc /etc/profile.d/* | cut -d':' -f1
+      ansible.builtin.shell: |
+        set -o pipefail
+        grep -E "\bTMOUT=" /etc/bash.bashrc /etc/profile.d/* | cut -d':' -f1
+      args:
+        executable: "{{ ubtu22stig_shell_executable }}"
       changed_when: false
       failed_when: discovered_shell_tmout.rc not in [ 0, 1 ]
       register: discovered_shell_tmout
@@ -54,7 +58,7 @@
         group: root
         mode: 'go-wx'
 
-- name: MEDIUM | UBTU-22-412035 | PATCH | Ubuntu 22.04 LTS must automatically exit interactive command shell user sessions after 15 minutes of inactivity.
+- name: MEDIUM | UBTU-22-412035 | PATCH | Ubuntu 22.04 LTS default filesystem permissions must be defined in such a way that all authenticated users can read and modify only their own files.
   when: ubtu22stig_412035
   tags:
     - UBTU-22-412035

@@ -29,11 +29,13 @@
     - NIST800-53R4_IA-2
     - NIST800-53R4_IA-8
     - account
-  vars:
-    warn_control_id: 'MEDIUM | UBTU-22-411015'
   block:
     - name: MEDIUM | UBTU-22-411015 | AUDIT | Ubuntu 22.04 LTS must uniquely identify interactive users. | Check for duplicate UIDs
-      ansible.builtin.shell: "pwck -r | awk -F: '{if ($3 in uid) print $1 ; else uid[$3]}' /etc/passwd"
+      ansible.builtin.shell: |
+        set -o pipefail
+        pwck -r | awk -F: '{if ($3 in uid) print $1 ; else uid[$3]}' /etc/passwd
+      args:
+        executable: "{{ ubtu22stig_shell_executable }}"
       changed_when: false
       failed_when: false
       register: discovered_duplicate_uid
@@ -45,6 +47,8 @@
 
     - name: MEDIUM | UBTU-22-411015 | WARN | Ubuntu 22.04 LTS must uniquely identify interactive users. | warning count
       when: discovered_duplicate_uid.stdout | length >= 1
+      vars:
+        warn_control_id: 'MEDIUM | UBTU-22-411015'
       ansible.builtin.import_tasks:
         file: warning_facts.yml
 

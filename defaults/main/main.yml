@@ -1,7 +1,7 @@
 ---
 
 ## metadata for Audit benchmark
-benchmark_version: 'v2.7.0'
+benchmark_version: 'v2.8.0'
 
 ## Benchmark name used by auditing control role
 # The audit variable found at the base
@@ -9,6 +9,10 @@ benchmark: UBUNTU22-STIG
 
 # Whether to skip the OS check for supported OS's
 skip_os_check: false
+
+# Shell interpreter used by ansible.builtin.shell tasks. Ubuntu's /bin/sh is
+# dash; force bash so piped audit/discovery shells behave consistently.
+ubtu22stig_shell_executable: /bin/bash
 
 ubtu22stig_cat1: true
 ubtu22stig_cat2: true
@@ -52,73 +56,6 @@ ubtu22stig_purge_apt: false
 # Create managed not custom local_facts files
 create_benchmark_facts: true
 ansible_facts_path: /etc/ansible/facts.d
-
-###
-### Settings for associated Audit role using Goss
-###
-
-###########################################
-### Goss is required on the remote host ###
-#### vars/audit.yml for other settings #####
-# Allow audit to setup the requirements including installing git (if option chosen and downloading and adding goss binary to system)
-setup_audit: false
-
-# enable audits to run - this runs the audit and get the latest content
-run_audit: false
-# Run heavy tests - some tests can have more impact on a system enabling these can have greater impact on a system
-audit_run_heavy_tests: true
-
-## Only run Audit do not remediate
-audit_only: false
-
-#############################
-
-# How to retrieve audit binary
-# Options are copy or download - detailed settings at the bottom of this file
-# you will need to access to either github or the file already downloaded
-get_audit_binary_method: download
-
-## if get_audit_binary_method - copy the following needs to be updated for your environment
-## it is expected that it will be copied from somewhere accessible to the control node
-## e.g copy from ansible control node to remote host
-audit_bin_copy_location: /some/accessible/path
-
-# how to get audit files onto host options
-# options are git/copy/archive/get_url other e.g. if you wish to run from already downloaded conf
-audit_content: git
-
-# If using either archive, copy, get_url:
-## Note will work with .tar files - zip will require extra configuration
-### If using get_url this is expecting github url in tar.gz format e.g.
-### https://github.com/ansible-lockdown/UBUNTU22-STIG-Audit/archive/refs/heads/benchmark-v1.0.0.tar.gz
-audit_conf_source: "some path or url to copy from"
-
-# Destination for the audit content to be placed on managed node
-# note may not need full path e.g. /opt with the directory being the {{ benchmark }}-Audit directory
-audit_conf_dest: "/opt"
-
-# Where the audit logs are stored
-audit_log_dir: '/opt'
-
-## Ability to collect and take audit files moving to a centralized location
-# This enables the collection of the files from the host
-fetch_audit_output: false
-
-# Method of getting,uploading the summary files
-## Ensure access and permissions are available for these to occur.
-## options are
-# fetch - fetches from server and moves to location on the ansible controller (could be a mount point available to controller)
-# copy - copies file to a location available to the managed node
-audit_output_collection_method: fetch
-
-# Location to put the audit files
-audit_output_destination: /opt/audit_summaries/
-
-### Goss Settings ##
-####### END ########
-
-#### CAT 1
-
 ubtu22stig_211000: true
 ubtu22stig_211015: true
 ubtu22stig_212010: true
@@ -425,6 +362,16 @@ ubtu22stig_sudo_group_required:
 # 611xxx
 # ubtu22stig_passwd_hash_algo is the hashing algorithm used - STIG required SHA512 - default is newer yescrypt
 ubtu22stig_passwd_hash_algo: sha512  # pragma: allowlist secret
+# UBTU-22-611055 requires rounds=100000 on the pam_unix.so password line.
+ubtu22stig_passwd_rounds: 100000
+
+# PAM is configured through the pam-auth-update profile source rather than the generated
+# /etc/pam.d/common-* files, so the settings survive a regeneration. Directory is relative:
+# it is used as '{{ dir }}<name>.j2' for the template and '/{{ dir }}<name>' for the target.
+ubtu22stig_pam_confd_dir: 'usr/share/pam-configs/'
+
+# Profile filenames within ubtu22stig_pam_confd_dir.
+ubtu22stig_pam_pwunix_file: 'unix'
 
 # 612xxx
 # Section 612xxx is for smartcards configurations these require further configurations before applying STiG settings

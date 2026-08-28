@@ -65,11 +65,13 @@
     - V-260595
     - NIST800-53R4_AU-4
     - auditd
-  vars:
-    warn_control_id: "LOW | UBTU-22-653035"
   block:
     - name: "LOW | UBTU-22-653035 | AUDIT | Ubuntu 22.04 LTS must allocate audit record storage capacity to store at least one weeks' worth of audit records, when audit records are not immediately sent to a central audit record storage facility."
-      ansible.builtin.shell: grep ^log_file /etc/audit/auditd.conf | awk '{ print $NF }'
+      ansible.builtin.shell: |
+        set -o pipefail
+        grep ^log_file /etc/audit/auditd.conf | awk '{ print $NF }'
+      args:
+        executable: "{{ ubtu22stig_shell_executable }}"
       changed_when: false
       register: discovered_auditd_logfile
 
@@ -77,7 +79,7 @@
       ansible.builtin.set_fact:
         audit_filesystem_space_left: "{{ (audit_mount.size_available / 1024 / 1024) | int }}"
       vars:
-        audit_mount: "{{ ansible_facts.mounts | selectattr('mount', 'equalto', ubtu22stig_audit_log_filesystem) | list | first }}"
+        audit_mount: "{{ ansible_facts['mounts'] | selectattr('mount', 'equalto', ubtu22stig_audit_log_filesystem) | list | first }}"
 
     - name: "LOW | UBTU-22-653035 | WARN | Ubuntu 22.04 LTS must allocate audit record storage capacity to store at least one weeks' worth of audit records, when audit records are not immediately sent to a central audit record storage facility."
       ansible.builtin.debug:
@@ -89,6 +91,8 @@
           - "Disk Space remaining: {{ audit_filesystem_space_left }}MB"
 
     - name: "LOW | UBTU-22-653035| WARN | Ubuntu 22.04 LTS must allocate audit record storage capacity to store at least one weeks' worth of audit records, when audit records are not immediately sent to a central audit record storage facility."
+      vars:
+        warn_control_id: "LOW | UBTU-22-653035"
       ansible.builtin.import_tasks:
         file: warning_facts.yml
 

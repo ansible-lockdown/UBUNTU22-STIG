@@ -1,0 +1,13 @@
+{
+  "tool_version": "2.8.3",
+  "date": "2026-08-20T09:15:42.911753",
+  "findings": [
+    {
+      "file": "tasks/Cat3/UBTU-22-411xxx.yml",
+      "line": 43,
+      "description": "Outdated company name 'Tyto Athene' found",
+      "severity": "warning",
+      "check": "company_naming"
+    }
+  ]
+}

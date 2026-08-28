@@ -25,7 +25,7 @@ If steps 3 and 4 both report `failed=0` and step 6 shows the post-audit failure 
 | Python 3.10+ | Ansible / Molecule are Python tools | `python3 --version` |
 | Ansible venv with `ansible-core >= 2.16.1`, `molecule`, `molecule-plugins[docker]`, `docker`, `passlib` | Runtime deps for the test (matches `meta/main.yml` `min_ansible_version`) | `pip list \| grep -E 'ansible\|molecule'` |
 | `git` on the controller | Audit content is cloned from `UBUNTU22-STIG-Audit` | `git --version` |
-| Local clones of **both** `UBUNTU22-STIG` AND `UBUNTU22-STIG-Audit` (or network access so the audit repo can be cloned at runtime) | The role pulls audit goss content from the audit repo during converge | `git -C <path-to>/UBUNTU22-STIG-Audit status` |
+| Local clones of **both** this role AND `UBUNTU22-STIG-Audit` (or network access so the audit repo can be cloned at runtime) | The role pulls audit goss content from the audit repo during converge | `git -C <path-to>/UBUNTU22-STIG-Audit status` |
 
 One-time venv setup (skip if you already have one):
 
@@ -40,7 +40,7 @@ pip install 'ansible-core>=2.16.1' 'molecule>=24' 'molecule-plugins[docker]' doc
 ```bash
 # Every time
 source <path-to-your-ansible-venv>/bin/activate
-cd <path-to>/UBUNTU22-STIG
+cd <path-to-this-role>
 
 # Full gating pair
 molecule destroy && molecule converge && molecule converge && molecule verify
@@ -160,13 +160,13 @@ If you're QA'ing a feature branch on `UBUNTU22-STIG-Audit` that hasn't been merg
 molecule converge -- --extra-vars 'audit_git_version=<your-qa-branch>'
 ```
 
-`include_vars` has higher precedence than play/host vars in Ansible, so `--extra-vars` is the only way to change the audit branch from a Lockdown-internal `vars/audit.yml` pin.
+`audit_git_version` is an ordinary role default in `defaults/main/audit.yml`, so inventory, group and play vars override it too - `--extra-vars` is simply the most direct option from the molecule command line.
 
-**Branch naming reminder:** The remediation repo uses DISA-style `benchmark_v2rN` (no dots), but the audit repo uses semver `benchmark_v2.N.0`. Always pass the full audit branch name to `audit_git_version` (e.g. `benchmark_v2.7.0`, not `benchmark_v2r7`).
+**Branch naming reminder:** The remediation repo uses DISA-style `benchmark_v2rN` (no dots), but the audit repo uses semver `benchmark_v2.N.0`. Always pass the full audit branch name to `audit_git_version` (e.g. `benchmark_v2.8.0`, not `benchmark_v2r8`).
 
 ## Where to ask for help
 
 - This role's open issues: `github.com/ansible-lockdown/UBUNTU22-STIG/issues`
 - Ansible Lockdown Discord (linked from the role README badge)
 - Molecule docs: `molecule.readthedocs.io`
-- Goss output format: `github.com/goss-org/goss`
+- Goss output format: `github.com/krameff/goss`

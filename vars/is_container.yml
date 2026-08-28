@@ -130,6 +130,12 @@ ubtu22stig_252015: false
 ubtu22stig_252020: false
 
 # ==============================================================================
+# SSSD service management (1 rule) - the sssd config rules are container-safe
+# and stay enabled; only starting/enabling the service is not
+# ==============================================================================
+ubtu22stig_254015: false
+
+# ==============================================================================
 # FIPS kernel mode (1 rule) - configuration-only FIPS rules (SSH ciphers etc.)
 # are container-safe and NOT disabled
 # ==============================================================================

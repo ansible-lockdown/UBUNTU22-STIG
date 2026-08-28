@@ -63,18 +63,24 @@
     - SV-260475r958928_rule
     - V-260475
     - NIST800-53R4_SI-16
-  vars:
-    warn_control_id: 'MEDIUM | UBTU-22-213025'
   block:
     - name: MEDIUM | UBTU-22-213025 | AUDIT | Ubuntu 22.04 LTS must implement nonexecutable data to protect its memory from unauthorized code execution.
-      ansible.builtin.shell: dmesg | grep -i "execute disable"
+      ansible.builtin.shell: |
+        set -o pipefail
+        dmesg | grep -i "execute disable"
+      args:
+        executable: "{{ ubtu22stig_shell_executable }}"
       changed_when: false
       failed_when: discovered_dmesg_nx_value.rc not in [ 0, 1 ]
       register: discovered_dmesg_nx_value
 
     - name: MEDIUM | UBTU-22-213025 | AUDIT | Ubuntu 22.04 LTS must implement nonexecutable data to protect its memory from unauthorized code execution. | Dmesg Does Not Contain NX (Execute Disable) protection active.
       when: discovered_dmesg_nx_value.stdout is not defined
-      ansible.builtin.shell: grep flags /proc/cpuinfo | grep -w nx | sort -u
+      ansible.builtin.shell: |
+        set -o pipefail
+        grep flags /proc/cpuinfo | grep -w nx | sort -u
+      args:
+        executable: "{{ ubtu22stig_shell_executable }}"
       changed_when: false
       failed_when: false
       register: discovered_nx_cpuinfo_settings
@@ -92,5 +98,7 @@
         - discovered_dmesg_nx_value.stdout is defined
         - discovered_nx_cpuinfo_settings.stdout is defined
         - "'protection: active' not in discovered_dmesg_nx_value.stdout or 'nx' not in discovered_nx_cpuinfo_settings.stdout"
+      vars:
+        warn_control_id: 'MEDIUM | UBTU-22-213025'
       ansible.builtin.import_tasks:
         file: warning_facts.yml

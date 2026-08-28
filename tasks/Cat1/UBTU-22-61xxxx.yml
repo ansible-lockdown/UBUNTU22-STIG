@@ -11,13 +11,38 @@
     - V-260570
     - NIST800-53R4_CM-6
     - password
-  ansible.builtin.replace:
-    path: "{{ item }}"
-    regexp: nullok
-    replace: ''
-  loop:
-    - /etc/pam.d/common-auth
-    - /etc/pam.d/common-password
+  block:
+    # nullok is set in the pam-auth-update profile source, so removing it only from the
+    # generated /etc/pam.d/common-* files is reverted by the next regeneration - which any
+    # libpam-runtime or PAM module upgrade can trigger. Own the source instead.
+    - name: HIGH | UBTU-22-611060 | PATCH | Ubuntu 22.04 LTS must not allow accounts configured with blank or null passwords. | ensure unix profile
+      notify: Pam_auth_update_pwunix
+      ansible.builtin.template:
+        src: "{{ ubtu22stig_pam_confd_dir }}pam_unix.j2"
+        dest: "/{{ ubtu22stig_pam_confd_dir }}{{ ubtu22stig_pam_pwunix_file }}"
+        owner: root
+        group: root
+        mode: 'u-x,go-rwx'
+
+    # A host whose profile is already correct but whose generated files still carry nullok
+    # would see no template change, so nothing would notify the handler. Detect that and
+    # force the regeneration.
+    - name: HIGH | UBTU-22-611060 | AUDIT | Ubuntu 22.04 LTS must not allow accounts configured with blank or null passwords. | check generated stack
+      ansible.builtin.shell: |
+        set -o pipefail
+        grep -l -E 'pam_unix\.so.*nullok' /etc/pam.d/common-auth /etc/pam.d/common-password 2>/dev/null
+      args:
+        executable: "{{ ubtu22stig_shell_executable }}"
+      changed_when: false
+      failed_when: discovered_pam_nullok.rc not in [ 0, 1 ]
+      check_mode: false
+      register: discovered_pam_nullok
+
+    - name: HIGH | UBTU-22-611060 | PATCH | Ubuntu 22.04 LTS must not allow accounts configured with blank or null passwords. | regenerate if drifted
+      when: discovered_pam_nullok.stdout | length > 0
+      notify: Pam_auth_update_pwunix
+      ansible.builtin.debug:
+        msg: "nullok found in the generated PAM stack; regenerating from the profile source"
 
 - name: HIGH | UBTU-22-611065 | PATCH | Ubuntu 22.04 LTS must not have accounts configured with blank or null passwords.
   when: ubtu22stig_611065
@@ -30,8 +55,6 @@
     - V-260571
     - NIST800-53R4_CM-6
     - password
-  vars:
-    warn_control_id: "HIGH | UBTU-22-611065"
   block:
     - name: HIGH | UBTU-22-611065 | PATCH | Ubuntu 22.04 LTS must not have accounts configured with blank or null passwords.
       when:
@@ -52,6 +75,8 @@
       when:
         - not ubtu22stig_disruption_high
         - prelim_ubtu22stig_empty_password_accounts.stdout | length > 0
+      vars:
+        warn_control_id: "HIGH | UBTU-22-611065"
       ansible.builtin.import_tasks:
         file: warning_facts.yml
 
@@ -89,7 +114,7 @@
 - name: HIGH | UBTU-22-612040 | PATCH | Ubuntu 22.04 LTS must map the authenticated identity to the user or group account for PKI-based authentication.
   when:
     - ubtu22stig_612040
-    - "'pam-pkcs11' in ansible_facts.packages"
+    - "'pam-pkcs11' in ansible_facts['packages']"
   tags:
     - UBTU-22-612040
     - CAT1

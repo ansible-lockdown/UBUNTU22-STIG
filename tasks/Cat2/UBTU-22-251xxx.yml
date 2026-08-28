@@ -4,7 +4,7 @@
   when:
     - ubtu22stig_251010
     - ubtu22stig_disruption_high
-    - "'ufw' not in ansible_facts.packages"
+    - "'ufw' not in ansible_facts['packages']"
   tags:
     - UBTU-22-251010
     - CAT2
@@ -44,13 +44,14 @@
     - CAT2
     - CCI-002314
     - SRG-OS-000480-GPOS-00232
-    - SV-260516r991593_rule
+    - SV-260516r1184061_rule
     - V-260516
     - NIST800-53R4_CM-6
     - firewall
   ansible.builtin.systemd_service:
     name: ufw
     state: started
+    enabled: true
 
 - name: MEDIUM | UBTU-22-251025 | PATCH | Ubuntu 22.04 LTS must configure the Uncomplicated Firewall (ufw) to rate-limit impacted network interfaces.
   when:
@@ -65,8 +66,6 @@
     - V-260517
     - NIST800-53R4_SC-5
     - firewall
-  vars:
-    warn_control_id: "MEDIUM | UBTU-22-251025"
   block:
     - name: MEDIUM | UBTU-22-251025 | AUDIT | Ubuntu 22.04 LTS must configure the Uncomplicated Firewall (ufw) to rate-limit impacted network interfaces. | discover status
       ansible.builtin.command: ufw status numbered
@@ -79,7 +78,7 @@
         - ubtu22stig_disruption_high
         - "'ALLOW IN' in discovered_ufw_limit_status.stdout"
         - "'on ' not in discovered_ufw_limit_status.stdout"
-      ansible.builtin.command: ufw limit "{{ ansible_facts.default_ipv4.interface }}"
+      ansible.builtin.command: ufw limit "{{ ansible_facts['default_ipv4']['interface'] }}"
       changed_when: false
 
     - name: MEDIUM | UBTU-22-251025 | WARN | Ubuntu 22.04 LTS must configure the Uncomplicated Firewall (ufw) to rate-limit impacted network interfaces. | warning
@@ -89,6 +88,8 @@
 
     - name: MEDIUM | UBTU-22-251025 | WARN | Ubuntu 22.04 LTS must configure the Uncomplicated Firewall (ufw) to rate-limit impacted network interfaces. | warn_count
       when: not ubtu22stig_disruption_high
+      vars:
+        warn_control_id: "MEDIUM | UBTU-22-251025"
       ansible.builtin.import_tasks:
         file: warning_facts.yml
 
@@ -103,13 +104,13 @@
     - V-260518
     - NIST800-53R4_CM-7
     - firewall
-  vars:
-    warn_control_id: "MEDIUM | UBTU-22-251030"
   block:
     - name: MEDIUM | UBTU-22-251030 | WARN | Ubuntu 22.04 LTS must be configured to prohibit or restrict the use of functions, ports, protocols, and/or services, as defined in the PPSM CAL and vulnerability assessments. | warning
       ansible.builtin.debug:
         msg: "Warning!! Please investigate ufw ruling matches site policy run the command ```sudo ufw show raw```"
 
     - name: MEDIUM | UBTU-22-251030 | WARN | Ubuntu 22.04 LTS must be configured to prohibit or restrict the use of functions, ports, protocols, and/or services, as defined in the PPSM CAL and vulnerability assessments.| warn_count
+      vars:
+        warn_control_id: "MEDIUM | UBTU-22-251030"
       ansible.builtin.import_tasks:
         file: warning_facts.yml

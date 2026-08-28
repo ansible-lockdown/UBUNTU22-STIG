@@ -32,8 +32,8 @@
         path: /etc/pam.d/common-account
         regexp: "{{ item.regexp }}"
         line: "{{ item.regexp }}"
-        insertafter: "{{ item.after |default(omit) }}"
-        insertbefore: "{{ item.before |default(omit) }}"
+        insertafter: "{{ item.after | default(omit) }}"
+        insertbefore: "{{ item.before | default(omit) }}"
       loop:
         - { regexp: 'account required                        pam_faillock.so', before: 'account.*pam_unix.so'}
 

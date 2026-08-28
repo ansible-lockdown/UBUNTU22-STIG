@@ -84,6 +84,7 @@
   when: ubtu22stig_611035
   tags:
     - UBTU-22-611035
+    - CAT2
     - CCI-000000
     - SRG-OS-000078-GPOS-00046
     - SV-260565r1015016_rule
@@ -140,41 +141,37 @@
     - password
   block:
     - name: MEDIUM | UBTU-22-611055 | AUDIT | Ubuntu 22.04 LTS must store only encrypted representations of passwords. | get current setting
-      ansible.builtin.shell: grep -v ^# /etc/pam.d/common-password | grep -E "(yescrypt|md5|bigcrypt|sha256|sha512|blowfish)"
+      ansible.builtin.shell: |
+        set -o pipefail
+        grep -v ^# /etc/pam.d/common-password | grep -E "(yescrypt|md5|bigcrypt|sha256|sha512|blowfish)"
+      args:
+        executable: "{{ ubtu22stig_shell_executable }}"
       changed_when: false
       failed_when: discovered_common_pwd_sha512.rc not in [ 0, 1 ]
+      check_mode: false
       register: discovered_common_pwd_sha512
 
-    - name: MEDIUM | UBTU-22-611055 | AUDIT | Ubuntu 22.04 LTS must store only encrypted representations of passwords. | replace current setting if incorrect
-      when:
-        - discovered_common_pwd_sha512.stdout | length > 0
-        - "ubtu22stig_passwd_hash_algo not in discovered_common_pwd_sha512.stdout"
-      ansible.builtin.lineinfile:
-        path: /etc/pam.d/common-password
-        backrefs: true
-        regexp: ^(password\s*\[success=1 default=ignore\]\s*pam_unix.so.*)(yescrypt|md5|bigcrypt|sha256|sha512|blowfish)(.*)
-        line: \1{{ ubtu22stig_passwd_hash_algo }}\3
+    # The algorithm and rounds are arguments on the pam_unix.so password line of the
+    # generated common-password file, so they are set in the profile that generates it
+    # rather than in the generated file. This profile also carries the nullok removal for
+    # UBTU-22-611060; both controls resolve to the same source file.
+    - name: MEDIUM | UBTU-22-611055 | PATCH | Ubuntu 22.04 LTS must store only encrypted representations of passwords. | ensure unix profile
+      notify: Pam_auth_update_pwunix
+      ansible.builtin.template:
+        src: "{{ ubtu22stig_pam_confd_dir }}pam_unix.j2"
+        dest: "/{{ ubtu22stig_pam_confd_dir }}{{ ubtu22stig_pam_pwunix_file }}"
+        owner: root
+        group: root
+        mode: 'u-x,go-rwx'
 
-    - name: MEDIUM | UBTU-22-611055 | AUDIT | Ubuntu 22.04 LTS must store only encrypted representations of passwords. | add rounds if missing
+    - name: MEDIUM | UBTU-22-611055 | PATCH | Ubuntu 22.04 LTS must store only encrypted representations of passwords. | regenerate if drifted
       when:
         - discovered_common_pwd_sha512.stdout | length > 0
-        - "'rounds=100000' not in discovered_common_pwd_sha512.stdout"
-      ansible.builtin.lineinfile:
-        path: /etc/pam.d/common-password
-        backrefs: true
-        regexp: ^(password\s*\[success=1 default=ignore\]\s*pam_unix.so.*)
-        line: \1 rounds=100000
-
-    - name: MEDIUM | UBTU-22-611055 | PATCH | Ubuntu 22.04 LTS must store only encrypted representations of passwords.
-      when:
-        - discovered_common_pwd_sha512.stdout | length > 0
-      community.general.pamd:
-        name: common-password
-        type: password
-        control: '[success=1 default=ignore]'
-        module_path: pam_unix.so
-        module_arguments: "{{ ubtu22stig_passwd_hash_algo }}"
-        state: args_present
+        - ubtu22stig_passwd_hash_algo not in discovered_common_pwd_sha512.stdout or
+          'rounds=' ~ ubtu22stig_passwd_rounds not in discovered_common_pwd_sha512.stdout
+      notify: Pam_auth_update_pwunix
+      ansible.builtin.debug:
+        msg: "Generated common-password does not match the required algorithm or rounds; regenerating from the profile source"
 
 - name: MEDIUM | UBTU-22-611070 | PATCH | Ubuntu 22.04 LTS must store only encrypted representations of passwords.
   when: ubtu22stig_611070

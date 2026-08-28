@@ -61,7 +61,11 @@
       notify: Restart_ssh
 
     - name: MEDIUM | UBTU-22-612020 | AUDIT | Ubuntu 22.04 LTS must implement smart card logins for multifactor authentication for local and network access to privileged and nonprivileged accounts. | Check common-auth
-      ansible.builtin.shell: grep -iE "^auth.*pam_pkcs11.so" /etc/pam.d/common-auth
+      ansible.builtin.shell: |
+        set -o pipefail
+        grep -iE "^auth.*pam_pkcs11.so" /etc/pam.d/common-auth
+      args:
+        executable: "{{ ubtu22stig_shell_executable }}"
       changed_when: false
       failed_when: discovered_pamd_pkcs_enabled.rc not in [ 0, 1 ]
       register: discovered_pamd_pkcs_enabled
@@ -88,7 +92,11 @@
     - multifactor
   block:
     - name: MEDIUM | UBTU-22-612025 | AUDIT | Ubuntu 22.04 LTS must electronically verify personal identity verification (PIV) credentials. | find current settings
-      ansible.builtin.shell: grep -E "^cert_policy=" /etc/pam_pkcs11/pam_pkcs11.conf | cut -d ';' -f1 | grep -v ocsp_on
+      ansible.builtin.shell: |
+        set -o pipefail
+        grep -E "^cert_policy=" /etc/pam_pkcs11/pam_pkcs11.conf | cut -d ';' -f1 | grep -v ocsp_on
+      args:
+        executable: "{{ ubtu22stig_shell_executable }}"
       changed_when: false
       failed_when: discovered_pkcs_cert_ocsp_policy.rc not in [ 0, 1 ]
       register: discovered_pkcs_cert_ocsp_policy
@@ -117,7 +125,11 @@
     - multifactor
   block:
     - name: MEDIUM | UBTU-22-612030 | AUDIT | Ubuntu 22.04 LTS, for PKI-based authentication, must validate certificates by constructing a certification path (which includes status information) to an accepted trust anchor. | find current settings
-      ansible.builtin.shell: grep -E "^cert_policy=" /etc/pam_pkcs11/pam_pkcs11.conf | cut -d ';' -f1 | grep -v ca
+      ansible.builtin.shell: |
+        set -o pipefail
+        grep -E "^cert_policy=" /etc/pam_pkcs11/pam_pkcs11.conf | cut -d ';' -f1 | grep -v ca
+      args:
+        executable: "{{ ubtu22stig_shell_executable }}"
       changed_when: false
       failed_when: discovered_pkcs_cert_ca_policy.rc not in [ 0, 1 ]
       register: discovered_pkcs_cert_ca_policy
@@ -146,7 +158,11 @@
     - multifactor
   block:
     - name: MEDIUM | UBTU-22-612035 | AUDIT | Ubuntu 22.04 LTS for PKI-based authentication, must implement a local cache of revocation data in case of the inability to access revocation information via the network. | find current settings
-      ansible.builtin.shell: grep -E "^cert_policy=" /etc/pam_pkcs11/pam_pkcs11.conf | cut -d ';' -f1 | grep -Ev "crl_auto|crl_offline"
+      ansible.builtin.shell: |
+        set -o pipefail
+        grep -E "^cert_policy=" /etc/pam_pkcs11/pam_pkcs11.conf | cut -d ';' -f1 | grep -Ev "crl_auto|crl_offline"
+      args:
+        executable: "{{ ubtu22stig_shell_executable }}"
       changed_when: false
       failed_when: discovered_pkcs_cert_crl_policy.rc not in [ 0, 1 ]
       register: discovered_pkcs_cert_crl_policy
