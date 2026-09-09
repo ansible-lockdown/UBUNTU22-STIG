@@ -48,7 +48,7 @@ ubtu22stig_271030: {{ ubtu22stig_271030 }}
 ubtu22stig_432015: {{ ubtu22stig_432015 }}
 ubtu22stig_611060: {{ ubtu22stig_611060 }}
 ubtu22stig_611065: {{ ubtu22stig_611065 }}
-ubtu22stig_612040: "'pam-pkcs11' in ansible_facts.packages"  # Only runs if pam-pkcs11 installed
+ubtu22stig_612040: "'pam-pkcs11' in ansible_facts['packages']"  # Only runs if pam-pkcs11 installed
 ubtu22stig_671010: "{{ ubtu22stig_subscribed }}"  # Only when subscribed
 
 # Cat 2 rules

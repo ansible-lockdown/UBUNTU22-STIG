@@ -1,6 +1,7 @@
 .env
 *.log
 *.retry
+.cache
 .vagrant
 tests/*redhat-subscription
 tests/Dockerfile
@@ -15,12 +16,24 @@ test_inv
 *.pdf
 *history.md
 *plan.md
+*qa_report*
+
+# Secrets / keys
+*.vault
+*.key
+*.pem
+*.p12
+*.pfx
+*.keystore
+*.jks
+*.credentials
+*vault_pass*
+.vault_pass
 
 # temp remove doc while this is built up
 doc/
 # VSCode
 .vscode
-vagrant
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
@@ -50,8 +63,8 @@ benchparse/
 *xccdf.xml
 *.retry
 
-# GitHub Action/Workflow files
-.github/
+# Precommit exclusions
+.ansible/
 
-# pre-commit ansible-lint temp
-.ansible
+# Molecule
+.molecule/

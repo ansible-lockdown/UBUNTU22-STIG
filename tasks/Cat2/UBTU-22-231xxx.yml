@@ -15,11 +15,13 @@
     - V-260484
     - NIST800-53R4_SC-28
     - filesystems
-  vars:
-    warn_control_id: 'UBTU-22-231010'
   block:
     - name: MEDIUM | UBTU-22-231010 | AUDIT | Ubuntu 22.04 LTS must implement cryptographic mechanisms to prevent unauthorized disclosure and modification of all information that requires protection at rest. | Get encrypted partitions
-      ansible.builtin.shell: more /etc/crypttab | sed 1d
+      ansible.builtin.shell: |
+        set -o pipefail
+        more /etc/crypttab | sed 1d
+      args:
+        executable: "{{ ubtu22stig_shell_executable }}"
       changed_when: false
       failed_when: false
       register: discovered_crypttab_status
@@ -31,6 +33,8 @@
 
     - name: MEDIUM | UBTU-22-231010 | AUDIT | Ubuntu 22.04 LTS must implement cryptographic mechanisms to prevent unauthorized disclosure and modification of all information that requires protection at rest. | Set warning count
       when: discovered_crypttab_status.stdout | length == 0
+      vars:
+        warn_control_id: 'UBTU-22-231010'
       ansible.builtin.import_tasks:
         file: warning_facts.yml
 
@@ -43,5 +47,7 @@
 
     - name: MEDIUM | UBTU-22-231010 | AUDIT | Ubuntu 22.04 LTS must implement cryptographic mechanisms to prevent unauthorized disclosure and modification of all information that requires protection at rest. | Set warning count
       when: discovered_crypttab_status.stdout | length > 0
+      vars:
+        warn_control_id: 'UBTU-22-231010'
       ansible.builtin.import_tasks:
         file: warning_facts.yml

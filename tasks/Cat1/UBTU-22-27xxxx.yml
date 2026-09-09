@@ -9,7 +9,7 @@
     - CAT1
     - CCI-000366
     - SRG-OS-000480-GPOS-00227
-    - SV-260539r1069103_rule
+    - SV-260539r1184066_rule
     - V-260539
     - NIST800-53R4_CM-6
     - gnome
@@ -17,6 +17,6 @@
     path: /etc/dconf/db/local.d/00-screensaver
     section: org/gnome/settings-daemon/plugins/media-keys
     option: logout
-    value: '""'
+    value: '@as []'
     mode: 'u-x,go-wx'
   notify: Update_dconf

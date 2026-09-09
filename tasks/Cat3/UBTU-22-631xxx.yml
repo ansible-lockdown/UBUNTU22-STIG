@@ -3,7 +3,7 @@
 - name: LOW | UBTU-22-631015 | PATCH | Ubuntu 22.04 LTS must be configured such that Pluggable Authentication Module (PAM) prohibits the use of cached authentications after one day.
   when:
     - ubtu22stig_631015
-    - "'sssd' in ansible_facts.packages"
+    - "'sssd' in ansible_facts['packages']"
   tags:
     - UBTU-22-631015
     - CAT3
@@ -23,8 +23,12 @@
         read_whole_file: true
       register: discovered_security_cached_auth_timeout
 
-    - name: LOW | UBTU-22-412020 | PATCH | Ubuntu 22.04 LTS must be configured such that Pluggable Authentication Module (PAM) prohibits the use of cached authentications after one day. | comment out settings
-      when: "'/etc/security/limits.conf' not in item"
+    - name: LOW | UBTU-22-631015 | AUDIT | Ubuntu 22.04 LTS must be configured such that Pluggable Authentication Module (PAM) prohibits the use of cached authentications after one day. | check for sssd.conf
+      ansible.builtin.stat:
+        path: /etc/sssd/sssd.conf
+      register: discovered_sssd_conf
+
+    - name: LOW | UBTU-22-631015 | PATCH | Ubuntu 22.04 LTS must be configured such that Pluggable Authentication Module (PAM) prohibits the use of cached authentications after one day. | comment out settings
       ansible.builtin.lineinfile:
         path: "{{ item }}"
         backrefs: true
@@ -32,8 +36,25 @@
         line: '#offline_credentials_expiration \1'
       loop: "{{ discovered_security_cached_auth_timeout.files }}"
 
-    - name: LOW | UBTU-22-412020 | PATCH | Ubuntu 22.04 LTS must be configured such that Pluggable Authentication Module (PAM) prohibits the use of cached authentications after one day. | Ensure settings exist
+    # The sssd package ships no sssd.conf, and this role does not create one: a file
+    # holding only this key has no [sssd] section or domain and would be invalid.
+    # Harden the setting where a config already exists, warn where it does not.
+    - name: LOW | UBTU-22-631015 | PATCH | Ubuntu 22.04 LTS must be configured such that Pluggable Authentication Module (PAM) prohibits the use of cached authentications after one day. | Ensure settings exist
+      when: discovered_sssd_conf.stat.exists
       ansible.builtin.lineinfile:
         path: /etc/sssd/sssd.conf
         regexp: ^(#|)\s*offline_credentials_expiration\s*=\s*(?!1)
         line: offline_credentials_expiration = 1
+
+    - name: LOW | UBTU-22-631015 | AUDIT | Ubuntu 22.04 LTS must be configured such that Pluggable Authentication Module (PAM) prohibits the use of cached authentications after one day. | warning
+      when: not discovered_sssd_conf.stat.exists
+      block:
+        - name: LOW | UBTU-22-631015 | AUDIT | Ubuntu 22.04 LTS must be configured such that Pluggable Authentication Module (PAM) prohibits the use of cached authentications after one day. | Absent
+          ansible.builtin.debug:
+            msg: "Warning!! sssd is installed but /etc/sssd/sssd.conf is absent, so offline_credentials_expiration cannot be set. Configure sssd for your site."
+
+        - name: LOW | UBTU-22-631015 | AUDIT | Ubuntu 22.04 LTS must be configured such that Pluggable Authentication Module (PAM) prohibits the use of cached authentications after one day. | warn_count
+          vars:
+            warn_control_id: "LOW | UBTU-22-631015"
+          ansible.builtin.import_tasks:
+            file: warning_facts.yml

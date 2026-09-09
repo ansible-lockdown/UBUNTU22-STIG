@@ -11,11 +11,13 @@
     - V-260559
     - NIST800-53R4_SC-3
     - sudo
-  vars:
-    warn_control_id: 'HIGH | UBTU-22-432015'
   block:
     - name: HIGH | UBTU-22-432015 | AUDIT | Ubuntu 22.04 LTS must ensure only users who need access to security functions are part of sudo group. | get group member
-      ansible.builtin.shell: "grep sudo /etc/group | awk -F: '{print $NF}'"
+      ansible.builtin.shell: |
+        set -o pipefail
+        grep sudo /etc/group | awk -F: '{print $NF}'
+      args:
+        executable: "{{ ubtu22stig_shell_executable }}"
       changed_when: false
       failed_when: discovered_sudo_group_users.rc not in [ 0, 1 ]
       register: discovered_sudo_group_users
@@ -54,5 +56,7 @@
       when:
         - not ubtu22stig_disruption_high
         - discovered_sudo_group_members_not_required.stdout_list is defined
+      vars:
+        warn_control_id: 'HIGH | UBTU-22-432015'
       ansible.builtin.import_tasks:
         file: warning_facts.yml

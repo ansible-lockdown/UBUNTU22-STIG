@@ -1,7 +1,7 @@
 ---
 
 - name: "Post Audit | Run post_remediation {{ benchmark }} audit" # noqa name[template]
-  ansible.builtin.command: "{{ audit_conf_dir }}/run_audit.sh -v {{ audit_vars_path }} -f {{ audit_format }} -o {{ post_audit_outfile }} -g \"{{ group_names }}\""
+  ansible.builtin.command: "{{ audit_conf_dir }}/run_audit.sh -v {{ audit_vars_path }} -f {{ audit_format }} -m {{ audit_max_concurrent | default(50, true) }} -o {{ post_audit_outfile }} -g \"{{ group_names }}\""
   changed_when: true
   environment:
     AUDIT_BIN: "{{ audit_bin }}"
@@ -21,7 +21,11 @@
   when: audit_format == "json"
   block:
     - name: "Post Audit | Capture audit data if json format"
-      ansible.builtin.shell: grep -E '"summary-line.*Count:.*Failed' "{{ post_audit_outfile }}" | cut -d'"' -f4
+      ansible.builtin.shell: |
+        set -o pipefail
+        grep -E '"summary-line.*Count:.*Failed' "{{ post_audit_outfile }}" | cut -d'"' -f4
+      args:
+        executable: "{{ ubtu22stig_shell_executable }}"
       changed_when: false
       register: post_audit_summary_json
 
