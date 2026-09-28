@@ -1,7 +1,7 @@
 ---
 
 ## metadata for Audit benchmark
-benchmark_version: 'v2.8.0'
+benchmark_version: 'v2.9.0'
 
 ## Benchmark name used by auditing control role
 # The audit variable found at the base

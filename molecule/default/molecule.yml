@@ -1,5 +1,5 @@
 ---
-# Molecule configuration for the Ubuntu 22.04 LTS STIG role (V2R8)
+# Molecule configuration for the Ubuntu 22.04 LTS STIG role
 # https://molecule.readthedocs.io/en/latest/
 
 driver:

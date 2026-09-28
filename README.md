@@ -2,7 +2,7 @@
 
 ## Configure a UBUNTU22 based system to be compliant with DISA STIG
 
-This role is based on UBUNTU 22 DISA STIG: [Version 2, Rel 8](https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_CAN_Ubuntu_22-04_LTS_V2R8_STIG.zip).
+This role is based on UBUNTU 22 DISA STIG: [Version 2, Rel 9](https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_CAN_Ubuntu_22-04_LTS_V2R9_STIG.zip).
 
 ---
 

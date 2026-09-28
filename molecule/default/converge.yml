@@ -1,6 +1,6 @@
 ---
 
-# Molecule converge playbook for UB22-STIG
+# Molecule converge playbook for UB22-STIG.
 # Container-incompatible rules are handled by vars/is_container.yml (loaded
 # automatically by tasks/main.yml when the docker connection is detected and
 # system_is_container=true). Anything here is purely test-scaffolding the role
@@ -44,7 +44,7 @@
     - name: Set a real root password (some STIG rules verify /etc/shadow state)
       ansible.builtin.shell:
         cmd: |
-          set -e
+          set -e -o pipefail
           current=$(awk -F: 'BEGIN{p=""} $1=="root"{p=$2} END{print p}' /etc/shadow)
           if [ -z "$current" ] || [ "$current" = "!" ] || [ "$current" = "!!" ] || [ "$current" = "*" ]; then
             echo 'root:MoleculeTest123!' | chpasswd

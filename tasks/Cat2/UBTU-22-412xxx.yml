@@ -40,7 +40,7 @@
       failed_when: discovered_shell_tmout.rc not in [ 0, 1 ]
       register: discovered_shell_tmout
 
-    - name: MEDIUM | UBTU-22-412030 | AUDIT | Ubuntu 22.04 LTS must automatically exit interactive command shell user sessions after 15 minutes of inactivity. | remove current settings
+    - name: MEDIUM | UBTU-22-412030 | PATCH | Ubuntu 22.04 LTS must automatically exit interactive command shell user sessions after 15 minutes of inactivity. | remove current settings
       when:
         - discovered_shell_tmout.stdout is defined
         - "'/etc/profile.d/99-terminal_tmout.sh' not in item"
@@ -50,7 +50,7 @@
         replace: '#\1'
       loop: "{{ discovered_shell_tmout.stdout_lines }}"
 
-    - name: MEDIUM | UBTU-22-412030 | AUDIT | Ubuntu 22.04 LTS must automatically exit interactive command shell user sessions after 15 minutes of inactivity. | add profile file
+    - name: MEDIUM | UBTU-22-412030 | PATCH | Ubuntu 22.04 LTS must automatically exit interactive command shell user sessions after 15 minutes of inactivity. | add profile file
       ansible.builtin.template:
         src: etc/profile.d/99-terminal_tmout.sh.j2
         dest: /etc/profile.d/99-terminal_tmout.sh

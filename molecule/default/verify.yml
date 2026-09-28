@@ -10,22 +10,30 @@
 
   vars:
     benchmark: UBUNTU22-STIG
-    benchmark_version: v2.8.0
+    benchmark_version: v2.9.0
     audit_log_dir: /opt
     audit_format: json
 
   tasks:
     - name: Verify | Find pre-audit results file
-      ansible.builtin.shell: ls -t {{ audit_log_dir }}/{{ ansible_facts.hostname }}-{{ benchmark }}-{{ benchmark_version }}_pre_scan_*.{{ audit_format }} 2>/dev/null | head -1
+      ansible.builtin.shell: |
+        set -o pipefail
+        ls -t {{ audit_log_dir }}/{{ ansible_facts.hostname }}-{{ benchmark }}-{{ benchmark_version }}_pre_scan_*.{{ audit_format }} 2>/dev/null | head -1
       register: verify_pre_audit_file
       changed_when: false
       failed_when: false
+      args:
+        executable: /bin/bash
 
     - name: Verify | Find post-audit results file
-      ansible.builtin.shell: ls -t {{ audit_log_dir }}/{{ ansible_facts.hostname }}-{{ benchmark }}-{{ benchmark_version }}_post_scan_*.{{ audit_format }} 2>/dev/null | head -1
+      ansible.builtin.shell: |
+        set -o pipefail
+        ls -t {{ audit_log_dir }}/{{ ansible_facts.hostname }}-{{ benchmark }}-{{ benchmark_version }}_post_scan_*.{{ audit_format }} 2>/dev/null | head -1
       register: verify_post_audit_file
       changed_when: false
       failed_when: false
+      args:
+        executable: /bin/bash
 
     - name: Verify | Assert pre-audit results file exists
       ansible.builtin.assert:
@@ -40,24 +48,40 @@
         success_msg: "Post-audit results found: {{ verify_post_audit_file.stdout }}"
 
     - name: Verify | Capture pre-audit summary
-      ansible.builtin.shell: grep -E '"summary-line.*Count:.*Failed' "{{ verify_pre_audit_file.stdout }}" | cut -d'"' -f4
+      ansible.builtin.shell: |
+        set -o pipefail
+        grep -E '"summary-line.*Count:.*Failed' "{{ verify_pre_audit_file.stdout }}" | cut -d'"' -f4
       register: verify_pre_audit_summary
       changed_when: false
+      args:
+        executable: /bin/bash
 
     - name: Verify | Capture post-audit summary
-      ansible.builtin.shell: grep -E '"summary-line.*Count:.*Failed' "{{ verify_post_audit_file.stdout }}" | cut -d'"' -f4
+      ansible.builtin.shell: |
+        set -o pipefail
+        grep -E '"summary-line.*Count:.*Failed' "{{ verify_post_audit_file.stdout }}" | cut -d'"' -f4
       register: verify_post_audit_summary
       changed_when: false
+      args:
+        executable: /bin/bash
 
     - name: Verify | Extract pre-audit failed count
-      ansible.builtin.shell: echo "{{ verify_pre_audit_summary.stdout }}" | grep -oP 'Failed:\s+\K[0-9]+'
+      ansible.builtin.shell: |
+        set -o pipefail
+        echo "{{ verify_pre_audit_summary.stdout }}" | grep -oP 'Failed:\s+\K[0-9]+'
       register: verify_pre_failed_count
       changed_when: false
+      args:
+        executable: /bin/bash
 
     - name: Verify | Extract post-audit failed count
-      ansible.builtin.shell: echo "{{ verify_post_audit_summary.stdout }}" | grep -oP 'Failed:\s+\K[0-9]+'
+      ansible.builtin.shell: |
+        set -o pipefail
+        echo "{{ verify_post_audit_summary.stdout }}" | grep -oP 'Failed:\s+\K[0-9]+'
       register: verify_post_failed_count
       changed_when: false
+      args:
+        executable: /bin/bash
 
     - name: Verify | Display audit comparison
       ansible.builtin.debug:

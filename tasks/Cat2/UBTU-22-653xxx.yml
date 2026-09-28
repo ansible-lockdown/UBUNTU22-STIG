@@ -224,7 +224,7 @@
       changed_when: false
       register: discovered_auditd_logfile_dir
 
-    - name: MEDIUM | UBTU-22-653060 | AUDIT | Ubuntu 22.04 LTS must be configured so that the audit log directory is not write-accessible by unauthorized users.
+    - name: MEDIUM | UBTU-22-653060 | PATCH | Ubuntu 22.04 LTS must be configured so that the audit log directory is not write-accessible by unauthorized users.
       ansible.builtin.file:
         path: "{{ discovered_auditd_logfile_dir.stdout | dirname }}"
         state: directory

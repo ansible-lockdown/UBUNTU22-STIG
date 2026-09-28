@@ -1,14 +1,5 @@
 # Ubuntu22STIG
 
-## 2026 August - Public repo hygiene
-
-- removed `.github/workflows/export_badges_private.yml`. It fires only on a push to `latest` and
-  needs `secrets.BADGE_PUSH_TOKEN`; this repository uses `devel` and `main` and has no `latest`
-  branch, so the workflow could never run here and a manual dispatch would fail on the missing
-  secret. It also carries no visibility gate, unlike its counterpart
-  `export_badges_public.yml`, which self-gates on `github.repository_visibility == 'public'` and is
-  retained.
-
 ## 2026 August - Contributing guide and README refresh
 
 - replaced `CONTRIBUTING.rst` with `CONTRIBUTING.md`, carrying the current Ansible-Lockdown
@@ -20,7 +11,7 @@
 - `README.md`: removed the decorative emoji from headings, and switched the social badge from
   `twitter.com` to `x.com`
 
-## v2r8 alignment (never-imported controls, CI gates, company rename, audit source)
+## v2r9 alignment (never-imported controls, CI gates, company rename)
 
 No benchmark version change.
 
@@ -32,23 +23,52 @@ No benchmark version change.
 - deliberately not renamed: existing entries in this file, which record what was true when written
 - new CI, both secret-free and running in front of the existing pipelines: `.github/workflows/molecule.yml` (container smoke test, the `default` scenario) and `.github/workflows/repo_qa.yml` (the Ansible-Lockdown QA checker pinned to `2.8.4`, run with `--strict` against `.qa_baseline.json`)
 - `.gitignore` no longer ignores `.github/`. The directory was ignored while four workflow files were tracked, so any newly added workflow silently failed to stage
-- `molecule/default/converge.yml`: dropped the stale V2R7 release marker from the comment header rather than bumping it, since a hardcoded release in a comment goes stale every cycle
 - removed `templates/etc/aide.conf.j2` and `templates/etc/dconf/db/local.d/00-screensaver.j2`. Nothing deployed either one: the AIDE controls line-edit `/etc/aide/aide.conf` and the screensaver path is written by `community.general.ini_file`
 - `tasks/Cat3/UBTU-22-411xxx.yml`: spaced the filter pipes in the faillock `insertafter`/`insertbefore` expressions
 - README: removed the emoticons from the section headings and pointed the X badge image at `x.com`
-- `tasks/Cat2/main.yml` imported `UBTU-22-611xxx.yml` twice under an identical task name, so every 611xxx password task ran twice. One copy removed
-- `handlers/main.yml`: the ssh restart handler targeted `sshd`. The unit shipped by `openssh-server` on Ubuntu 22.04 is `ssh.service`; `sshd.service` exists only as an alias. Now `ssh`
-- the audit binary source moved from the `goss-org` project at `v0.4.8` to the `krameff` fork at `v0.5.0`, with both architecture checksums updated. Prose references in `README.md` and `molecule/README_Molecule_QuickStart.md` were updated with it
-- `set -o pipefail` added to all 52 shell tasks, none of which had it. A shell task whose pipe fails now fails the task instead of passing silently
-- PAM is now configured through the pam-auth-update profile source instead of the generated `/etc/pam.d/common-*` files, so `UBTU-22-611060` (CAT I, no null passwords) and `UBTU-22-611055` (sha512, `rounds=100000`) survive a regeneration. New `templates/usr/share/pam-configs/pam_unix.j2`, built from the Ubuntu 22.04 stock profile with `nullok` removed and the algorithm and rounds templated; new `ubtu22stig_passwd_rounds`, `ubtu22stig_pam_confd_dir` and `ubtu22stig_pam_pwunix_file`; new `Pam_auth_update_pwunix` handler using `--enable` rather than `--force`. The `nullok` `replace`, the hardcoded rounds `lineinfile` and the role's only `community.general.pamd` call are retired. Previously the settings were removed only from the generated files while the profile source kept `nullok`, so any full regeneration reverted a CAT I control <!-- pragma: allowlist secret -->
+- PAM is now configured through the pam-auth-update profile source instead of the generated `/etc/pam.d/common-*` files, so `UBTU-22-611060` (CAT I, no null passwords) and `UBTU-22-611055` (sha512, `rounds=100000`) survive a regeneration. New `templates/usr/share/pam-configs/pam_unix.j2`, built from the Ubuntu 22.04 stock profile with `nullok` removed and the algorithm and rounds templated; new `ubtu22stig_passwd_rounds`, `ubtu22stig_pam_confd_dir` and `ubtu22stig_pam_pwunix_file`; new `Pam_auth_update_pwunix` handler using `--enable` rather than `--force`. The `nullok` `replace`, the hardcoded rounds `lineinfile` and the role's only `community.general.pamd` call are retired. Previously the settings were removed only from the generated files while the profile source kept `nullok`, so any full regeneration reverted a CAT I control
 - `molecule/default/verify.yml` now regenerates the PAM stack and asserts both controls survive it, so a future change that reintroduces the generated-file-only approach fails the suite
 - the role defaults moved from a single `defaults/main.yml` to a `defaults/main/` directory holding `main.yml` and `audit.yml`, and every audit variable is now consolidated in `defaults/main/audit.yml`. `vars/audit.yml` is removed along with the `include_vars` that loaded it. This is a variable-precedence change and that is the point: those settings were previously loaded by `include_vars`, which outranks play and host vars, so only extra-vars could override them. They are now ordinary role defaults, so inventory and play vars work. Verified by setting `audit_git_version` from a play var and confirming it takes effect, which it could not before
 - the Repo QA Checker pin moved to `2.8.4`, which is the first release that accepts a `defaults/main/` directory. Earlier versions look only for `defaults/main.yml` and abort before running a single check
 
 
-## v2r8 alignment (code quality, no benchmark change)
+## benchmark_v2r9 (V2R9 alignment - STIG V2R9, 01 July 2026)
 
-Repo hygiene and pattern alignment (no rule additions, removals, or content changes):
+V2R8 -> V2R9 is updates-only (188 rules unchanged; 0 added, 0 removed; 1 severity change; 11 SV-* revision drifts).
+
+V2R9 benchmark alignment:
+- defaults/main.yml: benchmark_version v2.8.0 -> v2.9.0
+- README.md: V2R8 reference + V2R8 download URL -> V2R9
+- molecule/default/molecule.yml: dropped the release marker from the comment header, since a hardcoded version there goes stale every cycle
+- molecule/default/verify.yml: benchmark_version v2.8.0 -> v2.9.0
+- molecule/default/converge.yml: dropped the stale V2R7 release marker from the comment header rather than bumping it, for the same reason
+
+Severity change:
+- UBTU-22-215040: HIGH (CAT1) -> MEDIUM (CAT2). Moved task Cat1/UBTU-22-21xxxx.yml -> Cat2/UBTU-22-215xxx.yml; dropped nfs-common from the package removal (V2R9 finding covers nfs-kernel-server only); CAT1 tag -> CAT2.
+
+Functional updates required by V2R9 Fix/Check text:
+- UBTU-22-255025..255065: aligned the Restart_ssh handler to `systemctl restart ssh` (Ubuntu canonical unit) per the updated V2R9 SSH restart command.
+- UBTU-22-271025: title 15 -> 10 minutes of inactivity (idle-delay default already 600s / 10 minutes).
+- UBTU-22-432010: V2R9 removed NOPASSWD from the Check text (no remediation change).
+
+SV-* revision-suffix updates (11 rules content-edited in V2R9):
+- UBTU-22-215040: SV-279937r1156364_rule -> SV-279937r1208676_rule
+- UBTU-22-255025: SV-260526r991591_rule -> SV-260526r1208678_rule
+- UBTU-22-255030: SV-260527r986275_rule -> SV-260527r1208681_rule
+- UBTU-22-255035: SV-260528r970703_rule -> SV-260528r1208803_rule
+- UBTU-22-255040: SV-260529r991589_rule -> SV-260529r1208685_rule
+- UBTU-22-255045: SV-260530r991589_rule -> SV-260530r1208687_rule
+- UBTU-22-255050: SV-260531r1155212_rule -> SV-260531r1208689_rule
+- UBTU-22-255060: SV-260533r958408_rule -> SV-260533r1208690_rule
+- UBTU-22-255065: SV-260534r958510_rule -> SV-260534r1208804_rule
+- UBTU-22-271025: SV-260538r1069119_rule -> SV-260538r1208695_rule
+- UBTU-22-432010: SV-260558r1155216_rule -> SV-260558r1208696_rule
+
+Code quality:
+- Converted all ansible.builtin.shell tasks to the `set -o pipefail` layout (52 role tasks + 7 molecule scaffolding tasks) and removed `risky-shell-pipe` from the .ansible-lint skip-list; ansible-lint is now clean of the rule repo-wide.
+- Relabeled 10 state-modifying tasks from AUDIT to PATCH across UBTU-22-412030, 611055, 653060, 214010, and 411045 (read-only discovery tasks keep AUDIT), restoring the audit/patch naming contract.
+- tasks/Cat2/main.yml: removed a duplicate `UBTU-22-611xxx.yml` import that was executing the 611xxx tasks twice.
+- molecule: dropped the hardcoded benchmark version from the `molecule.yml` and `converge.yml` header comments (no functional change).
 - handlers: removed orphaned handlers never referenced by any notify/listen.
 - Converted `ansible_facts.<key>` references to bracket notation `ansible_facts['<key>']`.
 - Moved the audit binary/content configuration variables into `vars/audit.yml`; added `audit_bin_validate_certs` and enabled TLS validation on the audit binary download.
@@ -56,6 +76,7 @@ Repo hygiene and pattern alignment (no rule additions, removals, or content chan
 - Renamed the goss audit-vars template to `templates/lockdown_audit.yml.j2`.
 - Added `.molecule/` to `.gitignore`.
 - Bumped `actions/checkout` to v7 in the CI workflows.
+- Migrated the goss audit binary source to the krameff fork and bumped it to v0.5.0 (`audit_bin_url`, `release`, and AMD64/ARM64 checksums in `vars/audit.yml`; README/QuickStart references).
 
 ## benchmark_v2r8 (V2R8 alignment - STIG V2R8, 01 April 2026)
 
@@ -218,23 +239,7 @@ CAT3
 - UBTU-22-412015 - Removed
 - UBTU-22-653020
 - UBTU-22-653035 conditional fix
-
-# Based on STIG v2r2 - final updates
-
-- pre-commit updates
-- workflow tidy up
-- #21 addressed thanks to @kurtCorsha
-- #23 addressed thanks to @kurtCorsha
-
 ## Based on STIG v2r2
-
-### 1.0.0
-
-Renaming of prefix on vars
-UFW fix on controls section UBTU-22-251xxx
-
-## Based on STIG v2r2
-
 ### 1.0.0
 
 Updated lint configs
