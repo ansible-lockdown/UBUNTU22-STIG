@@ -7,6 +7,7 @@
     - CAT3
     - CCI-001851
     - SRG-OS-000342-GPOS-00133
+    - SRG-OS-000479-GPOS-00224
     - SV-260592r1101709_rule
     - V-260592
     - NIST800-53R4_AU-4
@@ -90,7 +91,7 @@
           - "Logfile: {{ discovered_auditd_logfile.stdout }}"
           - "Disk Space remaining: {{ audit_filesystem_space_left }}MB"
 
-    - name: "LOW | UBTU-22-653035| WARN | Ubuntu 22.04 LTS must allocate audit record storage capacity to store at least one weeks' worth of audit records, when audit records are not immediately sent to a central audit record storage facility."
+    - name: "LOW | UBTU-22-653035 | WARN | Ubuntu 22.04 LTS must allocate audit record storage capacity to store at least one weeks' worth of audit records, when audit records are not immediately sent to a central audit record storage facility."
       vars:
         warn_control_id: "LOW | UBTU-22-653035"
       ansible.builtin.import_tasks:

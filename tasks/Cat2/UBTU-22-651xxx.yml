@@ -15,7 +15,7 @@
     name: aide
     state: present
 
-- name: MEDIUM | UBTU-22-651015 | PATCH | Ubuntu 22.04 LTS must configure AIDE to perform file integrity checking on the file system.
+- name: MEDIUM | UBTU-22-651015 | PATCH | Ubuntu 22.04 LTS must configure Advanced Intrusion Detection Environment (AIDE) to perform file integrity checking on the file system.
   when:
     - ubtu22stig_651015
     - ubtu22stig_disruption_high
@@ -30,7 +30,7 @@
     - NIST800-53R4_SI-6
     - aide
   block:
-    - name: MEDIUM | UBTU-22-651015 | AUDIT | Ubuntu 22.04 LTS must configure AIDE to perform file integrity checking on the file system. | Get DB file
+    - name: MEDIUM | UBTU-22-651015 | AUDIT | Ubuntu 22.04 LTS must configure Advanced Intrusion Detection Environment (AIDE) to perform file integrity checking on the file system. | Get DB file
       ansible.builtin.shell: |
         set -o pipefail
         grep -E ^database_in /etc/aide/aide.conf | cut -d ':' -f2
@@ -40,19 +40,19 @@
       failed_when: discovered_aide_db_file.rc not in [ 0, 1 ]
       register: discovered_aide_db_file
 
-    - name: MEDIUM | UBTU-22-651015 | AUDIT | Ubuntu 22.04 LTS must configure AIDE to perform file integrity checking on the file system. | Get DB file
+    - name: MEDIUM | UBTU-22-651015 | AUDIT | Ubuntu 22.04 LTS must configure Advanced Intrusion Detection Environment (AIDE) to perform file integrity checking on the file system. | Get DB file
       ansible.builtin.stat:
         path: "{{ discovered_aide_db_file.stdout }}"
       register: discovered_aide_db_present
 
-    - name: MEDIUM | UBTU-22-651015 | PATCH | Ubuntu 22.04 LTS must configure AIDE to perform file integrity checking on the file system. | Run aide check
+    - name: MEDIUM | UBTU-22-651015 | PATCH | Ubuntu 22.04 LTS must configure Advanced Intrusion Detection Environment (AIDE) to perform file integrity checking on the file system. | Run aide check
       when: discovered_aide_db_present.stat.exists
       ansible.builtin.command: aide -c /etc/aide/aide.conf --check
       changed_when: false
       failed_when: discovered_aide_check.rc not in [ 0, 7 ]
       register: discovered_aide_check
 
-    - name: MEDIUM | UBTU-22-651015 | PATCH | Ubuntu 22.04 LTS must configure AIDE to perform file integrity checking on the file system. | Initiate aide DB
+    - name: MEDIUM | UBTU-22-651015 | PATCH | Ubuntu 22.04 LTS must configure Advanced Intrusion Detection Environment (AIDE) to perform file integrity checking on the file system. | Initiate aide DB
       when: not discovered_aide_db_present.stat.exists or discovered_aide_check.rc != 0
       ansible.builtin.command: aideinit
       changed_when: true

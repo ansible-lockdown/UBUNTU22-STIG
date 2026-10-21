@@ -1,6 +1,6 @@
 ---
 
-- name: HIGH | UBTU-22-671010 | PATCH | Ubuntu 22.04 LTS must implement NIST FIPS-validated cryptography to protect classified information
+- name: "HIGH | UBTU-22-671010 | PATCH | Ubuntu 22.04 LTS must implement NIST FIPS-validated cryptography to protect classified information and for the following: To provision digital signatures, to generate cryptographic hashes, and to protect unclassified information requiring confidentiality and cryptographic protection in accordance with applicable federal laws, Executive Orders, directives, policies, regulations, and standards."
   when: ubtu22stig_671010
   tags:
     - UBTU-22-671010
@@ -13,7 +13,7 @@
     - NIST800-53R4_SC-13
     - fips
   block:
-    - name: HIGH | UBTU-22-671010 | PATCH | Ubuntu 22.04 LTS must implement NIST FIPS-validated cryptography to protect classified information | Enable FIPS
+    - name: "HIGH | UBTU-22-671010 | PATCH | Ubuntu 22.04 LTS must implement NIST FIPS-validated cryptography to protect classified information and for the following: To provision digital signatures, to generate cryptographic hashes, and to protect unclassified information requiring confidentiality and cryptographic protection in accordance with applicable federal laws, Executive Orders, directives, policies, regulations, and standards. | Enable FIPS"
       when:
         - ubtu22stig_subscribed
         - ubtu22stig_disruption_high
@@ -24,14 +24,14 @@
         line: 1
         mode: 'ugo-wx'
 
-    - name: HIGH | UBTU-22-671010 | WARN | Ubuntu 22.04 LTS must implement NIST FIPS-validated cryptography to protect classified information | Warning
+    - name: "HIGH | UBTU-22-671010 | WARN | Ubuntu 22.04 LTS must implement NIST FIPS-validated cryptography to protect classified information and for the following: To provision digital signatures, to generate cryptographic hashes, and to protect unclassified information requiring confidentiality and cryptographic protection in accordance with applicable federal laws, Executive Orders, directives, policies, regulations, and standards. | Warning"
       when:
         - not ubtu22stig_subscribed
         - not ubtu22stig_disruption_high
       ansible.builtin.debug:
         msg: "Warning!! - Unable carry out UBTU-22-671010 for FIPS enablement, System is not subscribed"
 
-    - name: HIGH | UBTU-22-671010 | WARN | Ubuntu 22.04 LTS must implement NIST FIPS-validated cryptography to protect classified information | Warning
+    - name: "HIGH | UBTU-22-671010 | WARN | Ubuntu 22.04 LTS must implement NIST FIPS-validated cryptography to protect classified information and for the following: To provision digital signatures, to generate cryptographic hashes, and to protect unclassified information requiring confidentiality and cryptographic protection in accordance with applicable federal laws, Executive Orders, directives, policies, regulations, and standards. | Warning"
       when:
         - not ubtu22stig_subscribed
         - not ubtu22stig_disruption_high
