@@ -10,22 +10,30 @@
 
   vars:
     benchmark: UBUNTU22-STIG
-    benchmark_version: v2.8.0
+    benchmark_version: v2.9.0
     audit_log_dir: /opt
     audit_format: json
 
   tasks:
     - name: Verify | Find pre-audit results file
-      ansible.builtin.shell: ls -t {{ audit_log_dir }}/{{ ansible_facts.hostname }}-{{ benchmark }}-{{ benchmark_version }}_pre_scan_*.{{ audit_format }} 2>/dev/null | head -1
+      ansible.builtin.shell: |
+        set -o pipefail
+        ls -t {{ audit_log_dir }}/{{ ansible_facts.hostname }}-{{ benchmark }}-{{ benchmark_version }}_pre_scan_*.{{ audit_format }} 2>/dev/null | head -1
       register: verify_pre_audit_file
       changed_when: false
       failed_when: false
+      args:
+        executable: /bin/bash
 
     - name: Verify | Find post-audit results file
-      ansible.builtin.shell: ls -t {{ audit_log_dir }}/{{ ansible_facts.hostname }}-{{ benchmark }}-{{ benchmark_version }}_post_scan_*.{{ audit_format }} 2>/dev/null | head -1
+      ansible.builtin.shell: |
+        set -o pipefail
+        ls -t {{ audit_log_dir }}/{{ ansible_facts.hostname }}-{{ benchmark }}-{{ benchmark_version }}_post_scan_*.{{ audit_format }} 2>/dev/null | head -1
       register: verify_post_audit_file
       changed_when: false
       failed_when: false
+      args:
+        executable: /bin/bash
 
     - name: Verify | Assert pre-audit results file exists
       ansible.builtin.assert:
@@ -40,24 +48,40 @@
         success_msg: "Post-audit results found: {{ verify_post_audit_file.stdout }}"
 
     - name: Verify | Capture pre-audit summary
-      ansible.builtin.shell: grep -E '"summary-line.*Count:.*Failed' "{{ verify_pre_audit_file.stdout }}" | cut -d'"' -f4
+      ansible.builtin.shell: |
+        set -o pipefail
+        grep -E '"summary-line.*Count:.*Failed' "{{ verify_pre_audit_file.stdout }}" | cut -d'"' -f4
       register: verify_pre_audit_summary
       changed_when: false
+      args:
+        executable: /bin/bash
 
     - name: Verify | Capture post-audit summary
-      ansible.builtin.shell: grep -E '"summary-line.*Count:.*Failed' "{{ verify_post_audit_file.stdout }}" | cut -d'"' -f4
+      ansible.builtin.shell: |
+        set -o pipefail
+        grep -E '"summary-line.*Count:.*Failed' "{{ verify_post_audit_file.stdout }}" | cut -d'"' -f4
       register: verify_post_audit_summary
       changed_when: false
+      args:
+        executable: /bin/bash
 
     - name: Verify | Extract pre-audit failed count
-      ansible.builtin.shell: echo "{{ verify_pre_audit_summary.stdout }}" | grep -oP 'Failed:\s+\K[0-9]+'
+      ansible.builtin.shell: |
+        set -o pipefail
+        echo "{{ verify_pre_audit_summary.stdout }}" | grep -oP 'Failed:\s+\K[0-9]+'
       register: verify_pre_failed_count
       changed_when: false
+      args:
+        executable: /bin/bash
 
     - name: Verify | Extract post-audit failed count
-      ansible.builtin.shell: echo "{{ verify_post_audit_summary.stdout }}" | grep -oP 'Failed:\s+\K[0-9]+'
+      ansible.builtin.shell: |
+        set -o pipefail
+        echo "{{ verify_post_audit_summary.stdout }}" | grep -oP 'Failed:\s+\K[0-9]+'
       register: verify_post_failed_count
       changed_when: false
+      args:
+        executable: /bin/bash
 
     - name: Verify | Display audit comparison
       ansible.builtin.debug:
@@ -91,6 +115,41 @@
       ansible.builtin.slurp:
         src: /etc/pam.d/common-password
       register: verify_common_password_after
+
+    - name: Verify | Re-read common-account after regeneration
+      ansible.builtin.slurp:
+        src: /etc/pam.d/common-account
+      register: verify_common_account_after
+
+    # UBTU-22-411045 and UBTU-22-412010 are also written as pam-auth-update profiles. Literal
+    # expectations again: delay=4000000 is the STIG floor. The patterns are YAML single-quoted
+    # so their backslashes reach the regex engine unchanged.
+    - name: Verify | UBTU-22-411045 survives a pam-auth-update regeneration
+      vars:
+        verify_auth: "{{ verify_common_auth_after.content | b64decode }}"
+        verify_account: "{{ verify_common_account_after.content | b64decode }}"
+        verify_preauth_re: '(?m)^auth\s+requisite\s+pam_faillock\.so\s+preauth\b'
+        verify_authfail_re: '(?m)^auth\s+\[default=die\]\s+pam_faillock\.so\s+authfail\b'
+        verify_authsucc_before_deny_re: '(?m)^auth\s+sufficient\s+pam_faillock\.so\s+authsucc\b.*\n(?:\s*(?:#.*)?\n)*auth\s+requisite\s+pam_deny\.so\b'
+        verify_account_re: '(?m)^account\s+required\s+pam_faillock\.so\b'
+      ansible.builtin.assert:
+        that:
+          - verify_auth is search(verify_preauth_re)
+          - verify_auth is search(verify_authfail_re)
+          - verify_auth is search(verify_authsucc_before_deny_re)
+          - verify_account is search(verify_account_re)
+        fail_msg: "The pam_faillock lines did not survive pam-auth-update, or authsucc is not directly before pam_deny"
+        success_msg: "UBTU-22-411045 survives regeneration"
+
+    - name: Verify | UBTU-22-412010 survives a pam-auth-update regeneration
+      vars:
+        verify_auth: "{{ verify_common_auth_after.content | b64decode }}"
+        verify_faildelay_re: '(?m)^auth\s+required\s+pam_faildelay\.so\s+delay=4000000\s*$'
+      ansible.builtin.assert:
+        that:
+          - verify_auth is search(verify_faildelay_re)
+        fail_msg: "pam_faildelay delay=4000000 did not survive pam-auth-update"
+        success_msg: "UBTU-22-412010 survives regeneration"
 
     - name: Verify | UBTU-22-611060 survives a pam-auth-update regeneration
       ansible.builtin.assert:

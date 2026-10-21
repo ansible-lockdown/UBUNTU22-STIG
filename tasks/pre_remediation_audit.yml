@@ -56,9 +56,9 @@
       register: discovered_goss_available
 
     - name: "Pre Audit Setup | If audit ensure goss is available"
-      when: not discovered_goss_available.stat.exists
       ansible.builtin.assert:
-        msg: "Audit has been selected: unable to find goss binary at {{ audit_bin }}"
+        that: discovered_goss_available.stat.exists
+        msg: "Audit has been selected: unable to find the audit binary at {{ audit_bin }}"
 
 - name: "Pre Audit Setup | Copy ansible default vars values to test audit"
   tags:

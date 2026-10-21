@@ -37,7 +37,7 @@ on:  # yamllint disable-line rule:truthy
       - 'collections/**'
       - 'site.yml'
       - '.github/workflows/molecule.yml'
-  # collections/requirements.yml installs from git with no version pins, and the test image
+  # collections/requirements.yml sets only minimum collection versions, and the test image
   # tracks a moving `:latest` tag, so the substrate shifts underneath this suite between
   # commits. A weekly run surfaces that drift as its own red build rather than as a mystery
   # failure on whatever unrelated PR is open at the time.
@@ -66,10 +66,10 @@ jobs:
         # second scenario later needs no restructuring of this job.
         scenario: [default]
     env:
-      # molecule/default/molecule.yml deliberately leaves the container platform unset so
-      # Docker picks the native architecture, so there is no platform override to set here.
       PY_COLORS: "1"
       ANSIBLE_FORCE_COLOR: "1"
+      # Overrides the linux/arm64 default in molecule.yml - GitHub-hosted runners are amd64.
+      MOLECULE_DOCKER_PLATFORM: linux/amd64
 
     steps:
       - name: Check out repository
@@ -88,15 +88,12 @@ jobs:
           ansible --version
 
       # The molecule docker driver requires community.docker and ansible.posix, and
-      # collections/requirements.yml (installed by molecule's own dependency step) does not
-      # carry community.docker. ansible-core ships no bundled collections, so install both
-      # here or `molecule create` fails before it reaches the role.
+      # collections/requirements.yml (installed by molecule's own dependency step) does not carry
+      # community.docker. ansible-core ships no bundled collections, so install both here or
+      # `molecule create` fails before it reaches the role.
       - name: Install collections required by the molecule docker driver
         run: ansible-galaxy collection install community.docker ansible.posix
 
-      # No separate ansible-galaxy step for the role's own collections: the scenario runs
-      # `dependency` as the first step of the create sequence, so they install the same way
-      # here and on a developer's machine.
       - name: Create container
         run: molecule create -s ${{ matrix.scenario }}
 
@@ -105,16 +102,19 @@ jobs:
           molecule converge -s ${{ matrix.scenario }} -- \
             --extra-vars 'audit_output_destination=${{ github.workspace }}/molecule_audit_output/'
 
-      # Deliberately no idempotence step: converge #2 for this role is a known non-zero-change
-      # run (the harness tasks alone - pre/post audit scans and the fetch - change every time),
-      # so gating on it would be red for reasons that are not regressions.
+      # Converge #2 changes nothing once the audit scans, the audit fetch and the two facts
+      # templates are excluded with the molecule-idempotence-notest tag: each of those writes a
+      # timestamp or a fresh scan result on every run by design. Any other change is a regression.
+      - name: Idempotence
+        run: molecule idempotence -s ${{ matrix.scenario }}
+
       - name: Verify
         run: molecule verify -s ${{ matrix.scenario }}
 
-      # Goss results are published for inspection, not used as a gate: post-scan failures are
+      # Audit results are published for inspection, not used as a gate: post-scan failures are
       # expected in a container (SSH, user-state, kernel and mount controls). The real gate is
       # converge finishing failed=0; verify.yml is a narrow regression check on top of that.
-      - name: Upload goss audit output
+      - name: Upload audit output
         if: always()
         uses: actions/upload-artifact@v7
         with:
@@ -122,6 +122,14 @@ jobs:
           path: molecule_audit_output/
           if-no-files-found: ignore
 
+      # Guarded on molecule being present: when an earlier step fails before molecule is
+      # installed, an unguarded destroy exits 127 and that misleading error is what surfaces instead
+      # of the real one.
       - name: Destroy container
         if: always()
-        run: molecule destroy -s ${{ matrix.scenario }}
+        run: |
+          if command -v molecule >/dev/null 2>&1; then
+            molecule destroy -s ${{ matrix.scenario }}
+          else
+            echo "molecule was never installed; nothing to destroy."
+          fi

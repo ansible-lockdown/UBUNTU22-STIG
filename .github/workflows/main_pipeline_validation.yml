@@ -26,6 +26,11 @@
   jobs:
     # This workflow contains a single job that tests the playbook
     playbook-test:
+      # Fork pull requests are skipped, not run. This job checks out the PR head on the self-hosted
+      # runner with AWS credentials, and actions/checkout refuses fork code under pull_request_target
+      # because running it in that trusted context is a "pwn request". Skipping shows the check as
+      # skipped rather than failed. A fork change that needs this test goes through a maintainer branch.
+      if: github.event_name != 'pull_request_target' || github.event.pull_request.head.repo.full_name == github.repository
       # The type of runner that the job will run on
       runs-on: self-hosted
       env:

@@ -1,0 +1,6 @@
+Name: Delay after a failed logon attempt (pam_faildelay)
+Default: yes
+Priority: 1025
+Auth-Type: Primary
+Auth:
+	required	pam_faildelay.so delay={{ ubtu22stig_faildelay }}

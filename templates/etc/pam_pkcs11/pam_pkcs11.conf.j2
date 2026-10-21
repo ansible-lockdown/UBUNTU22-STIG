@@ -9,6 +9,7 @@ pam_pkcs11 {
   use_pkcs11_module = opensc;
   pkcs11_module opensc {
     module = /usr/lib/x86_64-linux-gnu/opensc-pkcs11.so;
+    cert_policy = ca,signature,ocsp_on,crl_auto;
   }
   mapper pwent {
     module = internal;

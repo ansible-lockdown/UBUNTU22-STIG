@@ -1,6 +1,6 @@
 ---
 
-# Molecule converge playbook for UB22-STIG
+# Molecule converge playbook for UB22-STIG.
 # Container-incompatible rules are handled by vars/is_container.yml (loaded
 # automatically by tasks/main.yml when the docker connection is detected and
 # system_is_container=true). Anything here is purely test-scaffolding the role
@@ -14,37 +14,24 @@
     # `role_name` is reserved in Ansible - use underscore-prefixed local name.
     _molecule_role_name: "{{ lookup('env', 'MOLECULE_PROJECT_DIRECTORY') | basename }}"
     ansible_user: root
-    system_is_container: true
 
-    # Test-scaffolding: pretend we already gathered the prerequisites
-    ubtu22stig_skip_for_test: true
     setup_audit: true
     run_audit: true
     fetch_audit_output: true
     audit_output_destination: "{{ lookup('env', 'MOLECULE_PROJECT_DIRECTORY') }}/../../_temp_fetched_audits/"
     ubtu22stig_disruption_high: true
 
-    # Pro subscription is unavailable in test containers; pretend we have it
-    # so the FIPS/Pro-gated rules don't assert-fail on UBTU-22-211000.
-    ubtu22stig_subscribed: true
-
-    # Container-incompatible rules are now centralized in vars/is_container.yml
-    # (loaded automatically when system_is_container=true). The previous
-    # ubtu22stig_211000 / ubtu22stig_291015 overrides here were migrated there.
-
-    # The role's bootloader assertion runs only on non-container hosts, but
-    # set both anyway so any stray check passes.
-    ubtu22stig_set_bootloader_password: false
-    ubtu22stig_bootloader_password_hash: "grub.pbkdf2.sha512.10000.DEADBEEF.DEADBEEF"  # pragma: allowlist secret
-
-    # Reboot is meaningless inside a container.
-    change_requires_reboot: false
+    # Container-incompatible rules are centralized in vars/is_container.yml, which
+    # tasks/main.yml loads when it detects the docker connection. Pro subscription,
+    # the bootloader password and the reboot need no override here: the role
+    # discovers ubtu22stig_subscribed itself, and skip_reboot and
+    # ubtu22stig_set_bootloader_password already default to the container-safe values.
 
   pre_tasks:
     - name: Set a real root password (some STIG rules verify /etc/shadow state)
       ansible.builtin.shell:
         cmd: |
-          set -e
+          set -e -o pipefail
           current=$(awk -F: 'BEGIN{p=""} $1=="root"{p=$2} END{print p}' /etc/shadow)
           if [ -z "$current" ] || [ "$current" = "!" ] || [ "$current" = "!!" ] || [ "$current" = "*" ]; then
             echo 'root:MoleculeTest123!' | chpasswd

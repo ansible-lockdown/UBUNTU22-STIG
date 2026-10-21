@@ -6,6 +6,7 @@
     - UBTU-22-412025
     - CAT2
     - CCI-000057
+    - CCI-000058
     - CCI-000060
     - SRG-OS-000030-GPOS-00011
     - SRG-OS-000031-GPOS-00012
@@ -16,14 +17,14 @@
   ansible.builtin.package:
     name: vlock
     state: present
+  notify: Fix_library_file_group
 
 - name: MEDIUM | UBTU-22-412030 | PATCH | Ubuntu 22.04 LTS must automatically exit interactive command shell user sessions after 15 minutes of inactivity.
   when: ubtu22stig_412030
   tags:
     - UBTU-22-412030
     - CAT2
-    - CCI-000057
-    - CCI-000060
+    - CCI-002361
     - SRG-OS-000279-GPOS-00109
     - SV-260554r958636_rule
     - V-260554
@@ -40,7 +41,7 @@
       failed_when: discovered_shell_tmout.rc not in [ 0, 1 ]
       register: discovered_shell_tmout
 
-    - name: MEDIUM | UBTU-22-412030 | AUDIT | Ubuntu 22.04 LTS must automatically exit interactive command shell user sessions after 15 minutes of inactivity. | remove current settings
+    - name: MEDIUM | UBTU-22-412030 | PATCH | Ubuntu 22.04 LTS must automatically exit interactive command shell user sessions after 15 minutes of inactivity. | remove current settings
       when:
         - discovered_shell_tmout.stdout is defined
         - "'/etc/profile.d/99-terminal_tmout.sh' not in item"
@@ -50,7 +51,7 @@
         replace: '#\1'
       loop: "{{ discovered_shell_tmout.stdout_lines }}"
 
-    - name: MEDIUM | UBTU-22-412030 | AUDIT | Ubuntu 22.04 LTS must automatically exit interactive command shell user sessions after 15 minutes of inactivity. | add profile file
+    - name: MEDIUM | UBTU-22-412030 | PATCH | Ubuntu 22.04 LTS must automatically exit interactive command shell user sessions after 15 minutes of inactivity. | add profile file
       ansible.builtin.template:
         src: etc/profile.d/99-terminal_tmout.sh.j2
         dest: /etc/profile.d/99-terminal_tmout.sh

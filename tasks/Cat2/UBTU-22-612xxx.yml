@@ -7,6 +7,11 @@
     - CAT2
     - CCI-000765
     - CCI-000766
+    - CCI-000767
+    - CCI-000768
+    - CCI-001948
+    - CCI-004046
+    - CCI-004047
     - SRG-OS-000375-GPOS-00160
     - SRG-OS-000105-GPOS-00052
     - SRG-OS-000106-GPOS-00053
@@ -45,8 +50,12 @@
     - CCI-000765
     - CCI-000766
     - CCI-000767
-    - CCI-00076
+    - CCI-000768
+    - CCI-004047
     - SRG-OS-000105-GPOS-00052
+    - SRG-OS-000106-GPOS-00053
+    - SRG-OS-000107-GPOS-00054
+    - SRG-OS-000108-GPOS-00055
     - SV-260575r1044770_rule
     - V-260575
     - NIST800-53R4_IA-2
@@ -91,24 +100,20 @@
     - NIST800-53R4_IA-2
     - multifactor
   block:
-    - name: MEDIUM | UBTU-22-612025 | AUDIT | Ubuntu 22.04 LTS must electronically verify personal identity verification (PIV) credentials. | find current settings
-      ansible.builtin.shell: |
-        set -o pipefail
-        grep -E "^cert_policy=" /etc/pam_pkcs11/pam_pkcs11.conf | cut -d ';' -f1 | grep -v ocsp_on
-      args:
-        executable: "{{ ubtu22stig_shell_executable }}"
-      changed_when: false
-      failed_when: discovered_pkcs_cert_ocsp_policy.rc not in [ 0, 1 ]
+    - name: MEDIUM | UBTU-22-612025 | AUDIT | Ubuntu 22.04 LTS must electronically verify personal identity verification (PIV) credentials. | check for pam_pkcs11.conf
+      ansible.builtin.stat:
+        path: /etc/pam_pkcs11/pam_pkcs11.conf
       register: discovered_pkcs_cert_ocsp_policy
 
-    - name: MEDIUM | UBTU-22-612025 | PATCH | Ubuntu 22.04 LTS must electronically verify personal identity verification (PIV) credentials. | change where needed
-      when:
-        - discovered_pkcs_cert_ocsp_policy is defined
-        - discovered_pkcs_cert_ocsp_policy.stdout | length > 0
-      ansible.builtin.lineinfile:
+    # Every cert_policy line is edited in place, including the indented lines inside the
+    # pkcs11_module blocks of the stock configuration. A line that already carries the token, a
+    # commented-out line and an empty policy are left alone, so a second run changes nothing.
+    - name: MEDIUM | UBTU-22-612025 | PATCH | Ubuntu 22.04 LTS must electronically verify personal identity verification (PIV) credentials. | add ocsp_on to every cert_policy line
+      when: discovered_pkcs_cert_ocsp_policy.stat.exists
+      ansible.builtin.replace:
         path: /etc/pam_pkcs11/pam_pkcs11.conf
-        line: "{{ item }},ocsp_on;"
-      loop: "{{ discovered_pkcs_cert_ocsp_policy.stdout_lines }}"
+        regexp: '^([ \t]*cert_policy[ \t]*=[ \t]*)(?![^;#\n]*\bocsp_on\b)([^;#\n]*[^;#\s])[ \t]*;'
+        replace: '\1\2,ocsp_on;'
 
 - name: MEDIUM | UBTU-22-612030 | PATCH | Ubuntu 22.04 LTS, for PKI-based authentication, must validate certificates by constructing a certification path (which includes status information) to an accepted trust anchor.
   when:
@@ -118,30 +123,25 @@
     - UBTU-22-612030
     - CAT2
     - CCI-000185
+    - CCI-004909
     - SRG-OS-000066-GPOS-00034
     - SV-260577r1069112_rule
     - V-260577
     - NIST800-53R4_IA-5
     - multifactor
   block:
-    - name: MEDIUM | UBTU-22-612030 | AUDIT | Ubuntu 22.04 LTS, for PKI-based authentication, must validate certificates by constructing a certification path (which includes status information) to an accepted trust anchor. | find current settings
-      ansible.builtin.shell: |
-        set -o pipefail
-        grep -E "^cert_policy=" /etc/pam_pkcs11/pam_pkcs11.conf | cut -d ';' -f1 | grep -v ca
-      args:
-        executable: "{{ ubtu22stig_shell_executable }}"
-      changed_when: false
-      failed_when: discovered_pkcs_cert_ca_policy.rc not in [ 0, 1 ]
+    - name: MEDIUM | UBTU-22-612030 | AUDIT | Ubuntu 22.04 LTS, for PKI-based authentication, must validate certificates by constructing a certification path (which includes status information) to an accepted trust anchor. | check for pam_pkcs11.conf
+      ansible.builtin.stat:
+        path: /etc/pam_pkcs11/pam_pkcs11.conf
       register: discovered_pkcs_cert_ca_policy
 
-    - name: MEDIUM | UBTU-22-612030 | PATCH | Ubuntu 22.04 LTS, for PKI-based authentication, must validate certificates by constructing a certification path (which includes status information) to an accepted trust anchor. | change where needed
-      when:
-        - discovered_pkcs_cert_ca_policy is defined
-        - discovered_pkcs_cert_ca_policy.stdout | length > 0
-      ansible.builtin.lineinfile:
+    # Same in-place edit as UBTU-22-612025; "ca" is added at the front of the policy list.
+    - name: MEDIUM | UBTU-22-612030 | PATCH | Ubuntu 22.04 LTS, for PKI-based authentication, must validate certificates by constructing a certification path (which includes status information) to an accepted trust anchor. | add ca to every cert_policy line
+      when: discovered_pkcs_cert_ca_policy.stat.exists
+      ansible.builtin.replace:
         path: /etc/pam_pkcs11/pam_pkcs11.conf
-        line: "{{ item }},ocsp_on;"
-      loop: "{{ discovered_pkcs_cert_ca_policy.stdout_lines }}"
+        regexp: '^([ \t]*cert_policy[ \t]*=[ \t]*)(?![^;#\n]*\bca\b)([^;#\n]*[^;#\s])[ \t]*;'
+        replace: '\1ca,\2;'
 
 - name: MEDIUM | UBTU-22-612035 | PATCH | Ubuntu 22.04 LTS for PKI-based authentication, must implement a local cache of revocation data in case of the inability to access revocation information via the network.
   when:
@@ -150,35 +150,24 @@
   tags:
     - UBTU-22-612035
     - CAT2
-    - CCI-000000
+    - CCI-001991
+    - CCI-004068
     - SRG-OS-000384-GPOS-00167
     - SV-260578r1015021_rule
     - V-260578
     - NIST800-53R4_NA
     - multifactor
   block:
-    - name: MEDIUM | UBTU-22-612035 | AUDIT | Ubuntu 22.04 LTS for PKI-based authentication, must implement a local cache of revocation data in case of the inability to access revocation information via the network. | find current settings
-      ansible.builtin.shell: |
-        set -o pipefail
-        grep -E "^cert_policy=" /etc/pam_pkcs11/pam_pkcs11.conf | cut -d ';' -f1 | grep -Ev "crl_auto|crl_offline"
-      args:
-        executable: "{{ ubtu22stig_shell_executable }}"
-      changed_when: false
-      failed_when: discovered_pkcs_cert_crl_policy.rc not in [ 0, 1 ]
+    - name: MEDIUM | UBTU-22-612035 | AUDIT | Ubuntu 22.04 LTS for PKI-based authentication, must implement a local cache of revocation data in case of the inability to access revocation information via the network. | check for pam_pkcs11.conf
+      ansible.builtin.stat:
+        path: /etc/pam_pkcs11/pam_pkcs11.conf
       register: discovered_pkcs_cert_crl_policy
 
-    - name: MEDIUM | UBTU-22-612035 | PATCH | Ubuntu 22.04 LTS for PKI-based authentication, must implement a local cache of revocation data in case of the inability to access revocation information via the network. | change where needed
-      when: "'No such file' not in discovered_pkcs_cert_crl_policy.stderr"
+    # Same in-place edit as UBTU-22-612025. Either crl_auto or crl_offline satisfies the check, so
+    # crl_auto is added only to a line that carries neither, and crl_offline is kept.
+    - name: MEDIUM | UBTU-22-612035 | PATCH | Ubuntu 22.04 LTS for PKI-based authentication, must implement a local cache of revocation data in case of the inability to access revocation information via the network. | add crl_auto to every cert_policy line
+      when: discovered_pkcs_cert_crl_policy.stat.exists
       ansible.builtin.replace:
         path: /etc/pam_pkcs11/pam_pkcs11.conf
-        regexp: crl_offline
-        replace: "crl_auto"
-
-    - name: MEDIUM | UBTU-22-612035 | PATCH | Ubuntu 22.04 LTS, for PKI-based authentication, must validate certificates by constructing a certification path (which includes status information) to an accepted trust anchor. | change where needed
-      when:
-        - discovered_pkcs_cert_crl_policy is defined
-        - discovered_pkcs_cert_crl_policy.stdout | length > 0
-      ansible.builtin.lineinfile:
-        path: /etc/pam_pkcs11/pam_pkcs11.conf
-        line: "{{ item }},crl_auto;"
-      loop: "{{ discovered_pkcs_cert_crl_policy.stdout_lines }}"
+        regexp: '^([ \t]*cert_policy[ \t]*=[ \t]*)(?![^;#\n]*\bcrl_(auto|offline)\b)([^;#\n]*[^;#\s])[ \t]*;'
+        replace: '\1\3,crl_auto;'

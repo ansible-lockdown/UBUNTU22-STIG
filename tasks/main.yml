@@ -146,25 +146,24 @@
   ansible.builtin.meta: flush_handlers
 
 - name: "Reboot system"
-  when:
-    - reboot_required
-    - not skip_reboot
+  when: reboot_required
   tags: always
   block:
     - name: "Reboot system if not skipped"
+      when: not skip_reboot
       ansible.builtin.reboot:
 
     - name: "Warning a reboot required but skip option set"
-      when:
-        - reboot_required
-        - skip_reboot
+      when: skip_reboot
       ansible.builtin.debug:
         msg: "Warning!! changes have been made that require a reboot to be implemented but skip reboot was set - Can affect compliance check results"
-      changed_when: true
+      changed_when: false
 
 - name: "Run post remediation audit"
   when: run_audit
-  tags: run_audit
+  tags:
+    - run_audit
+    - molecule-idempotence-notest
   ansible.builtin.import_tasks:
     file: post_remediation_audit.yml
 
@@ -183,6 +182,8 @@
         mode: 'go-w'
 
     - name: Create ansible facts file
+      tags:
+        - molecule-idempotence-notest
       ansible.builtin.template:
         src: etc/ansible/compliance_facts.j2
         dest: "{{ ansible_facts_path }}/compliance_facts.fact"
@@ -194,13 +195,17 @@
   when:
     - fetch_audit_output
     - run_audit
-  tags: always
+  tags:
+    - always
+    - molecule-idempotence-notest
   ansible.builtin.import_tasks:
     file: fetch_audit_output.yml
 
 - name: "Show Audit Summary"
   when: run_audit
-  tags: run_audit
+  tags:
+    - run_audit
+    - molecule-idempotence-notest
   ansible.builtin.debug:
     msg: "{{ audit_results.split('\n') }}"
 
