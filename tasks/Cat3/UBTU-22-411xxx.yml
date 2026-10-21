@@ -15,7 +15,7 @@
     - account
     - pam
   block:
-    - name: LOW | UBTU-22-411045 | AUDIT | Ubuntu 22.04 LTS must automatically lock an account until the locked account is released by an administrator when three unsuccessful logon attempts have been made.
+    - name: LOW | UBTU-22-411045 | PATCH | Ubuntu 22.04 LTS must automatically lock an account until the locked account is released by an administrator when three unsuccessful logon attempts have been made.
       ansible.builtin.lineinfile:
         path: /etc/security/faillock.conf
         regexp: "{{ item.regexp }}"
@@ -27,21 +27,66 @@
         - { regexp: '^(#|)\s*fail_interval', line: 'fail_interval = {{ ubtu22stig_faillock_fail_interval }}' }
         - { regexp: '^(#|)\s*unlock_time', line: 'unlock_time = {{ ubtu22stig_faillock_unlock_time }}' }
 
-    - name: LOW | UBTU-22-411045 | AUDIT | Ubuntu 22.04 LTS must automatically lock an account until the locked account is released by an administrator when three unsuccessful logon attempts have been made.
+    # Earlier releases wrote this line into the generated /etc/pam.d/common-account, where
+    # pam-auth-update discards it and treats it as a local edit that blocks regeneration. The
+    # faillock_notify profile below now supplies the account line.
+    - name: LOW | UBTU-22-411045 | PATCH | Ubuntu 22.04 LTS must automatically lock an account until the locked account is released by an administrator when three unsuccessful logon attempts have been made. | remove superseded common-account line
       ansible.builtin.lineinfile:
         path: /etc/pam.d/common-account
-        regexp: "{{ item.regexp }}"
-        line: "{{ item.regexp }}"
-        insertafter: "{{ item.after | default(omit) }}"
-        insertbefore: "{{ item.before | default(omit) }}"
-      loop:
-        - { regexp: 'account required                        pam_faillock.so', before: 'account.*pam_unix.so'}
+        line: 'account required                        pam_faillock.so'
+        state: absent
 
-    - name: LOW | UBTU-22-411045 | AUDIT | Ubuntu 22.04 LTS must automatically lock an account until the locked account is released by an administrator when three unsuccessful logon attempts have been made.
+    # Earlier releases wrote the authfail and authsucc lines into the generated common-auth as a
+    # marked block after pam_unix. On the SSSD stack the pam_unix success jump, counted without
+    # the block, then landed on pam_sss instead of pam_permit, and a valid local password fell
+    # through to pam_deny (ansible-lockdown/UBUNTU22-STIG#44). The faillock profile below
+    # generates the lines before pam_deny instead, so the block is removed wherever it sits,
+    # including a block already moved before pam_deny by hand.
+    # The marker is reproduced byte for byte from the release that wrote it, including the former
+    # company name. blockinfile matches markers exactly, so changing it would leave the old block
+    # in place next to the generated lines.
+    - name: LOW | UBTU-22-411045 | PATCH | Ubuntu 22.04 LTS must automatically lock an account until the locked account is released by an administrator when three unsuccessful logon attempts have been made. | remove superseded managed block
       ansible.builtin.blockinfile:
         path: /etc/pam.d/common-auth
         marker: "# {mark} Faillock config Ubuntu2204 STIG - Ansible-lockdown Sponsored by MindPoint Group - A Tyto Athene Company / Ansible Lockdown"
-        block: |
-          auth    [default=die]                   pam_faillock.so authfail
-          auth    sufficient                      pam_faillock.so authsucc
-        insertafter: auth.*pam_unix.so
+        state: absent
+
+    - name: LOW | UBTU-22-411045 | PATCH | Ubuntu 22.04 LTS must automatically lock an account until the locked account is released by an administrator when three unsuccessful logon attempts have been made. | ensure faillock profile
+      ansible.builtin.template:
+        src: "{{ ubtu22stig_pam_confd_dir }}{{ ubtu22stig_pam_faillock_file }}.j2"
+        dest: "/{{ ubtu22stig_pam_confd_dir }}{{ ubtu22stig_pam_faillock_file }}"
+        owner: root
+        group: root
+        mode: 'u-x,go-rwx'
+      notify: Pam_auth_update_pwfaillock
+
+    - name: LOW | UBTU-22-411045 | PATCH | Ubuntu 22.04 LTS must automatically lock an account until the locked account is released by an administrator when three unsuccessful logon attempts have been made. | ensure faillock_notify profile
+      ansible.builtin.template:
+        src: "{{ ubtu22stig_pam_confd_dir }}{{ ubtu22stig_pam_faillock_notify_file }}.j2"
+        dest: "/{{ ubtu22stig_pam_confd_dir }}{{ ubtu22stig_pam_faillock_notify_file }}"
+        owner: root
+        group: root
+        mode: 'u-x,go-rwx'
+      notify: Pam_auth_update_pwfaillock
+
+    - name: LOW | UBTU-22-411045 | AUDIT | Ubuntu 22.04 LTS must automatically lock an account until the locked account is released by an administrator when three unsuccessful logon attempts have been made. | check generated stack
+      ansible.builtin.shell: |
+        set -o pipefail
+        grep -qE '^auth\s+requisite\s+pam_faillock\.so\s+preauth\b' /etc/pam.d/common-auth || echo 'common-auth preauth'
+        grep -qE '^auth\s+\[default=die\]\s+pam_faillock\.so\s+authfail\b' /etc/pam.d/common-auth || echo 'common-auth authfail'
+        grep -qE '^auth\s+sufficient\s+pam_faillock\.so\s+authsucc\b' /etc/pam.d/common-auth || echo 'common-auth authsucc'
+        grep -qE '^account\s+required\s+pam_faillock\.so\b' /etc/pam.d/common-account || echo 'common-account'
+      args:
+        executable: "{{ ubtu22stig_shell_executable }}"
+      changed_when: false
+      check_mode: false
+      register: discovered_pam_faillock_missing
+
+    # A host whose profiles are already correct but whose generated files lack the lines would
+    # see no template change, so nothing would notify the handler. Force the regeneration.
+    - name: LOW | UBTU-22-411045 | PATCH | Ubuntu 22.04 LTS must automatically lock an account until the locked account is released by an administrator when three unsuccessful logon attempts have been made. | regenerate if missing
+      when: discovered_pam_faillock_missing.stdout | length > 0
+      ansible.builtin.debug:
+        msg: "pam_faillock is missing from {{ discovered_pam_faillock_missing.stdout_lines | join(', ') }}; regenerating from the profile source"
+      changed_when: true
+      notify: Pam_auth_update_pwfaillock

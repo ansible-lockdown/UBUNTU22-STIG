@@ -5,6 +5,8 @@
   tags:
     - UBTU-22-653010
     - CAT2
+    - CCI-000130
+    - CCI-000131
     - CCI-000132
     - CCI-000133
     - CCI-000134
@@ -13,6 +15,7 @@
     - CCI-000158
     - CCI-000169
     - CCI-000172
+    - CCI-001814
     - CCI-001875
     - CCI-001876
     - CCI-001877
@@ -22,6 +25,7 @@
     - CCI-001881
     - CCI-001882
     - CCI-001914
+    - CCI-003938
     - SRG-OS-000037-GPOS-00015
     - SRG-OS-000038-GPOS-00016
     - SRG-OS-000039-GPOS-00017
@@ -59,6 +63,8 @@
   tags:
     - UBTU-22-653015
     - CAT2
+    - CCI-000130
+    - CCI-000131
     - CCI-000132
     - CCI-000133
     - CCI-000134
@@ -67,6 +73,7 @@
     - CCI-000158
     - CCI-000169
     - CCI-000172
+    - CCI-001814
     - CCI-001875
     - CCI-001876
     - CCI-001877
@@ -76,6 +83,7 @@
     - CCI-001881
     - CCI-001882
     - CCI-001914
+    - CCI-003938
     - SRG-OS-000037-GPOS-00015
     - SRG-OS-000038-GPOS-00016
     - SRG-OS-000039-GPOS-00017
@@ -178,7 +186,7 @@
       changed_when: false
       register: discovered_auditd_logfile_owner
 
-    - name: MEDIUM | UBTU-22-653050 | PATCH |Ubuntu 22.04 LTS must be configured to permit only authorized users ownership of the audit log files.
+    - name: MEDIUM | UBTU-22-653050 | PATCH | Ubuntu 22.04 LTS must be configured to permit only authorized users ownership of the audit log files.
       ansible.builtin.file:
         path: "{{ discovered_auditd_logfile_owner.stdout }}"
         owner: root
@@ -224,7 +232,7 @@
       changed_when: false
       register: discovered_auditd_logfile_dir
 
-    - name: MEDIUM | UBTU-22-653060 | AUDIT | Ubuntu 22.04 LTS must be configured so that the audit log directory is not write-accessible by unauthorized users.
+    - name: MEDIUM | UBTU-22-653060 | PATCH | Ubuntu 22.04 LTS must be configured so that the audit log directory is not write-accessible by unauthorized users.
       ansible.builtin.file:
         path: "{{ discovered_auditd_logfile_dir.stdout | dirname }}"
         state: directory
@@ -257,7 +265,7 @@
       loop_control:
         label: "{{ item.path }}"
 
-- name: MEDIUM | UBTU-22-653070 | PATCH | Ubuntu 22.04 LTS must be configured so that audit configuration files are not write-accessible by unauthorized users.
+- name: MEDIUM | UBTU-22-653070 | PATCH | Ubuntu 22.04 LTS must permit only authorized accounts to own the audit configuration files.
   when: ubtu22stig_653070
   tags:
     - UBTU-22-653070

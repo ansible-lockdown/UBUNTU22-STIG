@@ -67,7 +67,7 @@
     mode: 'u-x,go-wx'
   notify: Update_dconf
 
-- name: MEDIUM | UBTU-22-271025 | PATCH | Ubuntu 22.04 LTS must initiate a graphical session lock after 15 minutes of inactivity.
+- name: MEDIUM | UBTU-22-271025 | PATCH | Ubuntu 22.04 LTS must initiate a graphical session lock after 10 minutes of inactivity.
   when:
     - ubtu22stig_271025
     - ubtu22stig_gui
@@ -76,7 +76,7 @@
     - CAT2
     - CCI-000057
     - SRG-OS-000029-GPOS-00010
-    - SV-260538r1069119_rule
+    - SV-260538r1208695_rule
     - V-260538
     - NIST800-53R4_AC-11
     - gnome

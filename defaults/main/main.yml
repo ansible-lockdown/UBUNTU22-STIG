@@ -1,7 +1,7 @@
 ---
 
 ## metadata for Audit benchmark
-benchmark_version: 'v2.8.0'
+benchmark_version: 'v2.9.0'
 
 ## Benchmark name used by auditing control role
 # The audit variable found at the base
@@ -372,6 +372,14 @@ ubtu22stig_pam_confd_dir: 'usr/share/pam-configs/'
 
 # Profile filenames within ubtu22stig_pam_confd_dir.
 ubtu22stig_pam_pwunix_file: 'unix'
+# 411045 - two profiles. Priority 0 places authfail and authsucc after every primary
+# authentication module and before pam_deny, so the success jumps of pam_unix and pam_sss
+# are preserved. Priority 1024 adds the preauth check before pam_unix, which denies a locked
+# account, and the account-phase line that resets the failure count on success.
+ubtu22stig_pam_faillock_file: 'faillock'
+ubtu22stig_pam_faillock_notify_file: 'faillock_notify'
+# 412010 - priority 1025 places pam_faildelay first in common-auth.
+ubtu22stig_pam_faildelay_file: 'faildelay'
 
 # 612xxx
 # Section 612xxx is for smartcards configurations these require further configurations before applying STiG settings

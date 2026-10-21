@@ -5,7 +5,8 @@
   tags:
     - UBTU-22-611010
     - CAT2
-    - CCI-000000
+    - CCI-000192
+    - CCI-004066
     - SRG-OS-000069-GPOS-00037
     - SV-260560r1015012_rule
     - V-260560
@@ -21,7 +22,8 @@
   tags:
     - UBTU-22-611015
     - CAT2
-    - CCI-000000
+    - CCI-000193
+    - CCI-004066
     - SRG-OS-000070-GPOS-00038
     - SV-260561r1015013_rule
     - V-260561
@@ -37,7 +39,8 @@
   tags:
     - UBTU-22-611020
     - CAT2
-    - CCI-000000
+    - CCI-000194
+    - CCI-004066
     - SRG-OS-000071-GPOS-00039
     - SV-260562r1015014_rule
     - V-260562
@@ -53,7 +56,8 @@
   tags:
     - UBTU-22-611025
     - CAT2
-    - CCI-000000
+    - CCI-001619
+    - CCI-004066
     - SRG-OS-000266-GPOS-00101
     - SV-260563r1015015_rule
     - V-260563
@@ -69,7 +73,7 @@
   tags:
     - UBTU-22-611030
     - CAT2
-    - CCI-000000
+    - CCI-000366
     - SRG-OS-000480-GPOS-00225
     - SV-260564r991587_rule
     - V-260564
@@ -85,7 +89,8 @@
   tags:
     - UBTU-22-611035
     - CAT2
-    - CCI-000000
+    - CCI-000205
+    - CCI-004066
     - SRG-OS-000078-GPOS-00046
     - SV-260565r1015016_rule
     - V-260565
@@ -101,8 +106,10 @@
   tags:
     - UBTU-22-611040
     - CAT2
-    - NA
+    - CCI-000195
+    - CCI-004066
     - SRG-OS-000072-GPOS-00040
+    - NA
     - SV-260566r1015017_rule
     - V-260566
     - NIST800-53R4_NA
@@ -132,8 +139,9 @@
   when: ubtu22stig_611055
   tags:
     - UBTU-22-611055
-    - CCI-000196
     - CAT2
+    - CCI-000196
+    - CCI-004062
     - SRG-OS-000073-GPOS-00041
     - SV-260569r1101736_rule
     - V-260569
@@ -173,7 +181,7 @@
       ansible.builtin.debug:
         msg: "Generated common-password does not match the required algorithm or rounds; regenerating from the profile source"
 
-- name: MEDIUM | UBTU-22-611070 | PATCH | Ubuntu 22.04 LTS must store only encrypted representations of passwords.
+- name: MEDIUM | UBTU-22-611070 | PATCH | Ubuntu 22.04 LTS must encrypt all stored passwords with a FIPS 140-3-approved cryptographic hashing algorithm.
   when: ubtu22stig_611070
   tags:
     - UBTU-22-611070

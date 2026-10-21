@@ -6,6 +6,7 @@
     - UBTU-22-252010
     - CAT3
     - CCI-001891
+    - CCI-004923
     - SRG-OS-000355-GPOS-00143
     - SV-260519r1038944_rule
     - V-260519
@@ -37,6 +38,7 @@
     - UBTU-22-252015
     - CAT3
     - CCI-002046
+    - CCI-004926
     - SRG-OS-000356-GPOS-00144
     - SV-260520r1044776_rule
     - V-260520
@@ -49,13 +51,13 @@
     line: makestep 1 -1
   notify: Restart_chrony
 
-- name: LOW | UBTU-22-252020 | PATCH |Ubuntu 22.04 LTS must record time stamps for audit records that can be mapped to Coordinated Universal Time (UTC).
+- name: LOW | UBTU-22-252020 | PATCH | Ubuntu 22.04 LTS must record time stamps for audit records that can be mapped to Coordinated Universal Time (UTC).
   when: ubtu22stig_252020
   tags:
     - UBTU-22-252020
     - CAT3
     - CCI-001890
-    - SRG-OS-000356-GPOS-00144
+    - SRG-OS-000359-GPOS-00146
     - SV-260521r958788_rule
     - V-260521
     - NIST800-53R4_AU-8

@@ -32,6 +32,7 @@
     - SV-274866r1101739_rule
     - V-274866
     - NIST800-53R4_IA-2
+    - molecule-idempotence-notest
   ansible.builtin.service:
     name: sssd
     state: started

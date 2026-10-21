@@ -11,9 +11,14 @@
     - V-260473
     - NIST800-53R4_SC-24
   block:
+    # kdump-tools ships kdump-tools.service; there is no kdump.service on Ubuntu 22.04. The check
+    # treats a host without kdump-tools as compliant, so the unit is only stopped and masked when
+    # the package is installed.
     - name: MEDIUM | UBTU-22-213015 | PATCH | Ubuntu 22.04 LTS must disable kernel core dumps so that it can fail to a secure state if system initialization fails, shutdown fails or aborts fail. | mask kdump-tools
+      when: "'kdump-tools' in ansible_facts['packages']"
       ansible.builtin.systemd:
-        name: kdump.service
+        name: kdump-tools.service
+        state: stopped
         masked: true
 
 - name: MEDIUM | UBTU-22-213020 | PATCH | Ubuntu 22.04 LTS must implement address space layout randomization to protect its memory from unauthorized code execution.

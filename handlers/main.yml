@@ -73,3 +73,26 @@
 - name: Pam_auth_update_pwunix
   ansible.builtin.command: pam-auth-update --enable {{ ubtu22stig_pam_pwunix_file }}
   changed_when: true
+
+- name: Pam_auth_update_pwfaillock
+  ansible.builtin.command: pam-auth-update --enable {{ ubtu22stig_pam_faillock_file }} {{ ubtu22stig_pam_faillock_notify_file }}
+  changed_when: true
+
+- name: Pam_auth_update_pwfaildelay
+  ansible.builtin.command: pam-auth-update --enable {{ ubtu22stig_pam_faildelay_file }}
+  changed_when: true
+
+# vlock ships /usr/lib/vlock/modules/nosysrq.so group-owned by vlock, and UBTU-22-412025 installs it
+# after UBTU-22-232075 has already swept the library files, so the sweep is repeated here.
+- name: Fix_library_file_group
+  when:
+    - ubtu22stig_232075
+    - ubtu22stig_disruption_high
+  ansible.builtin.shell: |
+    set -o pipefail
+    find /lib /usr/lib /lib64 /usr/lib64 -name '*.so*' ! -group root -type f -exec chgrp root '{}' \; -print
+  args:
+    executable: "{{ ubtu22stig_shell_executable }}"
+  register: discovered_library_file_group_fix
+  changed_when: discovered_library_file_group_fix.stdout | length > 0
+  failed_when: discovered_library_file_group_fix.rc not in [ 0, 1 ]
